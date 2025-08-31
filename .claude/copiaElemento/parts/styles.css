@@ -1,0 +1,352 @@
+/* ============================================
+   ARKHAM SECTION - ESTILOS PRINCIPALES
+   ============================================ */
+
+/* RESETEO Y BASE */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ============================================
+   SECCIÓN PRINCIPAL ARKHAM
+   ============================================ */
+
+.section-2.isometric.arkham-tabs-section {
+    /* Posicionamiento y tamaño fijo según original */
+    translate: none;
+    rotate: none; 
+    scale: none;
+    inset: 0px auto auto 0px;
+    margin: 0px;
+    max-width: 857px;
+    width: 857px;
+    max-height: 1025.91px;
+    height: 1025.91px;
+    padding: 60px 24px;
+    transform: translate(0px, 0px);
+    
+    /* Estilos adicionales */
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+/* FILA PRINCIPAL ISOMÉTRICA */
+.isometric-row {
+    display: flex;
+    gap: 40px;
+    height: 100%;
+    align-items: flex-start;
+}
+
+/* ============================================
+   COLUMNA IZQUIERDA - HEADLINE Y TABS
+   ============================================ */
+
+.box-headline-isometric {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* CONTAINER DEL HEADLINE */
+.cotainer-headline {
+    margin-bottom: 24px;
+}
+
+.h2-2.words-up {
+    font-size: 4rem;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.line {
+    display: block;
+    text-align: left;
+    width: 100%;
+}
+
+.line-text {
+    translate: none;
+    rotate: none;
+    scale: none;
+    filter: blur(0px);
+    opacity: 1;
+    transform: translate(0px, 0%);
+    display: inline-block;
+}
+
+.subtitle.color-black {
+    font-size: 1.25rem;
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.4;
+}
+
+/* BOTÓN CTA */
+.button.secondary.small.mt-16 {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    background: transparent;
+    border: 1px solid #333;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+}
+
+.button.secondary.small.mt-16:hover {
+    background: #333;
+    color: #fff;
+}
+
+.btn-content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.image-7 {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   CONTENEDOR DE TABS - DESKTOP
+   ============================================ */
+
+.cotainer-vertical-tab.cvt-desk {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-left: 1px solid #eee;
+    padding-left: 24px;
+}
+
+.cotainer-vertical-tab.cvt-mobile {
+    display: none; /* Oculto en desktop */
+}
+
+/* ESTILO COMÚN PARA TABS */
+.scroll-tab,
+.scroll-tab-mobile {
+    border-bottom: 1px solid #eee;
+    padding: 20px 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.box-top-bottom-line {
+    border-top: 1px solid #eee;
+}
+
+.scroll-tab.active .arkham-tab-heading .tagline-2 {
+    color: #000;
+    font-weight: 600;
+}
+
+.scroll-tab.active .arrow-rights {
+    opacity: 0 !important;
+}
+
+/* HEADING DEL TAB */
+.arkham-tab-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.tagline-2 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #666;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.arrow-rights {
+    width: 16px;
+    height: 16px;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* CONTENIDO DEL TAB */
+.tab-content.hide-mobile {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+    margin: 0;
+    
+    /* Estados por defecto según original */
+    max-height: 0px;
+    z-index: -1;
+    opacity: 0;
+    padding-bottom: 0px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* TAB ACTIVO */
+.scroll-tab.active .tab-content.hide-mobile {
+    max-height: 70px;
+    z-index: 1;
+    opacity: 1;
+    padding-bottom: 20px;
+}
+
+/* ============================================
+   COLUMNA DERECHA - VISUALIZACIÓN ISOMÉTRICA
+   ============================================ */
+
+.box-isometric {
+    flex: 1;
+    position: relative;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CONTENIDO MÓVIL (OCULTO EN DESKTOP) */
+.mobile-content-isometric {
+    display: none;
+}
+
+.iso-content {
+    display: none;
+}
+
+/* WRAPPER DE NIVELES ISOMÉTRICOS */
+.levels-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 400px;
+    max-height: 400px;
+}
+
+/* NIVELES ISOMÉTRICOS */
+.level {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.level.first-level {
+    /* Nivel base - siempre visible en estado inicial según original */
+    opacity: 0;
+    translate: none;
+    rotate: none;
+    scale: none;
+    transform: translate(0px, 0px);
+    z-index: 1;
+}
+
+.level.float-level {
+    /* Niveles flotantes - posicionados arriba por defecto */
+    opacity: 0;
+    top: -100%;
+    z-index: 2;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .section-2.isometric.arkham-tabs-section {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        padding: 40px 20px;
+    }
+    
+    .isometric-row {
+        flex-direction: column;
+        gap: 24px;
+    }
+    
+    .h2-2.words-up {
+        font-size: 2.5rem;
+    }
+    
+    .cotainer-vertical-tab.cvt-desk {
+        display: none;
+    }
+    
+    .cotainer-vertical-tab.cvt-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 24px;
+    }
+    
+    .mobile-content-isometric {
+        display: block;
+        margin-bottom: 24px;
+    }
+    
+    .box-isometric {
+        height: 300px;
+    }
+}
+
+/* ============================================
+   UTILIDADES
+   ============================================ */
+
+.w-inline-block {
+    display: inline-block;
+}
+
+.btn-hover {
+    transition: all 0.3s ease;
+}
+
+.hover-black:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.no-margin {
+    margin: 0;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+/* Ocultar elementos en móvil */
+.hide-mobile {
+    /* Clase para ocultar en mobile si es necesario */
+}
+
+@media (max-width: 768px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}

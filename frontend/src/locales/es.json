@@ -1,0 +1,96 @@
+{
+  "navbar": {
+    "company": "Dafel Technologies",
+    "scheduleConsultation": "Programar Consulta"
+  },
+  "hero": {
+    "title": "Datos Complejos.",
+    "titleHighlight": "Resultados Exactos.",
+    "description": "Transformamos datos complejos en decisiones exactas. Nuestra IA automatiza cálculos críticos, optimiza procesos financieros y elimina errores en operaciones que requieren precisión absoluta.",
+    "exploreButton": "Explorar Soluciones",
+    "demoButton": "Solicitar Demo"
+  },
+  "framework": {
+    "titleLine1": "La Fundición",
+    "titleLine2": "Ontológica",
+    "subtitle": "Activa el poder de tus datos y análisis.",
+    "ctaButton": "Comenzar con la Ontología",
+    "panelBrand": "Foundry²",
+    "panelTitle": "Núcleo Ontológico",
+    "layers": {
+      "semantic": {
+        "title": "Semántico",
+        "features": [
+          "Objetos y Enlaces Dinámicos",
+          "Propiedades Multi-Modales",
+          "Primitivos Ontológicos"
+        ]
+      },
+      "kinetic": {
+        "title": "Cinético",
+        "features": [
+          "Acciones y Funciones Impulsadas por IA",
+          "Minería de Procesos y Automatización",
+          "Orquestación de Acciones",
+          "Monitoreo en Tiempo Real"
+        ]
+      },
+      "dynamic": {
+        "title": "Dinámico",
+        "features": [
+          "Decisiones Potenciadas por IA",
+          "Simulaciones Multi-Paso",
+          "Captura y Aprendizaje de Decisiones"
+        ]
+      }
+    }
+  },
+  "services": {
+    "title": "Capacidades Core",
+    "subtitle": "Tecnología avanzada diseñada para impulsar resultados empresariales tangibles",
+    "aiDecisions": {
+      "title": "IA para Decisiones",
+      "description": "Algoritmos de aprendizaje profundo que analizan patrones complejos para proporcionar insights accionables y recomendaciones estratégicas en tiempo real."
+    },
+    "automation": {
+      "title": "Automatización Inteligente",
+      "description": "Sistemas autónomos que optimizan flujos de trabajo, reducen errores operativos y liberan recursos humanos para tareas de mayor valor estratégico."
+    },
+    "predictive": {
+      "title": "Análisis Predictivo",
+      "description": "Modelos estadísticos avanzados que anticipan tendencias del mercado, comportamiento del cliente y oportunidades de crecimiento con precisión excepcional."
+    },
+    "learnMore": "Aprender más →"
+  },
+  "cta": {
+    "title": "Comienza tu transformación digital",
+    "subtitle": "Únete a las empresas líderes que confían en nuestra tecnología",
+    "button": "Programar Consulta"
+  },
+  "arkham": {
+    "title": "Arkham",
+    "subtitle": "La Plataforma de Datos e IA que impulsa el futuro de tu empresa.",
+    "bookDemo": "Solicitar demo",
+    "tabs": {
+      "dataPlatform": {
+        "title": "PLATAFORMA DE DATOS",
+        "content": "Consolida todos los datos de tu empresa en un Data Lakehouse dedicado a tu operación. Nuestros conectores garantizan calidad, linaje y gobernanza de datos en cuestión de minutos."
+      },
+      "aiPlatform": {
+        "title": "PLATAFORMA DE IA",
+        "content": "Desde IA Generativo hasta múltiples clases de modelos de Machine Learning, Arkham es IA adaptado a tus operaciones."
+      },
+      "aiApplications": {
+        "title": "APLICATIVOS INTELIGENTES",
+        "content": "Accede fácilmente a tus datos con los mejores modelos de Machine Learning y IA Generativa, adaptados a tu operación para ganar control y velocidad en tus operaciones."
+      }
+    }
+  },
+  "footer": {
+    "company": "Dafel Technologies",
+    "rights": "© 2024 Dafel Technologies. Todos los derechos reservados.",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "cookies": "Cookies"
+  }
+}

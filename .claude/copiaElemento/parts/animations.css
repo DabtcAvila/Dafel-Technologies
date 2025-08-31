@@ -1,0 +1,287 @@
+/* ============================================
+   ARKHAM SECTION - ANIMACIONES CSS
+   ============================================ */
+
+/* ============================================
+   ANIMACIONES DE LOS NIVELES ISOMÉTRICOS
+   ============================================ */
+
+/* ESTADOS INICIALES - SEGÚN ORIGINAL */
+.level.first-level {
+    /* Nivel 1 - Base: Inicialmente invisible */
+    opacity: 0;
+    transform: translate(0px, 0px);
+    z-index: 1;
+}
+
+.level.float-level:nth-of-type(2) {
+    /* Nivel 2 - Flotante: Arriba y invisible */
+    opacity: 0;
+    top: -100%;
+    z-index: 2;
+}
+
+.level.float-level:nth-of-type(3) {
+    /* Nivel 3 - Flotante: Arriba y invisible */
+    opacity: 0;
+    top: -100%;
+    z-index: 3;
+}
+
+.level.float-level:nth-of-type(4) {
+    /* Nivel 4 - Lottie: Arriba y invisible */
+    opacity: 0;
+    top: -100%;
+    z-index: 4;
+}
+
+/* ============================================
+   ANIMACIONES POR TAB ACTIVO
+   ============================================ */
+
+/* CUANDO TAB 1 ESTÁ ACTIVO */
+.scroll-tab-1.active ~ * .level.first-level,
+body.tab-1-active .level.first-level {
+    opacity: 1;
+    transform: translate(0px, 0px);
+}
+
+.scroll-tab-1.active ~ * .level.float-level,
+body.tab-1-active .level.float-level {
+    opacity: 0;
+    top: -100%;
+}
+
+/* CUANDO TAB 2 ESTÁ ACTIVO */
+.scroll-tab-2.active ~ * .level.first-level,
+body.tab-2-active .level.first-level {
+    opacity: 1;
+    transform: translate(0px, 0px);
+}
+
+.scroll-tab-2.active ~ * .level.float-level:nth-of-type(2),
+body.tab-2-active .level.float-level:nth-of-type(2) {
+    opacity: 1;
+    top: 0%;
+    transform: translate(20px, -60px);
+}
+
+.scroll-tab-2.active ~ * .level.float-level:nth-of-type(3),
+.scroll-tab-2.active ~ * .level.float-level:nth-of-type(4),
+body.tab-2-active .level.float-level:nth-of-type(3),
+body.tab-2-active .level.float-level:nth-of-type(4) {
+    opacity: 0;
+    top: -100%;
+}
+
+/* CUANDO TAB 3 ESTÁ ACTIVO */
+.scroll-tab-3.active ~ * .level.first-level,
+body.tab-3-active .level.first-level {
+    opacity: 1;
+    transform: translate(0px, 0px);
+}
+
+.scroll-tab-3.active ~ * .level.float-level:nth-of-type(2),
+body.tab-3-active .level.float-level:nth-of-type(2) {
+    opacity: 1;
+    top: 0%;
+    transform: translate(20px, -60px);
+}
+
+.scroll-tab-3.active ~ * .level.float-level:nth-of-type(3),
+body.tab-3-active .level.float-level:nth-of-type(3) {
+    opacity: 1;
+    top: 0%;
+    transform: translate(40px, -120px);
+}
+
+.scroll-tab-3.active ~ * .level.float-level:nth-of-type(4),
+body.tab-3-active .level.float-level:nth-of-type(4) {
+    opacity: 1;
+    top: 0%;
+    transform: translate(40px, -120px);
+}
+
+/* ============================================
+   ANIMACIONES DE TEXTO - TABS
+   ============================================ */
+
+/* ANIMACIÓN DEL CONTENIDO DEL TAB */
+.tab-content.hide-mobile {
+    transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                padding-bottom 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ANIMACIÓN DE LA FLECHA */
+.arrow-rights {
+    transition: opacity 0.3s ease,
+                transform 0.3s ease;
+}
+
+.scroll-tab:hover .arrow-rights {
+    transform: translateX(4px);
+}
+
+.scroll-tab.active .arrow-rights {
+    opacity: 0;
+}
+
+/* ANIMACIÓN DEL TAGLINE */
+.tagline-2 {
+    transition: color 0.3s ease,
+                font-weight 0.3s ease;
+}
+
+.scroll-tab:hover .tagline-2 {
+    color: #333;
+}
+
+.scroll-tab.active .tagline-2 {
+    color: #000;
+    font-weight: 600;
+}
+
+/* ============================================
+   ANIMACIONES DE HOVER
+   ============================================ */
+
+.scroll-tab {
+    transition: background-color 0.3s ease,
+                border-color 0.3s ease;
+}
+
+.scroll-tab:hover {
+    background-color: #f8f9fa;
+}
+
+/* ============================================
+   KEYFRAMES PERSONALIZADOS
+   ============================================ */
+
+@keyframes levelFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes levelFloat {
+    from {
+        top: -100%;
+        opacity: 0;
+    }
+    to {
+        top: 0%;
+        opacity: 1;
+    }
+}
+
+@keyframes tabContentExpand {
+    from {
+        max-height: 0;
+        opacity: 0;
+        padding-bottom: 0;
+    }
+    to {
+        max-height: 70px;
+        opacity: 1;
+        padding-bottom: 20px;
+    }
+}
+
+/* ============================================
+   CLASES AUXILIARES PARA JAVASCRIPT
+   ============================================ */
+
+.level.animate-in {
+    animation: levelFadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.level.float-in {
+    animation: levelFloat 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.tab-content.expand {
+    animation: tabContentExpand 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* PREVENCIÓN DE FLASH INICIAL */
+.levels-wrapper {
+    opacity: 0;
+    animation: fadeIn 0.3s ease-in-out 0.1s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* ============================================
+   ANIMACIONES LOTTIE
+   ============================================ */
+
+.level[data-animation-type="lottie"] {
+    /* Preparación para animación Lottie */
+    background: transparent;
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE ANIMATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+    /* Simplificar animaciones en mobile */
+    .level {
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    
+    .tab-content {
+        transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+    
+    /* Reducir movimientos complejos */
+    .level.float-level {
+        transform: none !important;
+    }
+}
+
+/* ============================================
+   ESTADOS DE LOADING
+   ============================================ */
+
+.level.loading {
+    opacity: 0.5;
+    filter: blur(1px);
+}
+
+.level.loaded {
+    opacity: 1;
+    filter: blur(0);
+    transition: opacity 0.5s ease, filter 0.5s ease;
+}
+
+/* ============================================
+   PREFERS-REDUCED-MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .level,
+    .tab-content,
+    .arrow-rights,
+    .tagline-2,
+    .scroll-tab {
+        transition: none !important;
+        animation: none !important;
+    }
+    
+    .levels-wrapper {
+        opacity: 1 !important;
+        animation: none !important;
+    }
+}

@@ -1,0 +1,96 @@
+{
+  "navbar": {
+    "company": "Dafel Technologies",
+    "scheduleConsultation": "Schedule Consultation"
+  },
+  "hero": {
+    "title": "Complex Data.",
+    "titleHighlight": "Exact Results.",
+    "description": "We transform complex data into exact decisions. Our AI automates critical calculations, optimizes financial processes, and eliminates errors in operations requiring absolute precision.",
+    "exploreButton": "Explore Solutions",
+    "demoButton": "Request Demo"
+  },
+  "framework": {
+    "titleLine1": "The Foundry",
+    "titleLine2": "Ontology",
+    "subtitle": "Activate the power of your data and analytics.",
+    "ctaButton": "Get Started with the Ontology",
+    "panelBrand": "Foundry²",
+    "panelTitle": "Ontology Core",
+    "layers": {
+      "semantic": {
+        "title": "Semantic",
+        "features": [
+          "Dynamic Objects & Links",
+          "Multi-Modal Properties",
+          "Ontology Primitives"
+        ]
+      },
+      "kinetic": {
+        "title": "Kinetic",
+        "features": [
+          "AI-Driven Actions & Functions",
+          "Process Mining & Automation",
+          "Action Orchestration",
+          "Real-Time Monitoring"
+        ]
+      },
+      "dynamic": {
+        "title": "Dynamic",
+        "features": [
+          "AI-Powered Decisions",
+          "Multi-Step Simulations",
+          "Decision Capture & Learning"
+        ]
+      }
+    }
+  },
+  "services": {
+    "title": "Core Capabilities",
+    "subtitle": "Advanced technology designed to drive tangible business results",
+    "aiDecisions": {
+      "title": "AI for Decisions",
+      "description": "Deep learning algorithms that analyze complex patterns to provide actionable insights and strategic recommendations in real-time."
+    },
+    "automation": {
+      "title": "Intelligent Automation",
+      "description": "Autonomous systems that optimize workflows, reduce operational errors, and free up human resources for higher strategic value tasks."
+    },
+    "predictive": {
+      "title": "Predictive Analytics",
+      "description": "Advanced statistical models that anticipate market trends, customer behavior, and growth opportunities with exceptional precision."
+    },
+    "learnMore": "Learn more →"
+  },
+  "cta": {
+    "title": "Start your digital transformation",
+    "subtitle": "Join leading companies that trust our technology",
+    "button": "Schedule Consultation"
+  },
+  "arkham": {
+    "title": "Arkham",
+    "subtitle": "The Data & AI Platform powering your company's future.",
+    "bookDemo": "Book a demo",
+    "tabs": {
+      "dataPlatform": {
+        "title": "DATA PLATFORM",
+        "content": "A Data Lakehouse built for scale. Our platform ensures full data governance and lineage across your operations."
+      },
+      "aiPlatform": {
+        "title": "AI PLATFORM",
+        "content": "From Generative AI to multiple classes of Machine Learning Models, Arkham is AI tailored to your operations."
+      },
+      "aiApplications": {
+        "title": "AI-POWERED APPLICATIONS",
+        "content": "Gain intelligence, control and solve your most complex challenges with your Data and AI tailored to your operations."
+      }
+    }
+  },
+  "footer": {
+    "company": "Dafel Technologies",
+    "rights": "© 2024 Dafel Technologies. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies"
+  }
+}

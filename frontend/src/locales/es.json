@@ -67,8 +67,8 @@
     "subtitle": "Únete a las empresas líderes que confían en nuestra tecnología",
     "button": "Programar Consulta"
   },
-  "arkham": {
-    "title": "Arkham",
+  "dafel": {
+    "title": "Dafel",
     "subtitle": "La Plataforma de Datos e IA que impulsa el futuro de tu empresa.",
     "bookDemo": "Solicitar demo",
     "tabs": {
@@ -78,7 +78,7 @@
       },
       "aiPlatform": {
         "title": "PLATAFORMA DE IA",
-        "content": "Desde IA Generativo hasta múltiples clases de modelos de Machine Learning, Arkham es IA adaptado a tus operaciones."
+        "content": "Desde IA Generativo hasta múltiples clases de modelos de Machine Learning, Dafel es IA adaptado a tus operaciones."
       },
       "aiApplications": {
         "title": "APLICATIVOS INTELIGENTES",

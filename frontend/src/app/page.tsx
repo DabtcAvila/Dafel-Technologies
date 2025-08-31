@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
-import ArkhamSection from '@/components/ArkhamSection';
+import DafelSection from '@/components/DafelSection';
 
 export default function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
@@ -134,8 +134,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Arkham Hero Section */}
-      <ArkhamSection />
+      {/* Dafel Hero Section */}
+      <DafelSection />
 
       {/* Framework Hero Section */}
       <section className="relative min-h-[600px] lg:min-h-screen bg-white">

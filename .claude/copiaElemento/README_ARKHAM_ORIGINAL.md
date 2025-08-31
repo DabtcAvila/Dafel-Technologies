@@ -341,7 +341,7 @@ debounceDelay: 10      // Milisegundos de debounce en scroll
 ### Comandos de Inicio Sesión 4
 ```bash
 # Navegar al frontend
-cd "/Users/davicho/MASTER proyectos/Panda/frontend"
+cd "/Users/davicho/MASTER proyectos/Dafel-Technologies/frontend"
 
 # Ejecutar servidor
 npm run dev -- -p 3001

@@ -57,7 +57,7 @@ interface Messages {
     };
     learnMore: string;
   };
-  arkham: {
+  dafel: {
     title: string;
     subtitle: string;
     bookDemo: string;

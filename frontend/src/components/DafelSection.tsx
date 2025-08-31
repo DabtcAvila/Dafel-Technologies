@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Lottie from 'lottie-react';
 
-interface ArkhamSectionProps {
+interface DafelSectionProps {
   className?: string;
 }
 
-export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
+export default function DafelSection({ className = '' }: DafelSectionProps) {
   const { messages } = useLanguage();
   
   const [selectedLayer, setSelectedLayer] = useState<number | null>(null);
@@ -17,7 +17,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
   const timerRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    fetch('/arkham-lottie.json')
+    fetch('/dafel-lottie.json')
       .then(response => response.json())
       .then(data => setLottieData(data))
       .catch(error => console.log('Lottie file not found:', error));
@@ -46,8 +46,8 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
   const layers = [
     {
       id: 1,
-      title: messages.arkham.tabs.dataPlatform.title,
-      content: messages.arkham.tabs.dataPlatform.content,
+      title: messages.dafel.tabs.dataPlatform.title,
+      content: messages.dafel.tabs.dataPlatform.content,
       image: "https://cdn.prod.website-files.com/68471fce29939e5703efec7f/68670c81fa191298451da48f_Tapa1.png",
       alt: "Data Platform",
       translateY: 0,
@@ -55,8 +55,8 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
     },
     {
       id: 2,
-      title: messages.arkham.tabs.aiPlatform.title,
-      content: messages.arkham.tabs.aiPlatform.content,
+      title: messages.dafel.tabs.aiPlatform.title,
+      content: messages.dafel.tabs.aiPlatform.content,
       image: "https://cdn.prod.website-files.com/68471fce29939e5703efec7f/68670c81e75b1845dbbd60ac_Tapa2.png",
       alt: "AI Platform",
       translateY: -40,
@@ -64,8 +64,8 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
     },
     {
       id: 3,
-      title: messages.arkham.tabs.aiApplications.title,
-      content: messages.arkham.tabs.aiApplications.content,
+      title: messages.dafel.tabs.aiApplications.title,
+      content: messages.dafel.tabs.aiApplications.content,
       image: "https://cdn.prod.website-files.com/68471fce29939e5703efec7f/68670c81149f2caecbc44ebe_Tapa3.png",
       alt: "AI Applications",
       translateY: -80,
@@ -131,7 +131,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
 
   return (
     <section 
-      className={`arkham-section ${className}`}
+      className={`dafel-section ${className}`}
       style={{
         minHeight: '100vh',
         display: 'flex',
@@ -141,7 +141,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
         padding: '4rem 2rem'
       }}
     >
-      <div className="arkham-container" style={{
+      <div className="dafel-container" style={{
         maxWidth: '1200px',
         width: '100%',
         display: 'grid',
@@ -150,7 +150,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
         alignItems: 'center'
       }}>
         
-        <div className="arkham-left">
+        <div className="dafel-left">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -158,10 +158,10 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
             className="mb-12"
           >
             <h2 className="text-5xl font-light text-gray-900 mb-4">
-              {messages.arkham.title}
+              {messages.dafel.title}
             </h2>
             <p className="text-xl text-gray-600 mb-8">
-              {messages.arkham.subtitle}
+              {messages.dafel.subtitle}
             </p>
             <motion.button 
               className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg transition-all"
@@ -173,7 +173,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
             >
-              {messages.arkham.bookDemo}
+              {messages.dafel.bookDemo}
               <svg 
                 className="w-4 h-4" 
                 fill="none" 
@@ -276,7 +276,7 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
           </div>
         </div>
 
-        <div className="arkham-right relative" style={{ 
+        <div className="dafel-right relative" style={{ 
           height: '500px',
           perspective: '1200px',
           transformStyle: 'preserve-3d'
@@ -378,50 +378,50 @@ export default function ArkhamSection({ className = '' }: ArkhamSectionProps) {
       </div>
 
       <style jsx>{`
-        .arkham-section {
+        .dafel-section {
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
         
         @media (min-width: 768px) and (max-width: 1024px) {
-          .arkham-container {
+          .dafel-container {
             gap: 3rem !important;
             padding: 0 2rem;
           }
           
-          .arkham-left h2 {
+          .dafel-left h2 {
             font-size: 2.5rem;
           }
           
-          .arkham-left p {
+          .dafel-left p {
             font-size: 1.125rem;
           }
         }
         
         @media (max-width: 767px) {
-          .arkham-container {
+          .dafel-container {
             grid-template-columns: 1fr !important;
             gap: 2rem !important;
             padding: 0 1rem;
           }
           
-          .arkham-right {
+          .dafel-right {
             order: -1;
             height: 350px !important;
             margin-bottom: 2rem;
           }
           
-          .arkham-left h2 {
+          .dafel-left h2 {
             font-size: 2rem;
             margin-bottom: 1rem;
           }
           
-          .arkham-left p {
+          .dafel-left p {
             font-size: 1rem;
             margin-bottom: 1.5rem;
           }
           
-          .arkham-left button {
+          .dafel-left button {
             padding: 0.75rem 1.5rem;
             font-size: 0.875rem;
           }

@@ -65,7 +65,7 @@ export default function LoginPage() {
     
     const loadingToast = toast.loading('Authenticating...', {
       style: {
-        background: '#111827',
+        background: '#1f2937',
         color: '#fff',
       },
     });
@@ -83,7 +83,7 @@ export default function LoginPage() {
         toast.error(result.error || 'Authentication failed', {
           duration: 5000,
           style: {
-            background: '#ef4444',
+            background: '#374151',
             color: '#fff',
           },
         });
@@ -91,7 +91,7 @@ export default function LoginPage() {
         toast.success('Login successful! Redirecting...', {
           duration: 2000,
           style: {
-            background: '#10b981',
+            background: '#111827',
             color: '#fff',
           },
         });
@@ -105,7 +105,7 @@ export default function LoginPage() {
       toast.error(error.message || 'An unexpected error occurred', {
         duration: 5000,
         style: {
-          background: '#ef4444',
+          background: '#374151',
           color: '#fff',
         },
       });
@@ -130,17 +130,17 @@ export default function LoginPage() {
   return (
     <>
       <Toaster position="top-right" />
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center px-4 relative overflow-hidden">
+      <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 flex items-center justify-center px-4 relative overflow-hidden">
         {/* Background pattern */}
-        <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }} />
         </div>
 
         {/* Animated background orbs */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500 rounded-full filter blur-3xl opacity-20"
+          className="absolute top-1/4 left-1/4 w-96 h-96 bg-gray-300 rounded-full filter blur-3xl opacity-10"
           animate={{
             x: [0, 100, -100, 0],
             y: [0, -100, 100, 0],
@@ -152,7 +152,7 @@ export default function LoginPage() {
           }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500 rounded-full filter blur-3xl opacity-20"
+          className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gray-400 rounded-full filter blur-3xl opacity-10"
           animate={{
             x: [0, -100, 100, 0],
             y: [0, 100, -100, 0],
@@ -187,18 +187,18 @@ export default function LoginPage() {
                 >
                   <path 
                     d="M 0,0 L 100,0 L 100,100 L 0,100 L 0,0 Z M 8,8 L 8,92 L 92,92 L 92,8 L 8,8 Z" 
-                    className="fill-white" 
+                    className="fill-gray-900" 
                     fillRule="evenodd"
                   />
                   <circle 
                     cx="50" 
                     cy="50" 
                     r="27.5" 
-                    className="fill-white"
+                    className="fill-gray-900"
                   />
                 </svg>
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-white opacity-30 blur-xl"
+                  className="absolute inset-0 rounded-full bg-gray-900 opacity-10 blur-xl"
                   animate={{
                     scale: [1, 1.2, 1],
                   }}
@@ -210,17 +210,17 @@ export default function LoginPage() {
                 />
               </div>
             </motion.div>
-            <h1 className="text-3xl font-mono font-light text-white tracking-wider">
+            <h1 className="text-3xl font-mono font-light text-gray-900 tracking-wider">
               Dafel Technologies
             </h1>
-            <p className="text-gray-400 mt-2 text-sm">
+            <p className="text-gray-600 mt-2 text-sm">
               Enterprise Authentication Portal
             </p>
           </div>
 
           {/* Login Form Card */}
-          <div className="backdrop-blur-xl bg-white/10 shadow-2xl rounded-2xl p-8 border border-white/20">
-            <h2 className="text-xl font-medium text-white mb-6 flex items-center justify-center gap-2">
+          <div className="backdrop-blur-xl bg-white/80 shadow-2xl rounded-2xl p-8 border border-gray-200/50">
+            <h2 className="text-xl font-medium text-gray-900 mb-6 flex items-center justify-center gap-2">
               <LockClosedIcon className="h-5 w-5" />
               Secure Access
             </h2>
@@ -229,7 +229,7 @@ export default function LoginPage() {
               <div>
                 <label 
                   htmlFor="email" 
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Email Address
                 </label>
@@ -238,7 +238,7 @@ export default function LoginPage() {
                     {...register('email')}
                     type="email"
                     id="email"
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all backdrop-blur"
+                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                     placeholder="admin@dafel.tech"
                     disabled={isLoading}
                     autoComplete="email"
@@ -247,7 +247,7 @@ export default function LoginPage() {
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="absolute -bottom-5 left-0 text-xs text-red-400"
+                      className="absolute -bottom-5 left-0 text-xs text-red-500"
                     >
                       {errors.email.message}
                     </motion.p>
@@ -258,7 +258,7 @@ export default function LoginPage() {
               <div>
                 <label 
                   htmlFor="password" 
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-2"
                 >
                   Password
                 </label>
@@ -267,7 +267,7 @@ export default function LoginPage() {
                     {...register('password')}
                     type={showPassword ? 'text' : 'password'}
                     id="password"
-                    className="w-full px-4 py-3 pr-12 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all backdrop-blur"
+                    className="w-full px-4 py-3 pr-12 bg-white border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
                     placeholder="••••••••"
                     disabled={isLoading}
                     autoComplete="current-password"
@@ -275,7 +275,7 @@ export default function LoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 transition-colors"
                     tabIndex={-1}
                   >
                     {showPassword ? (
@@ -288,7 +288,7 @@ export default function LoginPage() {
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="absolute -bottom-5 left-0 text-xs text-red-400"
+                      className="absolute -bottom-5 left-0 text-xs text-red-500"
                     >
                       {errors.password.message}
                     </motion.p>
@@ -307,11 +307,11 @@ export default function LoginPage() {
                           className={`h-1 flex-1 rounded-full transition-all ${
                             i < strength
                               ? strength <= 2
-                                ? 'bg-red-500'
+                                ? 'bg-gray-400'
                                 : strength <= 3
-                                ? 'bg-yellow-500'
-                                : 'bg-emerald-500'
-                              : 'bg-gray-600'
+                                ? 'bg-gray-600'
+                                : 'bg-gray-900'
+                              : 'bg-gray-200'
                           }`}
                         />
                       ))}
@@ -323,7 +323,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isLoading || !isValid}
-                className="w-full bg-gradient-to-r from-emerald-600 to-emerald-500 text-white py-3 px-4 rounded-lg font-medium hover:from-emerald-500 hover:to-emerald-400 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
+                className="w-full bg-gray-900 text-white py-3 px-4 rounded-lg font-medium hover:bg-gray-800 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center justify-center gap-2"
               >
                 {isLoading ? (
                   <>
@@ -344,14 +344,14 @@ export default function LoginPage() {
             </form>
 
             {/* Security Indicators */}
-            <div className="mt-6 pt-6 border-t border-white/10">
+            <div className="mt-6 pt-6 border-t border-gray-200">
               <div className="flex justify-center gap-6 text-xs">
                 <AnimatePresence>
                   {securityIndicators.ssl && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-1 text-emerald-400"
+                      className="flex items-center gap-1 text-gray-700"
                     >
                       <ShieldCheckIcon className="h-4 w-4" />
                       SSL Secured
@@ -362,7 +362,7 @@ export default function LoginPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="flex items-center gap-1 text-emerald-400"
+                      className="flex items-center gap-1 text-gray-700"
                     >
                       <LockClosedIcon className="h-4 w-4" />
                       256-bit Encryption
@@ -386,7 +386,7 @@ export default function LoginPage() {
             <div className="mt-6 text-center">
               <button
                 onClick={() => router.push('/')}
-                className="text-sm text-gray-400 hover:text-white transition-colors"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-colors"
               >
                 ← Back to Home
               </button>
@@ -394,7 +394,7 @@ export default function LoginPage() {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-center text-xs text-gray-500">
+          <div className="mt-8 text-center text-xs text-gray-600">
             <p>© 2025 Dafel Technologies. Enterprise Security Standards.</p>
             <p className="mt-1">All login attempts are monitored and logged.</p>
           </div>

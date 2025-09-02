@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import '@/styles/globals.css';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import AuthProvider from '@/providers/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -75,9 +76,11 @@ export default function RootLayout({
         <meta httpEquiv="Content-Security-Policy" content={cspContent} />
       </head>
       <body className={inter.className}>
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            {children}
+          </LanguageProvider>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User roles enum
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+// Audit log event types
+enum AuditEventType {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  PASSWORD_CHANGE
+  USER_CREATED
+  USER_UPDATED
+  USER_DELETED
+  ROLE_CHANGED
+  ACCOUNT_LOCKED
+  ACCOUNT_UNLOCKED
+}
+
+// User model with comprehensive security features
+model User {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  name             String?
+  password         String
+  role             Role      @default(VIEWER)
+  
+  // Security features
+  loginAttempts    Int       @default(0)
+  lockedUntil      DateTime?
+  lastLogin        DateTime?
+  lastLoginIp      String?
+  
+  // Account status
+  emailVerified    DateTime?
+  isActive         Boolean   @default(true)
+  
+  // Two-factor authentication
+  twoFactorEnabled Boolean   @default(false)
+  twoFactorSecret  String?
+  
+  // Password management
+  passwordChangedAt DateTime?
+  passwordResetToken String?
+  passwordResetExpires DateTime?
+  
+  // Timestamps
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  
+  // Relations
+  sessions         Session[]
+  auditLogs        AuditLog[]
+  createdUsers     User[]     @relation("UserCreator")
+  createdBy        User?      @relation("UserCreator", fields: [createdById], references: [id])
+  createdById      String?
+  
+  @@index([email])
+  @@index([role])
+  @@index([isActive])
+}
+
+// Session model for NextAuth
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Session metadata
+  userAgent    String?
+  ip           String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([sessionToken])
+}
+
+// Audit log for security and compliance
+model AuditLog {
+  id          String         @id @default(cuid())
+  userId      String?
+  user        User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  eventType   AuditEventType
+  eventDetail String?
+  
+  // Request information
+  ip          String?
+  userAgent   String?
+  
+  // Additional metadata
+  metadata    Json?
+  
+  // Result
+  success     Boolean        @default(true)
+  errorMessage String?
+  
+  createdAt   DateTime       @default(now())
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([createdAt])
+}
+
+// Account model for OAuth providers (future expansion)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// Verification tokens for email verification
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  
+  @@unique([identifier, token])
+}

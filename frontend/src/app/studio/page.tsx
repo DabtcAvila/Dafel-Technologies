@@ -56,7 +56,7 @@ export default function StudioPage() {
         {/* Header */}
         <div className="bg-white border-b border-gray-200 px-8 py-6">
           <h1 className="text-3xl font-mono font-light tracking-wider text-gray-900">
-            {messages.studio.title}
+            Dafel Studio
           </h1>
         </div>
 

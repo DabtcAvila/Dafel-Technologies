@@ -58,7 +58,7 @@ export default function HomePage() {
             </div>
             <div className="flex items-center space-x-4">
               <button 
-                onClick={() => router.push('/studio')}
+                onClick={() => router.push('/login')}
                 className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
                 Get Started
               </button>
@@ -116,7 +116,7 @@ export default function HomePage() {
               variants={fadeIn}
             >
               <button 
-                onClick={() => router.push('/studio')}
+                onClick={() => router.push('/login')}
                 className="group relative overflow-hidden rounded-lg border border-gray-300 px-32 py-4 text-lg font-medium text-gray-900 transition-all hover:border-gray-900">
                 <span className="relative z-10">Get Started</span>
               </button>
@@ -171,7 +171,7 @@ export default function HomePage() {
                   {messages.framework.subtitle}
                 </p>
                 <button 
-                  onClick={() => router.push('/studio')}
+                  onClick={() => router.push('/login')}
                   className="mt-10 bg-gray-900 text-white px-10 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   {messages.framework.ctaButton}
                   <span className="text-lg">→</span>

@@ -99,7 +99,16 @@
     "data": "Data",
     "process": "Process",
     "ai": "AI",
-    "output": "Output"
+    "output": "Output",
+    "logout": "Logout"
+  },
+  "login": {
+    "title": "Access Studio",
+    "username": "Username",
+    "password": "Password",
+    "submit": "Sign In",
+    "error": "Invalid credentials",
+    "back": "Back to Home"
   },
   "contactModal": {
     "title": "Schedule Consultation",

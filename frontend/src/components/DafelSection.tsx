@@ -166,7 +166,7 @@ export default function DafelSection({ className = '' }: DafelSectionProps) {
               {messages.dafel.subtitle}
             </p>
             <motion.button 
-              onClick={() => router.push('/studio')}
+              onClick={() => router.push('/login')}
               className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg transition-all"
               whileHover={{ 
                 scale: 1.02, 

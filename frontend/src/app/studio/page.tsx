@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   CubeIcon,
@@ -9,12 +10,23 @@ import {
   CpuChipIcon,
   BeakerIcon,
   ChartBarIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
 export default function StudioPage() {
   const { messages } = useLanguage();
+  const router = useRouter();
   const [activeIcon, setActiveIcon] = useState(0);
+
+  const handleLogout = () => {
+    // Clear session
+    sessionStorage.removeItem('isAuthenticated');
+    // Clear cookie
+    document.cookie = 'isAuthenticated=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+    // Redirect to home
+    router.push('/');
+  };
 
   const sidebarIcons = [
     { Icon: CubeIcon, id: 0 },
@@ -54,10 +66,17 @@ export default function StudioPage() {
       {/* Main Canvas Area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200 px-8 py-6">
+        <div className="bg-white border-b border-gray-200 px-8 py-6 flex justify-between items-center">
           <h1 className="text-3xl font-mono font-light tracking-wider text-gray-900">
             Dafel Studio
           </h1>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowRightOnRectangleIcon className="h-5 w-5" />
+            <span>{messages.studio?.logout || 'Logout'}</span>
+          </button>
         </div>
 
         {/* Canvas */}

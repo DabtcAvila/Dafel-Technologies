@@ -99,7 +99,16 @@
     "data": "Datos",
     "process": "Proceso",
     "ai": "IA",
-    "output": "Salida"
+    "output": "Salida",
+    "logout": "Cerrar sesión"
+  },
+  "login": {
+    "title": "Acceder al Studio",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "submit": "Iniciar sesión",
+    "error": "Credenciales inválidas",
+    "back": "Volver al inicio"
   },
   "contactModal": {
     "title": "Programar Consulta",

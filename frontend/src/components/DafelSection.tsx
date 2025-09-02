@@ -32,7 +32,7 @@ export default function DafelSection({ className = '' }: DafelSectionProps) {
 
     timerRef.current = setTimeout(() => {
       setSelectedLayer(null);
-    }, 5000);
+    }, 12000);
   };
 
   useEffect(() => {

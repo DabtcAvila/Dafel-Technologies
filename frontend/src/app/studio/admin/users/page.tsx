@@ -313,7 +313,7 @@ export default function UsersManagementPage() {
         {/* Filters */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
           <div className="bg-white rounded-lg shadow-sm p-4">
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1 relative">
                 <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -327,7 +327,7 @@ export default function UsersManagementPage() {
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white cursor-pointer min-w-[140px]"
               >
                 <option value="ALL">All Roles</option>
                 <option value="ADMIN">Admin</option>

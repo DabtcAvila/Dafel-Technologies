@@ -177,8 +177,8 @@ export default function StudioPage() {
         {/* Main Canvas Area */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="bg-white border-b border-gray-200 px-8 py-6">
-            <div className="flex justify-between items-center">
+          <div className="bg-white border-b border-gray-200 px-8 py-4">
+            <div className="flex justify-between items-center h-14">
               <div className="flex items-center gap-6">
                 <h1 className="text-3xl font-mono font-light tracking-wider text-gray-900">
                   Dafel Studio
@@ -189,21 +189,21 @@ export default function StudioPage() {
                 </div>
               </div>
               
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 {/* User Info */}
                 <div className="flex items-center gap-3">
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-gray-900 leading-tight">
                       {session?.user?.name || 'User'}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 leading-tight">
                       {session?.user?.email}
                     </p>
                   </div>
-                  <div className="relative">
-                    <UserCircleIcon className="h-10 w-10 text-gray-400" />
+                  <div className="relative flex-shrink-0">
+                    <UserCircleIcon className="h-8 w-8 text-gray-400" />
                     {session?.user?.role === 'ADMIN' && (
-                      <ShieldCheckIcon className="h-4 w-4 text-amber-500 absolute -bottom-1 -right-1" />
+                      <ShieldCheckIcon className="h-3 w-3 text-amber-500 absolute -bottom-0.5 -right-0.5" />
                     )}
                   </div>
                 </div>
@@ -214,7 +214,7 @@ export default function StudioPage() {
                   disabled={isLoggingOut}
                   className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
                   <span>{messages.studio?.logout || 'Logout'}</span>
                 </button>
               </div>

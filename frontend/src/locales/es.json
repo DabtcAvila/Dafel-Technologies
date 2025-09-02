@@ -93,6 +93,14 @@
     "terms": "Términos",
     "cookies": "Cookies"
   },
+  "studio": {
+    "title": "DAFEL Studio",
+    "dragPrompt": "Arrastra componentes para construir tu flujo",
+    "data": "Datos",
+    "process": "Proceso",
+    "ai": "IA",
+    "output": "Salida"
+  },
   "contactModal": {
     "title": "Programar Consulta",
     "subtitle": "Nos pondremos en contacto en menos de 24 horas",

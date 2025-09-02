@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/contexts/LanguageContext';
 import Lottie from 'lottie-react';
+import { useRouter } from 'next/navigation';
 
 interface DafelSectionProps {
   className?: string;
@@ -11,6 +12,7 @@ interface DafelSectionProps {
 
 export default function DafelSection({ className = '' }: DafelSectionProps) {
   const { messages } = useLanguage();
+  const router = useRouter();
   
   const [selectedLayer, setSelectedLayer] = useState<number | null>(null);
   const [lottieData, setLottieData] = useState(null);
@@ -164,6 +166,7 @@ export default function DafelSection({ className = '' }: DafelSectionProps) {
               {messages.dafel.subtitle}
             </p>
             <motion.button 
+              onClick={() => router.push('/studio')}
               className="inline-flex items-center gap-2 bg-gray-900 text-white px-6 py-3 rounded-lg transition-all"
               whileHover={{ 
                 scale: 1.02, 

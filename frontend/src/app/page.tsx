@@ -6,10 +6,13 @@ import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/reac
 import { useLanguage } from '@/contexts/LanguageContext';
 import DafelSection from '@/components/DafelSection';
 import ContactModal from '@/components/ContactModal';
+import { useRouter } from 'next/navigation';
 
 export default function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const router = useRouter();
+  
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -54,7 +57,9 @@ export default function HomePage() {
               </span>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
+              <button 
+                onClick={() => router.push('/studio')}
+                className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
                 Get Started
               </button>
               <button 
@@ -110,7 +115,9 @@ export default function HomePage() {
               className="mt-12 flex justify-center"
               variants={fadeIn}
             >
-              <button className="group relative overflow-hidden rounded-lg border border-gray-300 px-32 py-4 text-lg font-medium text-gray-900 transition-all hover:border-gray-900">
+              <button 
+                onClick={() => router.push('/studio')}
+                className="group relative overflow-hidden rounded-lg border border-gray-300 px-32 py-4 text-lg font-medium text-gray-900 transition-all hover:border-gray-900">
                 <span className="relative z-10">Get Started</span>
               </button>
             </motion.div>
@@ -163,7 +170,9 @@ export default function HomePage() {
                 <p className="mt-8 text-xl lg:text-2xl text-gray-600 leading-relaxed">
                   {messages.framework.subtitle}
                 </p>
-                <button className="mt-10 bg-gray-900 text-white px-10 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                <button 
+                  onClick={() => router.push('/studio')}
+                  className="mt-10 bg-gray-900 text-white px-10 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   {messages.framework.ctaButton}
                   <span className="text-lg">→</span>
                 </button>

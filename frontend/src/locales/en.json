@@ -93,6 +93,14 @@
     "terms": "Terms",
     "cookies": "Cookies"
   },
+  "studio": {
+    "title": "DAFEL Studio",
+    "dragPrompt": "Drag components to build your workflow",
+    "data": "Data",
+    "process": "Process",
+    "ai": "AI",
+    "output": "Output"
+  },
   "contactModal": {
     "title": "Schedule Consultation",
     "subtitle": "We'll get back to you within 24 hours",

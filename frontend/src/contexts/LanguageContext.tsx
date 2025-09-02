@@ -88,6 +88,14 @@ interface Messages {
     terms: string;
     cookies: string;
   };
+  studio: {
+    title: string;
+    dragPrompt: string;
+    data: string;
+    process: string;
+    ai: string;
+    output: string;
+  };
   contactModal: {
     title: string;
     subtitle: string;

@@ -92,5 +92,37 @@
     "privacy": "Privacidad",
     "terms": "Términos",
     "cookies": "Cookies"
+  },
+  "contactModal": {
+    "title": "Programar Consulta",
+    "subtitle": "Nos pondremos en contacto en menos de 24 horas",
+    "successMessage": "¡Gracias! Hemos recibido tu solicitud y nos pondremos en contacto pronto.",
+    "form": {
+      "fullName": "Nombre completo",
+      "fullNamePlaceholder": "Juan Pérez",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "juan@empresa.com",
+      "company": "Empresa",
+      "companyPlaceholder": "Nombre de tu empresa",
+      "phone": "Teléfono (opcional)",
+      "phonePlaceholder": "+34 600 000 000",
+      "preferredTime": "Preferencia de horario (opcional)",
+      "timeOptions": {
+        "flexible": "Flexible",
+        "morning": "Mañana (9:00 - 13:00)",
+        "afternoon": "Tarde (14:00 - 18:00)"
+      },
+      "message": "Mensaje o comentarios (opcional)",
+      "messagePlaceholder": "Cuéntanos sobre tu proyecto o necesidades...",
+      "submit": "Enviar solicitud",
+      "submitting": "Enviando...",
+      "cancel": "Cancelar"
+    },
+    "validation": {
+      "nameRequired": "El nombre es requerido",
+      "emailRequired": "El correo electrónico es requerido",
+      "emailInvalid": "Por favor ingresa un correo electrónico válido",
+      "companyRequired": "La empresa es requerida"
+    }
   }
 }

@@ -92,5 +92,37 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "cookies": "Cookies"
+  },
+  "contactModal": {
+    "title": "Schedule Consultation",
+    "subtitle": "We'll get back to you within 24 hours",
+    "successMessage": "Thank you! We've received your request and will get back to you soon.",
+    "form": {
+      "fullName": "Full Name",
+      "fullNamePlaceholder": "John Doe",
+      "email": "Email",
+      "emailPlaceholder": "john@company.com",
+      "company": "Company",
+      "companyPlaceholder": "Your company name",
+      "phone": "Phone (optional)",
+      "phonePlaceholder": "+1 555 000 0000",
+      "preferredTime": "Preferred time (optional)",
+      "timeOptions": {
+        "flexible": "Flexible",
+        "morning": "Morning (9:00 AM - 1:00 PM)",
+        "afternoon": "Afternoon (2:00 PM - 6:00 PM)"
+      },
+      "message": "Message or comments (optional)",
+      "messagePlaceholder": "Tell us about your project or needs...",
+      "submit": "Send Request",
+      "submitting": "Sending...",
+      "cancel": "Cancel"
+    },
+    "validation": {
+      "nameRequired": "Name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email",
+      "companyRequired": "Company is required"
+    }
   }
 }

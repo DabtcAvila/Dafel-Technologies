@@ -1,12 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 import DafelSection from '@/components/DafelSection';
+import ContactModal from '@/components/ContactModal';
 
 export default function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
     animate: { opacity: 1, y: 0 },
@@ -54,7 +57,10 @@ export default function HomePage() {
               <button className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
                 Get Started
               </button>
-              <button className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
+              <button 
+                onClick={() => setIsContactModalOpen(true)}
+                className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900"
+              >
                 {messages.navbar.scheduleConsultation}
               </button>
               <button 
@@ -422,7 +428,10 @@ export default function HomePage() {
           <p className="mt-4 text-lg text-gray-600">
             {messages.cta.subtitle}
           </p>
-          <button className="mt-8 rounded-lg bg-gray-900 px-8 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800">
+          <button 
+            onClick={() => setIsContactModalOpen(true)}
+            className="mt-8 rounded-lg bg-gray-900 px-8 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800"
+          >
             {messages.cta.button}
           </button>
         </motion.div>
@@ -454,6 +463,12 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* Contact Modal */}
+      <ContactModal 
+        open={isContactModalOpen} 
+        onOpenChange={setIsContactModalOpen} 
+      />
     </>
   );
 }

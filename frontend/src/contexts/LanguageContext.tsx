@@ -88,6 +88,38 @@ interface Messages {
     terms: string;
     cookies: string;
   };
+  contactModal: {
+    title: string;
+    subtitle: string;
+    successMessage: string;
+    form: {
+      fullName: string;
+      fullNamePlaceholder: string;
+      email: string;
+      emailPlaceholder: string;
+      company: string;
+      companyPlaceholder: string;
+      phone: string;
+      phonePlaceholder: string;
+      preferredTime: string;
+      timeOptions: {
+        flexible: string;
+        morning: string;
+        afternoon: string;
+      };
+      message: string;
+      messagePlaceholder: string;
+      submit: string;
+      submitting: string;
+      cancel: string;
+    };
+    validation: {
+      nameRequired: string;
+      emailRequired: string;
+      emailInvalid: string;
+      companyRequired: string;
+    };
+  };
 }
 
 interface LanguageContextType {

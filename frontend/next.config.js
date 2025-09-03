@@ -157,17 +157,18 @@ const nextConfig = {
   },
   
   // Configuración de rewrites para API proxy
-  async rewrites() {
-    return [
-      // Excluir rutas de NextAuth y rutas internas de Next.js
-      {
-        source: '/api/:path((?!auth|users|audit-logs).*)',
-        destination: process.env.NEXT_PUBLIC_API_URL 
-          ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`
-          : 'http://localhost:8000/api/:path*',
-      },
-    ];
-  },
+  // Comentado temporalmente para desarrollo local
+  // async rewrites() {
+  //   return [
+  //     // Excluir rutas de NextAuth y rutas internas de Next.js
+  //     {
+  //       source: '/api/:path((?!auth|users|audit-logs).*)',
+  //       destination: process.env.NEXT_PUBLIC_API_URL 
+  //         ? `${process.env.NEXT_PUBLIC_API_URL}/api/:path*`
+  //         : 'http://localhost:8000/api/:path*',
+  //     },
+  //   ];
+  // },
   
   // Configuración de entorno
   env: {

@@ -16,6 +16,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { DataSourceStatus } from '@prisma/client';
 import { toast } from 'react-hot-toast';
+import ConfirmDialog from '@/components/ui/ConfirmDialog';
 
 interface DataSourcePanelProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,6 +39,8 @@ export default function DataSourcePanel({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [syncLogs, setSyncLogs] = useState<any[]>([]);
   const [isLoadingLogs, setIsLoadingLogs] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     if (dataSource && isOpen) {
@@ -85,22 +88,26 @@ export default function DataSourcePanel({
   };
 
   const handleDelete = async () => {
-    if (confirm('Are you sure you want to delete this data source?')) {
-      try {
-        const response = await fetch(`/api/data-sources/${dataSource.id}`, {
-          method: 'DELETE',
-        });
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`/api/data-sources/${dataSource.id}`, {
+        method: 'DELETE',
+      });
 
-        if (response.ok) {
-          toast.success('Data source deleted successfully');
-          onDelete(dataSource.id);
-          onClose();
-        } else {
-          toast.error('Failed to delete data source');
-        }
-      } catch (error) {
-        toast.error('An error occurred while deleting');
+      if (response.ok) {
+        toast.success('Data source deleted successfully');
+        onDelete(dataSource.id);
+        setShowDeleteDialog(false);
+        onClose();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || 'Failed to delete data source');
       }
+    } catch (error) {
+      console.error('Delete error:', error);
+      toast.error('An error occurred while deleting');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -385,7 +392,7 @@ export default function DataSourcePanel({
               <div className="pt-6 border-t border-gray-200">
                 <h3 className="text-sm font-medium text-red-600 mb-3">Danger Zone</h3>
                 <button
-                  onClick={handleDelete}
+                  onClick={() => setShowDeleteDialog(true)}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100"
                 >
                   <TrashIcon className="h-4 w-4" />
@@ -396,6 +403,19 @@ export default function DataSourcePanel({
           )}
         </div>
       </motion.div>
+
+      {/* Delete Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+        onConfirm={handleDelete}
+        title="Delete Data Source"
+        message={`Are you sure you want to delete "${dataSource?.name}"? This action cannot be undone and will remove all associated sync logs and configurations.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        isLoading={isDeleting}
+      />
     </AnimatePresence>
   );
 }

@@ -130,7 +130,7 @@ export default function StudioPage() {
       <Toaster position="top-right" />
       <div className="h-screen flex bg-gray-50 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-[60px] bg-gray-900 flex flex-col items-center py-6">
+        <div className="w-[60px] bg-gray-900 flex flex-col items-center py-6 relative z-10">
           <div className="flex-1 space-y-6">
             {sidebarIcons.map(({ Icon, id, tooltip }) => (
               <div key={id} className="relative group">
@@ -145,8 +145,12 @@ export default function StudioPage() {
                   <Icon className="h-6 w-6" />
                 </button>
                 {/* Tooltip */}
-                <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                  {tooltip}
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="relative bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                    {tooltip}
+                    {/* Arrow pointing to the icon */}
+                    <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-gray-800"></div>
+                  </div>
                 </div>
               </div>
             ))}
@@ -161,8 +165,12 @@ export default function StudioPage() {
               >
                 <UsersIcon className="h-6 w-6" />
               </button>
-              <div className="absolute left-full ml-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
-                Admin Panel
+              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="relative bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                  Admin Panel
+                  {/* Arrow pointing to the icon */}
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-gray-800"></div>
+                </div>
               </div>
             </div>
           )}

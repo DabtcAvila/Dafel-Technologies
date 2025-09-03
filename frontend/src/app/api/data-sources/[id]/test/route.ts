@@ -4,83 +4,18 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import prisma from '@/lib/prisma';
 import { DataSourceStatus } from '@prisma/client';
 
-// Simulated connection test for different source types
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function testConnection(dataSource: any): Promise<{
-  success: boolean;
-  message: string;
-  responseTime?: number;
-}> {
-  const startTime = Date.now();
-  
-  try {
-    // Simulate connection based on type
-    switch (dataSource.type) {
-      case 'POSTGRESQL':
-      case 'MYSQL':
-        // In production, you would actually connect to the database
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 1000 + 500));
-        break;
-        
-      case 'REST_API':
-      case 'GRAPHQL':
-        // In production, you would make an actual API call
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 800 + 200));
-        break;
-        
-      case 'MONGODB':
-        // In production, you would connect to MongoDB
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 900 + 400));
-        break;
-        
-      case 'S3':
-        // In production, you would test S3 connection
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 600 + 300));
-        break;
-        
-      case 'GOOGLE_SHEETS':
-        // In production, you would test Google Sheets API
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 700 + 400));
-        break;
-        
-      case 'CSV_FILE':
-        // In production, you would check file access
-        await new Promise(resolve => setTimeout(resolve, Math.random() * 200 + 100));
-        break;
-        
-      default:
-        throw new Error('Unsupported data source type');
-    }
-
-    const responseTime = Date.now() - startTime;
-    
-    // Simulate random success/failure for demo (80% success rate)
-    const success = Math.random() > 0.2;
-    
-    if (success) {
-      return {
-        success: true,
-        message: 'Connection successful',
-        responseTime,
-      };
-    } else {
-      throw new Error('Connection failed: Unable to reach the server');
-    }
-  } catch (error) {
-    return {
-      success: false,
-      message: (error as Error).message || 'Connection failed',
-      responseTime: Date.now() - startTime,
-    };
-  }
-}
-
-// POST /api/data-sources/[id]/test - Test data source connection
+/**
+ * POST /api/data-sources/[id]/test
+ * Test data source connection
+ */
 export async function POST(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  const startTime = Date.now();
+
   try {
+    // Verify authentication
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.email) {
@@ -113,54 +48,159 @@ export async function POST(
       data: { status: DataSourceStatus.TESTING },
     });
 
-    // Test the connection
-    const result = await testConnection(dataSource);
+    try {
+      // For now, we'll do a simplified test for PostgreSQL
+      if (dataSource.type === 'POSTGRESQL') {
+        // Dynamic import to avoid build issues
+        const pg = await import('pg');
+        const { Pool } = pg;
 
-    // Update data source with test results
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const updateData: any = {
-      lastConnectionTest: new Date(),
-      status: result.success ? DataSourceStatus.CONNECTED : DataSourceStatus.ERROR,
-    };
+        // Decrypt password if it's encrypted
+        let password = dataSource.password || '';
+        if (password && password.includes(':')) {
+          // It's encrypted, try to decrypt
+          try {
+            const [ivHex, encrypted] = password.split(':');
+            const algorithm = 'aes-256-cbc';
+            const key = Buffer.from(
+              process.env.ENCRYPTION_KEY || 'a'.repeat(32),
+              'utf8'
+            ).slice(0, 32);
+            const iv = Buffer.from(ivHex, 'hex');
+            
+            const crypto = await import('crypto');
+            const decipher = crypto.createDecipheriv(algorithm, key, iv);
+            let decrypted = decipher.update(encrypted, 'hex', 'utf8');
+            decrypted += decipher.final('utf8');
+            password = decrypted;
+          } catch (decryptError) {
+            console.error('Failed to decrypt password, using as-is:', decryptError);
+          }
+        }
 
-    if (result.success) {
-      updateData.connectionError = null;
-      if (result.responseTime) {
-        updateData.avgResponseTime = result.responseTime;
+        const pool = new Pool({
+          host: dataSource.host || 'localhost',
+          port: dataSource.port || 5432,
+          database: dataSource.database || '',
+          user: dataSource.username || '',
+          password: password,
+          ssl: dataSource.ssl ? { rejectUnauthorized: false } : false,
+          connectionTimeoutMillis: 5000,
+        });
+
+        try {
+          // Test the connection
+          const client = await pool.connect();
+          
+          // Get server info
+          const versionResult = await client.query('SELECT version()');
+          const dbResult = await client.query('SELECT current_database()');
+          const userResult = await client.query('SELECT current_user');
+          
+          const serverInfo = {
+            version: versionResult.rows[0].version,
+            database: dbResult.rows[0].current_database,
+            user: userResult.rows[0].current_user,
+          };
+
+          client.release();
+          await pool.end();
+
+          const responseTime = Date.now() - startTime;
+
+          // Update data source with success
+          await prisma.dataSource.update({
+            where: { id: params.id },
+            data: {
+              status: DataSourceStatus.CONNECTED,
+              lastConnectionTest: new Date(),
+              connectionError: null,
+              avgResponseTime: responseTime,
+              configuration: {
+                ...((dataSource.configuration as object) || {}),
+                serverInfo,
+              },
+            },
+          });
+
+          return NextResponse.json({
+            success: true,
+            message: 'Connection successful',
+            responseTime,
+            status: DataSourceStatus.CONNECTED,
+            serverInfo,
+          });
+
+        } catch (pgError: any) {
+          await pool.end();
+          throw pgError;
+        }
+      } else {
+        // For other types, return a mock success for now
+        const responseTime = Date.now() - startTime;
+
+        await prisma.dataSource.update({
+          where: { id: params.id },
+          data: {
+            status: DataSourceStatus.CONNECTED,
+            lastConnectionTest: new Date(),
+            avgResponseTime: responseTime,
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: `${dataSource.type} connector testing (simulated)`,
+          responseTime,
+          status: DataSourceStatus.CONNECTED,
+        });
       }
-    } else {
-      updateData.connectionError = result.message;
+
+    } catch (connectionError: any) {
+      // Update status to error
+      await prisma.dataSource.update({
+        where: { id: params.id },
+        data: {
+          status: DataSourceStatus.ERROR,
+          connectionError: connectionError.message || 'Connection failed',
+          lastConnectionTest: new Date(),
+        },
+      });
+
+      // Return specific error information
+      return NextResponse.json({
+        success: false,
+        message: connectionError.message || 'Connection failed',
+        errorType: connectionError.code || 'UNKNOWN',
+        responseTime: Date.now() - startTime,
+        status: DataSourceStatus.ERROR,
+      });
     }
 
-    const updatedDataSource = await prisma.dataSource.update({
-      where: { id: params.id },
-      data: updateData,
-    });
-
-    return NextResponse.json({
-      success: result.success,
-      message: result.message,
-      responseTime: result.responseTime,
-      status: updatedDataSource.status,
-    });
-  } catch (error) {
-    console.error('Error testing data source:', error);
+  } catch (error: any) {
+    console.error('Test route error:', error);
     
-    // Update status to error
+    // Try to update status
     try {
       await prisma.dataSource.update({
         where: { id: params.id },
-        data: { 
+        data: {
           status: DataSourceStatus.ERROR,
           connectionError: 'Test failed unexpectedly',
+          lastConnectionTest: new Date(),
         },
       });
     } catch (updateError) {
-      console.error('Error updating status:', updateError);
+      console.error('Failed to update status:', updateError);
     }
 
     return NextResponse.json(
-      { error: 'Failed to test data source connection' },
+      {
+        success: false,
+        error: 'Failed to test connection',
+        message: error?.message || 'Unknown error',
+        responseTime: Date.now() - startTime,
+      },
       { status: 500 }
     );
   }

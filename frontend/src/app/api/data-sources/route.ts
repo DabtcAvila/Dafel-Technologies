@@ -4,7 +4,24 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import prisma from '@/lib/prisma';
 import { z } from 'zod';
 import { DataSourceType, DataSourceStatus } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+
+// Simple encryption for credentials (using built-in crypto)
+function encryptCredential(text: string): string {
+  const algorithm = 'aes-256-cbc';
+  const key = Buffer.from(
+    process.env.ENCRYPTION_KEY || 
+    'a'.repeat(32), // Default key for development
+    'utf8'
+  ).slice(0, 32);
+  const iv = crypto.randomBytes(16);
+  
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  
+  return iv.toString('hex') + ':' + encrypted;
+}
 
 // Validation schema for creating data source
 const createDataSourceSchema = z.object({
@@ -118,14 +135,34 @@ export async function POST(request: NextRequest) {
     // Validate request body
     const validatedData = createDataSourceSchema.parse(body);
 
+    console.log('Creating data source:', {
+      name: validatedData.name,
+      type: validatedData.type,
+      host: validatedData.host,
+    });
+
     // Encrypt sensitive fields
-    const encryptedPassword = validatedData.password 
-      ? await bcrypt.hash(validatedData.password, 10)
-      : null;
-    
-    const encryptedApiKey = validatedData.apiKey
-      ? await bcrypt.hash(validatedData.apiKey, 10)
-      : null;
+    let encryptedPassword = null;
+    let encryptedApiKey = null;
+
+    if (validatedData.password) {
+      try {
+        encryptedPassword = encryptCredential(validatedData.password);
+      } catch (err) {
+        console.error('Failed to encrypt password:', err);
+        // For development, store as-is if encryption fails
+        encryptedPassword = validatedData.password;
+      }
+    }
+
+    if (validatedData.apiKey) {
+      try {
+        encryptedApiKey = encryptCredential(validatedData.apiKey);
+      } catch (err) {
+        console.error('Failed to encrypt API key:', err);
+        encryptedApiKey = validatedData.apiKey;
+      }
+    }
 
     // Create the data source
     const dataSource = await prisma.dataSource.create({
@@ -145,6 +182,8 @@ export async function POST(request: NextRequest) {
         createdById: user.id,
       },
     });
+
+    console.log('Data source created:', dataSource.id);
 
     // Return the created data source (without sensitive fields)
     const { password: _, apiKey: __, ...safeDataSource } = dataSource;

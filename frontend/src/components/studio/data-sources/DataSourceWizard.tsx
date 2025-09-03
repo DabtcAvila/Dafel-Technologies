@@ -97,7 +97,15 @@ export default function DataSourceWizard({ isOpen, onClose, onComplete }: DataSo
     ssl: false,
   });
   const [isTestingConnection, setIsTestingConnection] = useState(false);
-  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [testResult, setTestResult] = useState<{
+    success: boolean;
+    message: string;
+    responseTime?: number;
+    serverInfo?: any;
+    metrics?: any;
+  } | null>(null);
+  const [schemaPreview, setSchemaPreview] = useState<any>(null);
+  const [isLoadingSchema, setIsLoadingSchema] = useState(false);
 
   const steps = [
     { id: 'type', title: 'Select Source Type' },
@@ -127,12 +135,14 @@ export default function DataSourceWizard({ isOpen, onClose, onComplete }: DataSo
   const testConnection = async () => {
     setIsTestingConnection(true);
     setTestResult(null);
+    setSchemaPreview(null);
 
     try {
       // First create the data source
       const createResponse = await fetch('/api/data-sources', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin', // Include cookies
         body: JSON.stringify({
           ...formData,
           port: formData.port ? parseInt(formData.port) : undefined,
@@ -140,30 +150,75 @@ export default function DataSourceWizard({ isOpen, onClose, onComplete }: DataSo
       });
 
       if (!createResponse.ok) {
-        throw new Error('Failed to create data source');
+        const errorData = await createResponse.json().catch(() => ({ error: 'Failed to create data source' }));
+        throw new Error(errorData.error || 'Failed to create data source');
       }
 
       const dataSource = await createResponse.json();
+      setFormData({ ...formData, id: dataSource.id });
 
       // Then test the connection
       const testResponse = await fetch(`/api/data-sources/${dataSource.id}/test`, {
         method: 'POST',
+        credentials: 'same-origin', // Include cookies
       });
 
       const result = await testResponse.json();
-      setTestResult(result);
+      setTestResult({
+        ...result,
+        message: result.message || (result.success ? 'Connection successful' : 'Connection failed'),
+      });
       
       if (result.success) {
+        // Load schema preview for SQL databases
+        if (['POSTGRESQL', 'MYSQL'].includes(formData.type)) {
+          loadSchemaPreview(dataSource.id);
+        }
         handleNext();
       }
     } catch (error) {
       setTestResult({
         success: false,
-        message: 'Connection test failed. Please check your configuration.',
+        message: error instanceof Error ? error.message : 'Connection test failed. Please check your configuration.',
       });
     } finally {
       setIsTestingConnection(false);
     }
+  };
+
+  const loadSchemaPreview = async (dataSourceId: string) => {
+    setIsLoadingSchema(true);
+    try {
+      const response = await fetch(`/api/data-sources/${dataSourceId}/schema`, {
+        credentials: 'same-origin', // Include cookies
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setSchemaPreview(data.schema);
+      }
+    } catch (error) {
+      console.error('Failed to load schema:', error);
+    } finally {
+      setIsLoadingSchema(false);
+    }
+  };
+
+  const useDemoConfig = () => {
+    // Fill with local PostgreSQL demo configuration
+    setFormData({
+      ...formData,
+      type: DataSourceType.POSTGRESQL,
+      name: 'Demo PostgreSQL',
+      description: 'Local PostgreSQL database for testing',
+      host: 'localhost',
+      port: '5432',
+      database: 'dafel_db',
+      username: 'dafel_user',
+      password: 'DafelSecure2025!',
+      ssl: false,
+    });
+    toast.success('Demo configuration loaded!');
+    setCurrentStep(1); // Skip to configuration step
   };
 
   const handleComplete = () => {
@@ -191,27 +246,43 @@ export default function DataSourceWizard({ isOpen, onClose, onComplete }: DataSo
     switch (currentStep) {
       case 0: // Select Type
         return (
-          <div className="grid grid-cols-2 gap-4">
-            {sourceTypes.map((source) => {
-              const Icon = source.icon;
-              return (
-                <motion.button
-                  key={source.type}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleSelectType(source.type)}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-gray-900 hover:shadow-lg transition-all text-left"
+          <div>
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex justify-between items-center">
+                <div>
+                  <p className="text-sm font-medium text-blue-900">Quick Start</p>
+                  <p className="text-xs text-blue-700">Use our demo PostgreSQL to test the connection</p>
+                </div>
+                <button
+                  onClick={useDemoConfig}
+                  className="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`p-2 ${source.color} rounded-lg`}>
-                      <Icon className="h-5 w-5 text-white" />
+                  Use Demo Database
+                </button>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              {sourceTypes.map((source) => {
+                const Icon = source.icon;
+                return (
+                  <motion.button
+                    key={source.type}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleSelectType(source.type)}
+                    className="p-4 border border-gray-200 rounded-lg hover:border-gray-900 hover:shadow-lg transition-all text-left"
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className={`p-2 ${source.color} rounded-lg`}>
+                        <Icon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="font-medium text-gray-900">{source.name}</h3>
                     </div>
-                    <h3 className="font-medium text-gray-900">{source.name}</h3>
-                  </div>
-                  <p className="text-sm text-gray-500">{source.description}</p>
-                </motion.button>
-              );
-            })}
+                    <p className="text-sm text-gray-500">{source.description}</p>
+                  </motion.button>
+                );
+              })}
+            </div>
           </div>
         );
 
@@ -391,12 +462,92 @@ export default function DataSourceWizard({ isOpen, onClose, onComplete }: DataSo
                     <CheckCircleIcon className="h-16 w-16 text-green-500 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Connection Successful!</h3>
                     <p className="text-gray-600">{testResult.message}</p>
+                    
+                    {/* Connection Metrics */}
+                    {testResult.responseTime && (
+                      <div className="mt-4 bg-green-50 rounded-lg p-3">
+                        <p className="text-sm text-green-800">
+                          Response Time: <span className="font-semibold">{testResult.responseTime}ms</span>
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Server Info */}
+                    {testResult.serverInfo && (
+                      <div className="mt-4 bg-gray-50 rounded-lg p-4 text-left">
+                        <h4 className="font-medium text-gray-900 mb-2 text-sm">Server Information</h4>
+                        <div className="space-y-1 text-xs text-gray-600">
+                          {testResult.serverInfo.version && (
+                            <p>Version: <span className="font-mono">{testResult.serverInfo.version.split(' ').slice(0, 2).join(' ')}</span></p>
+                          )}
+                          {testResult.serverInfo.database && (
+                            <p>Database: <span className="font-mono">{testResult.serverInfo.database}</span></p>
+                          )}
+                          {testResult.serverInfo.user && (
+                            <p>User: <span className="font-mono">{testResult.serverInfo.user}</span></p>
+                          )}
+                          {testResult.serverInfo.timezone && (
+                            <p>Timezone: <span className="font-mono">{testResult.serverInfo.timezone}</span></p>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Schema Preview */}
+                    {isLoadingSchema && (
+                      <div className="mt-4 text-sm text-gray-600">
+                        <div className="animate-pulse">Loading schema preview...</div>
+                      </div>
+                    )}
+                    
+                    {schemaPreview && schemaPreview.tables && (
+                      <div className="mt-4 bg-gray-50 rounded-lg p-4 text-left">
+                        <h4 className="font-medium text-gray-900 mb-2 text-sm">Database Schema</h4>
+                        <p className="text-xs text-gray-600 mb-3">
+                          Found {schemaPreview.tables.length} table{schemaPreview.tables.length !== 1 ? 's' : ''} in the database
+                        </p>
+                        <div className="max-h-32 overflow-y-auto space-y-2">
+                          {schemaPreview.tables.slice(0, 10).map((table: any, index: number) => (
+                            <div key={table.name} className="flex items-center justify-between text-xs border-l-2 border-green-300 pl-3 py-1">
+                              <span className="font-mono font-medium text-gray-900">{table.name}</span>
+                              <span className="text-gray-500">
+                                {table.columns?.length || 0} columns
+                                {table.rowCount !== undefined && ` • ${table.rowCount.toLocaleString()} rows`}
+                              </span>
+                            </div>
+                          ))}
+                          {schemaPreview.tables.length > 10 && (
+                            <p className="text-xs text-gray-500 italic pl-3 pt-2">
+                              ...and {schemaPreview.tables.length - 10} more tables
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
                     <ExclamationCircleIcon className="h-16 w-16 text-red-500 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Connection Failed</h3>
-                    <p className="text-gray-600">{testResult.message}</p>
+                    <div className="bg-red-50 rounded-lg p-4 mb-4">
+                      <p className="text-red-800 text-sm font-medium mb-1">Error Details:</p>
+                      <p className="text-red-700 text-sm">{testResult.message}</p>
+                      {testResult.responseTime && (
+                        <p className="text-red-600 text-xs mt-2">
+                          Failed after {testResult.responseTime}ms
+                        </p>
+                      )}
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-3 text-left text-sm">
+                      <p className="font-medium text-gray-900 mb-2">Common issues:</p>
+                      <ul className="space-y-1 text-xs text-gray-600">
+                        <li>• Check if the host and port are correct</li>
+                        <li>• Verify your username and password</li>
+                        <li>• Ensure the database server is running</li>
+                        <li>• Check firewall settings</li>
+                        <li>• For local connections, use "localhost" or "host.docker.internal"</li>
+                      </ul>
+                    </div>
                     <button
                       onClick={testConnection}
                       className="mt-4 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800"

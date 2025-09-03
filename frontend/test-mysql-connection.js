@@ -3,8 +3,7 @@
  * Script to test the MySQL connector implementation
  */
 
-const { MySQLConnector } = require('./src/lib/connections/connectors/MySQLConnector');
-const { VaultManager } = require('./src/lib/security/VaultManager');
+import { MySQLConnector } from './src/lib/connections/connectors/MySQLConnector.js';
 
 // MySQL test configuration
 // You can use either a local MySQL or a remote one
@@ -259,12 +258,9 @@ async function main() {
   // Show Docker instructions if using docker config
   if (CONFIG_TO_USE === 'docker') {
     showDockerInstructions();
-    console.log('Press Enter to continue with the test...\n');
     
-    // Wait for user input
-    await new Promise(resolve => {
-      process.stdin.once('data', resolve);
-    });
+    // For non-interactive testing, skip the wait
+    console.log('Starting test...\n');
   }
 
   await testMySQLConnection();

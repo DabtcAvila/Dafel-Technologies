@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Frontend Functionality</title>
+</head>
+<body>
+    <h1>Test de Funcionalidad Frontend</h1>
+    <div id="results"></div>
+    
+    <script>
+        const results = document.getElementById('results');
+        
+        async function testFunctionality() {
+            const tests = [];
+            
+            // Test 1: Check home page buttons
+            try {
+                const response = await fetch('http://localhost:3000');
+                const html = await response.text();
+                const hasGetStarted = html.includes('Get Started');
+                const hasProgramarConsulta = html.includes('Programar Consulta');
+                tests.push({
+                    name: 'Home page buttons',
+                    passed: hasGetStarted && hasProgramarConsulta,
+                    details: `Get Started: ${hasGetStarted}, Programar Consulta: ${hasProgramarConsulta}`
+                });
+            } catch (e) {
+                tests.push({name: 'Home page buttons', passed: false, details: e.message});
+            }
+            
+            // Test 2: Check API health
+            try {
+                const response = await fetch('http://localhost:3000/api/health');
+                const data = await response.json();
+                tests.push({
+                    name: 'API Health',
+                    passed: data.status === 'healthy',
+                    details: JSON.stringify(data)
+                });
+            } catch (e) {
+                tests.push({name: 'API Health', passed: false, details: e.message});
+            }
+            
+            // Test 3: Check login page
+            try {
+                const response = await fetch('http://localhost:3000/login');
+                const html = await response.text();
+                const hasEmailInput = html.includes('type="email"');
+                const hasPasswordInput = html.includes('type="password"');
+                const hasSignInButton = html.includes('Sign In Securely');
+                tests.push({
+                    name: 'Login page elements',
+                    passed: hasEmailInput && hasPasswordInput && hasSignInButton,
+                    details: `Email: ${hasEmailInput}, Password: ${hasPasswordInput}, Button: ${hasSignInButton}`
+                });
+            } catch (e) {
+                tests.push({name: 'Login page elements', passed: false, details: e.message});
+            }
+            
+            // Test 4: Check protected Studio route
+            try {
+                const response = await fetch('http://localhost:3000/studio', {
+                    redirect: 'manual'
+                });
+                const isProtected = response.status === 307 || response.status === 302;
+                tests.push({
+                    name: 'Studio route protection',
+                    passed: isProtected,
+                    details: `Status: ${response.status}, Protected: ${isProtected}`
+                });
+            } catch (e) {
+                tests.push({name: 'Studio route protection', passed: false, details: e.message});
+            }
+            
+            // Test 5: Check static assets
+            try {
+                const response = await fetch('http://localhost:3000/favicon.ico');
+                tests.push({
+                    name: 'Static assets',
+                    passed: response.ok,
+                    details: `Favicon status: ${response.status}`
+                });
+            } catch (e) {
+                tests.push({name: 'Static assets', passed: false, details: e.message});
+            }
+            
+            // Display results
+            let html = '<h2>Test Results:</h2><ul>';
+            for (const test of tests) {
+                const status = test.passed ? '✅' : '❌';
+                html += `<li>${status} ${test.name}: ${test.details}</li>`;
+            }
+            html += '</ul>';
+            
+            const passedCount = tests.filter(t => t.passed).length;
+            html += `<h3>Summary: ${passedCount}/${tests.length} tests passed</h3>`;
+            
+            results.innerHTML = html;
+        }
+        
+        testFunctionality();
+    </script>
+</body>
+</html>

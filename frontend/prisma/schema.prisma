@@ -68,6 +68,7 @@ model User {
   createdUsers     User[]     @relation("UserCreator")
   createdBy        User?      @relation("UserCreator", fields: [createdById], references: [id])
   createdById      String?
+  dataSources      DataSource[]
   
   @@index([email])
   @@index([role])
@@ -149,4 +150,92 @@ model VerificationToken {
   expires    DateTime
   
   @@unique([identifier, token])
+}
+
+// Data source types
+enum DataSourceType {
+  POSTGRESQL
+  MYSQL
+  MONGODB
+  REST_API
+  GRAPHQL
+  S3
+  GOOGLE_SHEETS
+  CSV_FILE
+}
+
+// Data source status
+enum DataSourceStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+  TESTING
+  CONFIGURING
+}
+
+// Data sources model
+model DataSource {
+  id               String             @id @default(cuid())
+  name             String
+  description      String?
+  type             DataSourceType
+  status           DataSourceStatus   @default(CONFIGURING)
+  
+  // Connection configuration (encrypted in production)
+  configuration    Json
+  
+  // Connection metadata
+  host             String?
+  port             Int?
+  database         String?
+  ssl              Boolean            @default(false)
+  
+  // Authentication (encrypted)
+  username         String?
+  password         String?            // Should be encrypted
+  apiKey           String?            // Should be encrypted
+  
+  // Testing and monitoring
+  lastConnectionTest DateTime?
+  lastSuccessfulSync DateTime?
+  connectionError    String?
+  
+  // Metrics
+  totalRecords     Int                @default(0)
+  totalSyncs       Int                @default(0)
+  failedSyncs      Int                @default(0)
+  avgResponseTime  Float?             // in milliseconds
+  
+  // Ownership and audit
+  createdBy        User               @relation(fields: [createdById], references: [id])
+  createdById      String
+  
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  
+  // Relations
+  syncLogs         DataSourceSyncLog[]
+  
+  @@index([createdById])
+  @@index([type])
+  @@index([status])
+}
+
+// Data source sync logs
+model DataSourceSyncLog {
+  id             String       @id @default(cuid())
+  dataSource     DataSource   @relation(fields: [dataSourceId], references: [id], onDelete: Cascade)
+  dataSourceId   String
+  
+  startedAt      DateTime
+  completedAt    DateTime?
+  success        Boolean      @default(false)
+  recordsSync    Int          @default(0)
+  errorMessage   String?
+  duration       Int?         // in milliseconds
+  
+  createdAt      DateTime     @default(now())
+  
+  @@index([dataSourceId])
+  @@index([createdAt])
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -14,17 +14,24 @@ import {
   ChartBarIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
-  ShieldCheckIcon,
   UsersIcon,
   BellIcon,
   Cog8ToothIcon
 } from '@heroicons/react/24/outline';
 
+// Import view components
+import CanvasView from '@/components/studio/views/CanvasView';
+import DataSourcesView from '@/components/studio/views/DataSourcesView';
+import AIModelsView from '@/components/studio/views/AIModelsView';
+import TestingView from '@/components/studio/views/TestingView';
+import AnalyticsView from '@/components/studio/views/AnalyticsView';
+import SettingsView from '@/components/studio/views/SettingsView';
+
 export default function StudioPage() {
   const { messages } = useLanguage();
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [activeIcon, setActiveIcon] = useState(0);
+  const [activeView, setActiveView] = useState('canvas');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
@@ -78,20 +85,13 @@ export default function StudioPage() {
     }
   };
 
-  const sidebarIcons = [
-    { Icon: CubeIcon, id: 0, tooltip: 'Components' },
-    { Icon: CircleStackIcon, id: 1, tooltip: 'Data Sources' },
-    { Icon: CpuChipIcon, id: 2, tooltip: 'Processing' },
-    { Icon: BeakerIcon, id: 3, tooltip: 'Testing' },
-    { Icon: ChartBarIcon, id: 4, tooltip: 'Analytics' },
-    { Icon: Cog6ToothIcon, id: 5, tooltip: 'Settings' }
-  ];
-
-  const workflowNodes = [
-    { id: 'data', label: messages.studio?.data || 'Data', x: 100, y: 250 },
-    { id: 'process', label: messages.studio?.process || 'Process', x: 300, y: 250 },
-    { id: 'ai', label: messages.studio?.ai || 'AI', x: 500, y: 250 },
-    { id: 'output', label: messages.studio?.output || 'Output', x: 700, y: 250 }
+  const sidebarItems = [
+    { Icon: CubeIcon, id: 'canvas', label: 'Canvas' },
+    { Icon: CircleStackIcon, id: 'data-sources', label: 'Data Sources' },
+    { Icon: CpuChipIcon, id: 'ai-models', label: 'AI Models' },
+    { Icon: BeakerIcon, id: 'testing', label: 'Testing' },
+    { Icon: ChartBarIcon, id: 'analytics', label: 'Analytics' },
+    { Icon: Cog6ToothIcon, id: 'settings', label: 'Settings' }
   ];
 
   // Show loading state while session is being fetched
@@ -132,12 +132,12 @@ export default function StudioPage() {
         {/* Sidebar */}
         <div className="w-[60px] bg-gray-900 flex flex-col items-center py-6 relative z-10">
           <div className="flex-1 space-y-6">
-            {sidebarIcons.map(({ Icon, id, tooltip }) => (
+            {sidebarItems.map(({ Icon, id, label }) => (
               <div key={id} className="relative group">
                 <button
-                  onClick={() => setActiveIcon(id)}
+                  onClick={() => setActiveView(id)}
                   className={`p-2 rounded-lg transition-all duration-200 ${
-                    activeIcon === id 
+                    activeView === id 
                       ? 'text-white bg-gray-800' 
                       : 'text-gray-400 hover:text-white hover:bg-gray-800'
                   }`}
@@ -147,7 +147,7 @@ export default function StudioPage() {
                 {/* Tooltip */}
                 <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                   <div className="relative bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
-                    {tooltip}
+                    {label}
                     {/* Arrow pointing to the icon */}
                     <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-gray-800"></div>
                   </div>
@@ -235,101 +235,25 @@ export default function StudioPage() {
             </div>
           </div>
 
-          {/* Canvas */}
-          <div className="flex-1 p-8 relative">
-            <div className="h-full bg-white rounded-lg border border-gray-200 relative overflow-hidden">
-              {/* SVG for connections */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                <defs>
-                  <marker
-                    id="arrowhead"
-                    markerWidth="10"
-                    markerHeight="10"
-                    refX="9"
-                    refY="3"
-                    orient="auto"
-                  >
-                    <polygon
-                      points="0 0, 10 3, 0 6"
-                      fill="#9ca3af"
-                    />
-                  </marker>
-                </defs>
-                {/* Connection lines */}
-                <line
-                  x1="180"
-                  y1="250"
-                  x2="220"
-                  y2="250"
-                  stroke="#9ca3af"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="380"
-                  y1="250"
-                  x2="420"
-                  y2="250"
-                  stroke="#9ca3af"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="580"
-                  y1="250"
-                  x2="620"
-                  y2="250"
-                  stroke="#9ca3af"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-              </svg>
-
-              {/* Workflow Nodes */}
-              {workflowNodes.map((node, index) => (
-                <motion.div
-                  key={node.id}
-                  className="absolute"
-                  style={{ left: node.x, top: node.y, transform: 'translate(-50%, -50%)' }}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ 
-                    delay: index * 0.1,
-                    duration: 0.3,
-                    ease: "easeOut"
-                  }}
-                >
-                  <div className="bg-white border-2 border-gray-900 rounded-lg px-6 py-4 cursor-move hover:shadow-lg transition-shadow">
-                    <span className="text-sm font-mono font-medium text-gray-900">
-                      {node.label}
-                    </span>
-                  </div>
-                </motion.div>
-              ))}
-
-              {/* Instruction text */}
-              <motion.div 
-                className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.3 }}
-              >
-                <p className="text-sm font-sans text-gray-500">
-                  {messages.studio?.dragPrompt || 'Drag components to build your workflow'}
-                </p>
-              </motion.div>
-
-              {/* Security Status Indicator */}
+          {/* Main Content Area */}
+          <div className={`flex-1 relative ${activeView === 'canvas' ? 'p-8' : ''}`}>
+            <AnimatePresence mode="wait">
               <motion.div
-                className="absolute top-4 right-4 flex items-center gap-2 text-xs text-gray-500"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
+                key={activeView}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+                className="h-full"
               >
-                <ShieldCheckIcon className="h-4 w-4 text-green-500" />
-                <span>Secure Session Active</span>
+                {activeView === 'canvas' && <CanvasView />}
+                {activeView === 'data-sources' && <DataSourcesView />}
+                {activeView === 'ai-models' && <AIModelsView />}
+                {activeView === 'testing' && <TestingView />}
+                {activeView === 'analytics' && <AnalyticsView />}
+                {activeView === 'settings' && <SettingsView />}
               </motion.div>
-            </div>
+            </AnimatePresence>
           </div>
         </div>
       </div>

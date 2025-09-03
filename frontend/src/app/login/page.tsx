@@ -30,6 +30,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [attemptedSubmit, setAttemptedSubmit] = useState(false);
   const [securityIndicators, setSecurityIndicators] = useState({
     ssl: false,
     encryption: false,
@@ -47,6 +48,14 @@ export default function LoginPage() {
   });
 
   const password = watch('password', '');
+  const email = watch('email', '');
+
+  // Reset attempted submit when user starts typing again
+  useEffect(() => {
+    if (attemptedSubmit) {
+      setAttemptedSubmit(false);
+    }
+  }, [email, password]);
 
   useEffect(() => {
     // Simulate security checks
@@ -61,6 +70,7 @@ export default function LoginPage() {
   }, []);
 
   const onSubmit = async (data: LoginFormData) => {
+    setAttemptedSubmit(true);
     setIsLoading(true);
     
     const loadingToast = toast.loading('Authenticating...', {
@@ -126,6 +136,12 @@ export default function LoginPage() {
   };
 
   const strength = passwordStrength(password);
+
+  // Handle form submission attempt (including validation failures)
+  const handleFormSubmit = (e: React.FormEvent) => {
+    setAttemptedSubmit(true);
+    handleSubmit(onSubmit)(e);
+  };
 
   return (
     <>
@@ -225,7 +241,7 @@ export default function LoginPage() {
               Secure Access
             </h2>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+            <form onSubmit={handleFormSubmit} className="space-y-5">
               <div>
                 <label 
                   htmlFor="email" 
@@ -243,7 +259,7 @@ export default function LoginPage() {
                     disabled={isLoading}
                     autoComplete="email"
                   />
-                  {errors.email && (
+                  {attemptedSubmit && errors.email && (
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -284,7 +300,7 @@ export default function LoginPage() {
                       <EyeIcon className="h-5 w-5" />
                     )}
                   </button>
-                  {errors.password && (
+                  {attemptedSubmit && errors.password && (
                     <motion.p
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}

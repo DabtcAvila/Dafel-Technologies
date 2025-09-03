@@ -14,9 +14,10 @@ import {
   ChartBarIcon,
   Cog6ToothIcon,
   ArrowRightOnRectangleIcon,
-  UserCircleIcon,
   ShieldCheckIcon,
-  UsersIcon
+  UsersIcon,
+  BellIcon,
+  Cog8ToothIcon
 } from '@heroicons/react/24/outline';
 
 export default function StudioPage() {
@@ -44,19 +45,12 @@ export default function StudioPage() {
     });
 
     try {
-      await signOut({ redirect: false });
-      toast.dismiss(loadingToast);
-      toast.success('Logged out successfully', {
-        duration: 2000,
-        style: {
-          background: '#10b981',
-          color: '#fff',
-        },
+      // Use callbackUrl to redirect directly to home
+      await signOut({ 
+        callbackUrl: '/',
+        redirect: true 
       });
-      
-      setTimeout(() => {
-        router.push('/');
-      }, 1000);
+      // The rest of the code won't execute due to redirect: true
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error('Failed to logout', {
@@ -176,46 +170,58 @@ export default function StudioPage() {
 
         {/* Main Canvas Area */}
         <div className="flex-1 flex flex-col">
-          {/* Header */}
-          <div className="bg-white border-b border-gray-200 px-8 py-4">
-            <div className="flex justify-between items-center h-14">
-              <div className="flex items-center gap-6">
-                <h1 className="text-3xl font-mono font-light tracking-wider text-gray-900">
+          {/* Header - Compact Design */}
+          <div className="bg-white border-b border-gray-200 h-[60px] px-6">
+            <div className="flex justify-between items-center h-full">
+              {/* Left side */}
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-mono font-light tracking-wider text-gray-900">
                   Dafel Studio
                 </h1>
-                {/* User Role Badge */}
-                <div className={`px-3 py-1 rounded-full text-xs font-medium border ${getRoleBadgeColor(session?.user?.role || '')}`}>
-                  {session?.user?.role}
+                
+                {/* Status Pill */}
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#f9fafb] rounded-[20px]">
+                  {/* Online indicator */}
+                  <div className="relative">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                  </div>
+                  
+                  <span className="text-sm text-gray-700">Admin</span>
+                  
+                  {/* Role Badge */}
+                  <div className="px-2 py-0.5 bg-[#dbeafe] text-[#1e40af] text-xs font-medium rounded">
+                    {session?.user?.role || 'ADMIN'}
+                  </div>
                 </div>
               </div>
               
-              <div className="flex items-center gap-4">
-                {/* User Info */}
-                <div className="flex items-center gap-3">
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900 leading-tight">
-                      {session?.user?.name || 'User'}
-                    </p>
-                    <p className="text-xs text-gray-500 leading-tight">
-                      {session?.user?.email}
-                    </p>
-                  </div>
-                  <div className="relative flex-shrink-0">
-                    <UserCircleIcon className="h-8 w-8 text-gray-400" />
-                    {session?.user?.role === 'ADMIN' && (
-                      <ShieldCheckIcon className="h-3 w-3 text-amber-500 absolute -bottom-0.5 -right-0.5" />
-                    )}
-                  </div>
-                </div>
+              {/* Right side - Action buttons */}
+              <div className="flex items-center gap-2">
+                {/* Notifications */}
+                <button
+                  className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors hover:bg-[#f3f4f6]"
+                  title="Notifications"
+                >
+                  <BellIcon className="h-5 w-5 text-[#6b7280] hover:text-gray-900" />
+                </button>
                 
-                {/* Logout Button */}
+                {/* Settings */}
+                <button
+                  className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors hover:bg-[#f3f4f6]"
+                  title="Settings"
+                >
+                  <Cog8ToothIcon className="h-5 w-5 text-[#6b7280] hover:text-gray-900" />
+                </button>
+                
+                {/* Logout */}
                 <button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-9 h-9 flex items-center justify-center rounded-lg transition-colors hover:bg-[#f3f4f6] disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Logout"
                 >
-                  <ArrowRightOnRectangleIcon className="h-4 w-4" />
-                  <span>{messages.studio?.logout || 'Logout'}</span>
+                  <ArrowRightOnRectangleIcon className="h-5 w-5 text-[#6b7280] hover:text-gray-900" />
                 </button>
               </div>
             </div>

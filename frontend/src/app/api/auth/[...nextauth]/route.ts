@@ -125,6 +125,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/login',
+    signOut: '/', // Redirect to home after signout
     error: '/login',
   },
   callbacks: {

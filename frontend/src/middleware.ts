@@ -12,6 +12,14 @@ const protectedApiRoutes = ['/api/users', '/api/admin'];
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Check if this is a logout request (signout redirecting to home)
+  const isLogoutRedirect = request.nextUrl.searchParams.get('callbackUrl') === '/';
+  
+  // Skip middleware for logout redirects
+  if (isLogoutRedirect) {
+    return NextResponse.next();
+  }
+
   // Check if the route is protected
   const isProtectedRoute = protectedRoutes.some(route => pathname.startsWith(route));
   const isProtectedApiRoute = protectedApiRoutes.some(route => pathname.startsWith(route));

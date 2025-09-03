@@ -7,7 +7,7 @@ const protectedRoutes = ['/studio', '/studio/admin'];
 // Routes that are public
 const publicRoutes = ['/', '/login'];
 // API routes that require authentication
-const protectedApiRoutes = ['/api/users', '/api/admin'];
+const protectedApiRoutes = ['/api/users', '/api/admin', '/api/data-sources'];
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;

@@ -1,0 +1,65 @@
+# GitHub Pages Configuration
+theme: jekyll-theme-cayman
+title: "Dafel Technologies"
+description: "Enterprise Data Connector Platform with Real-time Monitoring and Bank-grade Security"
+
+# Site settings
+baseurl: ""
+url: "https://dabtcavila.github.io/Dafel-Technologies"
+
+# Plugins
+plugins:
+  - jekyll-relative-links
+  - jekyll-optional-front-matter
+  - jekyll-readme-index
+  - jekyll-titles-from-headings
+  - jekyll-github-metadata
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "default"
+
+# Navigation (if using a theme that supports it)
+navigation:
+  - title: "Home"
+    url: "/"
+  - title: "Documentation"
+    url: "/docs/"
+  - title: "API Reference"
+    url: "/api/"
+  - title: "GitHub"
+    url: "https://github.com/DabtcAvila/Dafel-Technologies"
+
+# SEO
+author: "Dafel Consulting"
+twitter:
+  username: dafel_consulting
+  card: summary_large_image
+
+# GitHub repository info
+repository: "DabtcAvila/Dafel-Technologies"
+
+# Exclude from processing
+exclude:
+  - node_modules/
+  - .git/
+  - .github/
+  - vendor/
+  - Gemfile*
+  - "*.log"
+  - package*.json
+  - docker-compose*.yml

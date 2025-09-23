@@ -1,14 +1,23 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, lazy, Suspense, memo } from 'react';
+import dynamic from 'next/dynamic';
 import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
-import DafelSection from '@/components/DafelSection';
-import ContactModal from '@/components/ContactModal';
 import { useRouter } from 'next/navigation';
 
-export default function HomePage() {
+// Lazy load heavy components for better LCP
+const DafelSection = lazy(() => import('@/components/DafelSection'));
+const ContactModal = lazy(() => import('@/components/ContactModal'));
+
+// Dynamic import with no SSR for motion (better performance)
+const motion = dynamic(() => import('framer-motion').then(mod => mod.motion), { 
+  ssr: false,
+  loading: () => <div style={{ opacity: 0 }}>Loading...</div>
+});
+
+// Memoize the main component for better performance
+const HomePage = memo(function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const router = useRouter();
@@ -87,8 +96,8 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+      {/* Hero Section - Optimized for LCP */}
+      <section className="relative min-h-screen hero-gradient">
         <div className="mx-auto max-w-7xl px-6 pt-32 pb-24 lg:px-8 lg:pt-40">
           <motion.div
             className="mx-auto max-w-4xl text-center"
@@ -147,8 +156,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Dafel Hero Section */}
-      <DafelSection />
+      {/* Dafel Hero Section - Lazy loaded */}
+      <Suspense fallback={<div className="h-96 bg-gray-50 flex items-center justify-center">Loading section...</div>}>
+        <DafelSection />
+      </Suspense>
 
       {/* Framework Hero Section */}
       <section className="relative min-h-[600px] lg:min-h-screen bg-white">
@@ -473,12 +484,16 @@ export default function HomePage() {
         </div>
       </footer>
 
-      {/* Contact Modal */}
-      <ContactModal 
-        open={isContactModalOpen} 
-        onOpenChange={setIsContactModalOpen} 
-      />
+      {/* Contact Modal - Lazy loaded */}
+      <Suspense fallback={null}>
+        <ContactModal 
+          open={isContactModalOpen} 
+          onOpenChange={setIsContactModalOpen} 
+        />
+      </Suspense>
     </>
   );
-}
+});
+
+export default HomePage;
 

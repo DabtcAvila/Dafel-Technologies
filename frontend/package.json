@@ -14,6 +14,11 @@
     "analyze": "ANALYZE=true next build",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:performance": "node scripts/performance-test.js",
+    "lighthouse": "npx lhci autorun",
+    "audit": "npm run build && npm run lighthouse",
+    "build:cdn": "node scripts/build-cdn.js",
+    "deploy:cdn": "npm run build:cdn && echo 'Ready for CDN deployment!'",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
@@ -80,6 +85,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.12.0",
     "@next/bundle-analyzer": "^14.2.5",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/container-queries": "^0.1.1",

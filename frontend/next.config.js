@@ -6,16 +6,29 @@ const nextConfig = {
   poweredByHeader: false,
   compress: true,
   
-  // Optimización de imágenes
+  // Performance optimizations
+  trailingSlash: false,
+  generateEtags: false,
+  
+  // Static optimization
+  generateBuildId: async () => {
+    return 'dafel-build-' + Date.now()
+  },
+  
+  // Optimización de imágenes para máxima performance
   images: {
     domains: ['localhost', 'dafel-technologies.com'],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 31536000, // 1 año de cache
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    loader: 'default',
+    quality: 85, // Optimal balance between quality and size
   },
   
-  // Headers de seguridad
+  // Headers de seguridad y performance
   async headers() {
     const isDevelopment = process.env.NODE_ENV === 'development';
     
@@ -37,13 +50,14 @@ const nextConfig = {
       {
         source: '/:path*',
         headers: [
+          // Performance headers
           {
             key: 'X-DNS-Prefetch-Control',
             value: 'on'
           },
           {
-            key: 'Strict-Transport-Security',
-            value: 'max-age=63072000; includeSubDomains; preload'
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
           },
           {
             key: 'X-Content-Type-Options',
@@ -65,6 +79,10 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=()'
           },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          },
           // Solo aplicar CSP estricto en producción
           // El middleware maneja CSP para desarrollo
           ...(isDevelopment ? [] : [
@@ -73,6 +91,25 @@ const nextConfig = {
               value: productionCSP
             }
           ])
+        ]
+      },
+      // Static assets caching
+      {
+        source: '/favicon.ico',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
+        ]
+      },
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable'
+          }
         ]
       }
     ];
@@ -96,38 +133,70 @@ const nextConfig = {
     } : false,
   },
   
-  // Configuración de experimental
+  // Configuración de experimental para máximo rendimiento
   experimental: {
-    // optimizeCss: true, // Deshabilitado - requiere critters
+    optimizeCss: true, 
     scrollRestoration: true,
     typedRoutes: true,
+    appDir: true,
+    serverComponentsExternalPackages: ['sharp'],
+    optimizePackageImports: ['@heroicons/react'],
+    bundlePagesExternals: false,
   },
   
-  // Configuración de webpack
+  // Configuración de webpack para máximo rendimiento
   webpack: (config, { dev, isServer }) => {
+    // Performance optimizations
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': require('path').resolve(__dirname, 'src'),
+    };
+    
     // Optimizaciones de producción
     if (!dev && !isServer) {
+      // Advanced chunk splitting
       config.optimization.splitChunks = {
         chunks: 'all',
         cacheGroups: {
           default: false,
           vendors: false,
+          // React chunk
+          react: {
+            name: 'react',
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            priority: 40,
+            enforce: true,
+          },
+          // UI libraries chunk
+          ui: {
+            name: 'ui',
+            test: /[\\/]node_modules[\\/](@heroicons|@headlessui|@radix-ui|framer-motion)[\\/]/,
+            priority: 30,
+            enforce: true,
+          },
+          // Common vendor chunk
           vendor: {
             name: 'vendor',
             chunks: 'all',
-            test: /node_modules/,
-            priority: 20
+            test: /[\\/]node_modules[\\/]/,
+            priority: 20,
+            enforce: true,
           },
+          // Common app code
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
             priority: 10,
             reuseExistingChunk: true,
-            enforce: true
+            enforce: true,
           }
         }
       };
+      
+      // Tree shaking optimizations
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
     }
     
     // Bundle analyzer

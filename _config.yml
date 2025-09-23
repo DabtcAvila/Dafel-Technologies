@@ -1,65 +1,220 @@
-# GitHub Pages Configuration
-theme: jekyll-theme-cayman
-title: "Dafel Technologies"
-description: "Enterprise Data Connector Platform with Real-time Monitoring and Bank-grade Security"
+# GitHub Pages Configuration for Dafel Technologies
+# Enterprise Data Connector Platform
 
-# Site settings
+# Theme and Basic Settings
+theme: jekyll-theme-cayman
+title: "Dafel Technologies - Enterprise Data Connector Platform"
+tagline: "Production-ready data connectors with bank-grade security"
+description: "Enterprise data connector platform with AES-256-GCM encryption, real-time monitoring, PostgreSQL integration, and zero licensing costs. Modern Next.js architecture with TypeScript."
+
+# Site Configuration
 baseurl: ""
 url: "https://dabtcavila.github.io/Dafel-Technologies"
+lang: "en-US"
+timezone: "UTC"
 
-# Plugins
+# Company Information
+company:
+  name: "Dafel Consulting"
+  website: "https://dafelconsulting.com"
+  email: "contact@dafelconsulting.com"
+  linkedin: "https://linkedin.com/company/dafel-consulting"
+  
+# GitHub Pages Plugins (automatically enabled)
 plugins:
   - jekyll-relative-links
   - jekyll-optional-front-matter
   - jekyll-readme-index
   - jekyll-titles-from-headings
   - jekyll-github-metadata
+  - jekyll-sitemap
+  - jekyll-feed
+  - jekyll-seo-tag
 
-# Markdown settings
+# Markdown and Code Highlighting
 markdown: kramdown
 highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'highlight'
+    span:
+      line_numbers: false
+    block:
+      line_numbers: true
 
-# Collections
+# Collections Configuration
 collections:
   docs:
     output: true
     permalink: /:collection/:name/
-
-# Defaults
+    
+# Default values for pages
 defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      author: "Dafel Consulting"
   - scope:
       path: ""
       type: "docs"
     values:
       layout: "default"
+      author: "Dafel Consulting"
+      sidebar: true
 
-# Navigation (if using a theme that supports it)
+# Site Navigation
+header_pages:
+  - docs/installation.md
+  - docs/features.md
+  - docs/api.md
+  - docs/architecture.md
+
 navigation:
-  - title: "Home"
+  - title: "🏠 Home"
     url: "/"
-  - title: "Documentation"
-    url: "/docs/"
-  - title: "API Reference"
-    url: "/api/"
-  - title: "GitHub"
+  - title: "📚 Documentation"
+    url: "/docs/installation/"
+    children:
+      - title: "Installation Guide"
+        url: "/docs/installation/"
+      - title: "Features & Connectors"
+        url: "/docs/features/"
+      - title: "API Reference"
+        url: "/docs/api/"
+      - title: "Architecture"
+        url: "/docs/architecture/"
+  - title: "⭐ GitHub"
     url: "https://github.com/DabtcAvila/Dafel-Technologies"
+    external: true
 
-# SEO
-author: "Dafel Consulting"
+# SEO and Social Media
+author:
+  name: "Dafel Consulting"
+  email: "contact@dafelconsulting.com"
+  uri: "https://dafelconsulting.com"
+
+# Social Media
 twitter:
-  username: dafel_consulting
-  card: summary_large_image
+  username: "dafel_consulting"
+  card: "summary_large_image"
+  
+facebook:
+  publisher: "Dafel Consulting"
 
-# GitHub repository info
+linkedin:
+  username: "dafel-consulting"
+
+# Open Graph defaults
+og:
+  type: "website"
+  locale: "en_US"
+  site_name: "Dafel Technologies"
+
+# GitHub Repository Information
 repository: "DabtcAvila/Dafel-Technologies"
+github:
+  owner_name: "DabtcAvila"
+  owner_url: "https://github.com/DabtcAvila"
+  repository_name: "Dafel-Technologies"
+  repository_url: "https://github.com/DabtcAvila/Dafel-Technologies"
+  issues_url: "https://github.com/DabtcAvila/Dafel-Technologies/issues"
+  releases_url: "https://github.com/DabtcAvila/Dafel-Technologies/releases"
 
-# Exclude from processing
+# Search Engine Optimization
+webmaster_verifications:
+  google: # Add Google Search Console verification code
+  bing: # Add Bing Webmaster verification code
+  yandex: # Add Yandex verification code
+
+# Analytics (when available)
+google_analytics: # Add GA tracking ID when ready
+gtag: # Add gtag when ready
+
+# RSS Feed
+feed:
+  path: atom.xml
+  excerpt_only: true
+
+# Sitemap
+sitemap:
+  priority: 1.0
+  changefreq: 'weekly'
+  lastmod: '2024-01-03'
+
+# Performance and Optimization
+sass:
+  style: compressed
+  
+# Jekyll Environment
+environment: production
+
+# Content Processing
+excerpt_separator: "<!-- excerpt -->"
+
+# Liquid Options
+liquid:
+  error_mode: warn
+  strict_filters: false
+  strict_variables: false
+
+# File Processing
+keep_files:
+  - .git
+  - .nojekyll
+
+# Exclusions from Processing
 exclude:
   - node_modules/
   - .git/
   - .github/
+  - .gitignore
   - vendor/
   - Gemfile*
   - "*.log"
   - package*.json
+  - package-lock.json
   - docker-compose*.yml
+  - frontend/
+  - test-*.js
+  - test-*.html
+  - "*.md"
+  - contextBackendConnections.md
+  - ENTERPRISE_IMPLEMENTATION_SUMMARY.md
+
+# Include specific files
+include:
+  - docs/
+  - _pages/
+  
+# Compression (for GitHub Pages)
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  startings: [html, head, body]
+
+# Custom Variables for Templates
+enterprise:
+  features:
+    - "AES-256-GCM Encryption"
+    - "Real-time Monitoring"
+    - "PostgreSQL Production Ready"
+    - "Connection Pooling"
+    - "Enterprise Authentication"
+    - "Audit Logging"
+  
+  tech_stack:
+    frontend: "Next.js 14.2.5 + TypeScript"
+    backend: "Node.js + Prisma"
+    database: "PostgreSQL"
+    security: "AES-256-GCM"
+    monitoring: "Winston + Prometheus"
+  
+  status:
+    postgresql: "✅ Production Ready"
+    mysql: "🟡 Ready for Deploy"
+    mongodb: "🟡 Ready for Deploy"

@@ -1,26 +1,28 @@
 'use client';
 
-import { useState, lazy, Suspense, memo } from 'react';
-import dynamic from 'next/dynamic';
-import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect, lazy, Suspense, memo } from 'react';
+import { motion } from 'framer-motion';
+import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 // Lazy load heavy components for better LCP
 const DafelSection = lazy(() => import('@/components/DafelSection'));
 const ContactModal = lazy(() => import('@/components/ContactModal'));
 
-// Dynamic import with no SSR for motion (better performance)
-const motion = dynamic(() => import('framer-motion').then(mod => mod.motion), { 
-  ssr: false,
-  loading: () => <div style={{ opacity: 0 }}>Loading...</div>
-});
-
 // Memoize the main component for better performance
 const HomePage = memo(function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -38,106 +40,140 @@ const HomePage = memo(function HomePage() {
 
   return (
     <>
-      {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
-          <div className="flex h-[70px] items-center">
+      
+      {/* Navbar - Optimizada para móvil */}
+      <nav className="fixed top-0 z-50 w-screen border-b border-gray-100/50 bg-white/90 backdrop-blur-xl shadow-lg" style={{ left: 0, right: 0 }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-[60px] sm:h-[70px] items-center">
             <div className="flex items-center flex-1">
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 100 100" 
-                className="h-7 w-7 mr-2"
-                aria-label="Dafel Technologies Logo"
-              >
-                <path 
-                  d="M 0,0 L 100,0 L 100,100 L 0,100 L 0,0 Z M 8,8 L 8,92 L 92,92 L 92,8 L 8,8 Z" 
-                  className="fill-gray-900" 
-                  fillRule="evenodd"
-                />
-                <circle 
-                  cx="50" 
-                  cy="50" 
-                  r="27.5" 
-                  className="fill-gray-900"
-                />
-              </svg>
-              <span className="text-2xl font-sans font-semibold tracking-tight text-gray-900">
-                {messages.navbar.company}
-              </span>
+              {/* Logo completo desde archivo SVG */}
+              <motion.img
+                src="/dafel-logo-optimized.svg"
+                alt="Dafel Consulting Services"
+                className="h-[60px] sm:h-[70px] w-auto"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              />
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              {/* Botones principales - responsive */}
               <button 
                 onClick={() => router.push('/login')}
-                className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
-                Get Started
+                className="hidden sm:block rounded-lg border border-gray-300 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
+                {messages.navbar.login}
               </button>
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="rounded-lg border border-gray-300 px-24 py-3 text-sm font-medium text-gray-900 transition-all hover:border-gray-900"
+                className="rounded-lg border border-gray-300 px-3 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all hover:border-gray-900"
               >
-                {messages.navbar.scheduleConsultation}
+                <span className="hidden sm:inline">{messages.navbar.scheduleConsultation}</span>
+                <span className="sm:hidden">{locale === 'es' ? 'Asesoría' : 'Advisory'}</span>
               </button>
               <button 
                 onClick={() => changeLocale(locale === 'es' ? 'en' : 'es')}
-                className="flex items-center text-sm text-gray-600 transition-all hover:text-gray-900"
+                className="flex items-center text-xs sm:text-sm text-gray-600 transition-all hover:text-gray-900 px-2"
               >
                 <span className={`${locale === 'es' ? 'font-semibold' : ''}`}>ES</span>
-                <span className="mx-1.5 text-gray-400">|</span>
+                <span className="mx-1 text-gray-400">|</span>
                 <span className={`${locale === 'en' ? 'font-semibold' : ''}`}>EN</span>
               </button>
-              <button className="text-gray-600 transition-colors hover:text-gray-900">
-                <MagnifyingGlassIcon className="h-6 w-6" />
-              </button>
-              <button className="text-gray-600 transition-colors hover:text-gray-900">
-                <Bars3Icon className="h-6 w-6" />
+              <button className="text-gray-600 transition-colors hover:text-gray-900 p-2">
+                <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6" />
               </button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section - Optimized for LCP */}
-      <section className="relative min-h-screen hero-gradient">
-        <div className="mx-auto max-w-7xl px-6 pt-32 pb-24 lg:px-8 lg:pt-40">
+      {/* Hero Section - Optimized for LCP with banda baja integration */}
+      <section className="relative min-h-screen w-screen" style={{ background: 'rgba(255, 255, 255, 0.1)', left: 0, right: 0, margin: 0, padding: 0 }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
           <motion.div
-            className="mx-auto max-w-4xl text-center"
+            className="mx-auto max-w-4xl text-center relative z-10"
             initial="initial"
             animate="animate"
             variants={staggerChildren}
           >
-            <motion.h1
-              className="text-5xl font-mono font-light tracking-wider text-gray-900 sm:text-6xl lg:text-7xl"
+            {/* Dafel Logo */}
+            <motion.div
+              className="flex justify-center mb-6 sm:mb-8"
               variants={fadeIn}
+            >
+              <motion.img
+                src="/dafel-logo-optimized.svg"
+                alt="Dafel Consulting Services"
+                className="h-16 sm:h-20 w-auto"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              />
+            </motion.div>
+
+            <motion.h1
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-light tracking-wider text-gray-900"
+              variants={fadeIn}
+              style={{ 
+                textShadow: '0 2px 4px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(255, 255, 255, 0.6)'
+              }}
             >
               {messages.hero.title}
               <span className="block font-mono font-normal tracking-wider">{messages.hero.titleHighlight}</span>
             </motion.h1>
             
             <motion.p
-              className="mx-auto mt-8 max-w-2xl text-lg font-sans leading-relaxed text-gray-600"
+              className="mx-auto mt-6 sm:mt-8 max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-gray-700"
               variants={fadeIn}
+              style={{ 
+                textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
+              }}
             >
               {messages.hero.description}
             </motion.p>
 
             <motion.div
-              className="mt-12 flex justify-center"
+              className="mt-8 sm:mt-12 flex justify-center"
               variants={fadeIn}
             >
               <button 
                 onClick={() => router.push('/login')}
-                className="group relative overflow-hidden rounded-lg border border-gray-300 px-32 py-4 text-lg font-medium text-gray-900 transition-all hover:border-gray-900">
-                <span className="relative z-10">Get Started</span>
+                className="group relative overflow-hidden rounded-lg border-2 border-gray-900 bg-white px-8 sm:px-16 lg:px-32 py-3 sm:py-4 text-base sm:text-lg font-medium text-gray-900 transition-all hover:bg-gray-900 hover:text-white shadow-lg">
+                <span className="relative z-10">{messages.navbar.login}</span>
               </button>
             </motion.div>
           </motion.div>
 
+          {/* Banda Baja Animation - Solo en Hero Section */}
+          <div 
+            className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+            style={{ 
+              zIndex: 1,
+              opacity: Math.max(0, 1 - scrollY / 500), // Se desvanece al hacer scroll
+              transition: 'opacity 0.3s ease-out'
+            }}
+          >
+            <iframe
+              src="/bandabaja-animated.svg"
+              className="border-none absolute inset-0 scale-120 sm:scale-105"
+              style={{ 
+                background: 'transparent',
+                pointerEvents: 'none',
+                width: 'calc(100vw + 17px)',
+                height: 'calc(100vh + 17px)',
+                border: 'none',
+                margin: 0,
+                padding: 0,
+                left: '-8px',
+                top: '-8px'
+              }}
+              title="Banda Baja Animation"
+            />
+          </div>
+
           {/* Scroll Indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+          <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center z-10">
             <motion.div
               className="flex flex-col items-center"
               animate={{
-                y: [0, 8, 0],
+                y: [0, 6, 0],
               }}
               transition={{
                 duration: 2,
@@ -146,10 +182,11 @@ const HomePage = memo(function HomePage() {
               }}
             >
               <div className="flex items-center justify-center mb-1">
-                <ChevronDownIcon className="h-5 w-5 text-gray-600" />
+                <ChevronDownIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
               </div>
-              <span className="text-xs text-gray-600 font-sans font-medium tracking-wide">
-                Scroll to Explore
+              <span className="text-xs sm:text-sm text-gray-600 font-sans font-medium tracking-wide">
+                <span className="hidden sm:inline">Scroll to Explore</span>
+                <span className="sm:hidden">Scroll</span>
               </span>
             </motion.div>
           </div>
@@ -162,10 +199,10 @@ const HomePage = memo(function HomePage() {
       </Suspense>
 
       {/* Framework Hero Section */}
-      <section className="relative min-h-[600px] lg:min-h-screen bg-white">
-        <div className="flex flex-col lg:flex-row h-full min-h-[600px] lg:min-h-screen">
+      <section className="relative min-h-[500px] sm:min-h-[600px] lg:min-h-screen bg-white">
+        <div className="flex flex-col lg:flex-row h-full min-h-[500px] sm:min-h-[600px] lg:min-h-screen">
           {/* Left Column - Content */}
-          <div className="w-full lg:w-[40%] bg-white flex items-center justify-center px-8 py-16 lg:px-16 lg:py-0">
+          <div className="w-full lg:w-[40%] bg-white flex items-center justify-center px-4 sm:px-8 py-12 sm:py-16 lg:px-16 lg:py-0">
             <div className="max-w-xl">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -173,26 +210,26 @@ const HomePage = memo(function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
               >
-                <h2 className="text-5xl lg:text-6xl leading-tight">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
                   <span className="font-light">{messages.framework.titleLine1}</span>
                   <br />
                   <span className="font-semibold">{messages.framework.titleLine2}</span>
                 </h2>
-                <p className="mt-8 text-xl lg:text-2xl text-gray-600 leading-relaxed">
+                <p className="mt-6 sm:mt-8 text-lg sm:text-xl lg:text-2xl text-gray-600 leading-relaxed">
                   {messages.framework.subtitle}
                 </p>
                 <button 
                   onClick={() => router.push('/login')}
-                  className="mt-10 bg-gray-900 text-white px-10 py-4 rounded-lg font-medium text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
+                  className="mt-8 sm:mt-10 bg-gray-900 text-white px-6 sm:px-8 lg:px-10 py-3 sm:py-4 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5 flex items-center gap-2">
                   {messages.framework.ctaButton}
-                  <span className="text-lg">→</span>
+                  <span className="text-base sm:text-lg">→</span>
                 </button>
               </motion.div>
             </div>
           </div>
 
           {/* Right Column - Visual Architecture */}
-          <div className="w-full lg:w-[60%] bg-gradient-to-br from-emerald-50 to-teal-50 p-8 lg:p-12 flex items-center justify-center">
+          <div className="w-full lg:w-[60%] bg-gradient-to-br from-emerald-50 to-teal-50 p-4 sm:p-6 lg:p-12 flex items-center justify-center">
             <motion.div
               className="w-full max-w-2xl"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -203,7 +240,7 @@ const HomePage = memo(function HomePage() {
               {/* Panel Header */}
               <div className="mb-8">
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-sm font-medium text-gray-600">{messages.framework.panelBrand}</span>
+                  <span className="text-sm font-medium text-gray-600">Dafel Consulting Services</span>
                 </div>
                 <h3 className="text-2xl lg:text-3xl font-medium text-gray-900 flex items-center gap-2">
                   {messages.framework.panelTitle}
@@ -368,7 +405,7 @@ const HomePage = memo(function HomePage() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl font-mono font-light tracking-wider text-gray-900 sm:text-4xl">
-              Capacidades Core
+              {messages.services.title}
             </h2>
             <p className="mt-4 text-lg font-sans text-gray-600">
               {messages.services.subtitle}
@@ -433,28 +470,47 @@ const HomePage = memo(function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-gradient-to-b from-gray-50 to-white py-24">
-        <motion.div
-          className="mx-auto max-w-4xl px-6 text-center lg:px-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <h2 className="text-3xl font-mono font-light tracking-wider text-gray-900">
-            {messages.cta.title}
-          </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            {messages.cta.subtitle}
-          </p>
-          <button 
-            onClick={() => setIsContactModalOpen(true)}
-            className="mt-8 rounded-lg bg-gray-900 px-8 py-3 text-sm font-medium text-white transition-all hover:bg-gray-800"
+
+      {/* Banda Baja Final */}
+      <section className="relative h-64 sm:h-80 lg:h-96 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <iframe
+            src="/bandabaja-animated.svg"
+            className="border-none scale-150 sm:scale-125 lg:scale-110"
+            style={{ 
+              background: 'transparent',
+              pointerEvents: 'none',
+              width: '100vw',
+              height: '100vh',
+              border: 'none',
+              opacity: 0.6
+            }}
+            title="Banda Baja Animation Final"
+          />
+        </div>
+        <div className="relative z-10 flex items-center justify-center h-full">
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
           >
-            {messages.cta.button}
-          </button>
-        </motion.div>
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-mono font-light text-gray-800 mb-4">
+              ¿Listo para transformar tu negocio?
+            </h3>
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
+              className="bg-gray-900 text-white px-8 py-3 rounded-lg font-medium text-base hover:bg-gray-800 transition-all duration-200 hover:shadow-lg transform hover:-translate-y-0.5"
+              style={{
+                background: 'rgba(17, 24, 39, 0.9)',
+                backdropFilter: 'blur(10px)'
+              }}
+            >
+              Contactar Ahora
+            </button>
+          </motion.div>
+        </div>
       </section>
 
       {/* Footer */}
@@ -463,7 +519,7 @@ const HomePage = memo(function HomePage() {
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <div className="flex flex-col items-center sm:items-start">
               <span className="text-lg font-sans font-semibold text-gray-900">
-                {messages.footer.company}
+                Dafel Consulting Services
               </span>
               <p className="mt-2 text-sm font-sans text-gray-600">
                 {messages.footer.rights}
@@ -496,4 +552,3 @@ const HomePage = memo(function HomePage() {
 });
 
 export default HomePage;
-

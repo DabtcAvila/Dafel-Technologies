@@ -332,7 +332,7 @@ export const ScrollAnimated = forwardRef<HTMLDivElement, ScrollAnimatedProps>(({
       className={combinedClassName}
       style={style}
       initial={variant.initial}
-      animate={isVisible ? variant.animate : variant.initial}
+      animate={variant.animate}  // EMERGENCY FIX: Always animate to visible state
       transition={{
         duration,
         delay,

@@ -61,12 +61,19 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
   useEffect(() => {
     if (open) {
       document.body.style.overflow = 'hidden';
+      // Prevent iOS bounce scroll but allow modal scroll
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
     } else {
       document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
     }
     
     return () => {
       document.body.style.overflow = 'unset';
+      document.body.style.position = 'unset';
+      document.body.style.width = 'unset';
     };
   }, [open]);
 
@@ -110,7 +117,12 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
             {/* Drawer Panel */}
             <Dialog.Content asChild>
               <motion.div
-                className="fixed right-0 top-0 h-screen w-full sm:w-[480px] bg-white shadow-2xl z-50 focus:outline-none"
+                className="fixed right-0 top-0 h-screen max-h-screen w-full sm:w-[480px] bg-white shadow-2xl z-50 focus:outline-none"
+                style={{ 
+                  height: '100vh',
+                  maxHeight: '100vh',
+                  overflowY: 'hidden'
+                }}
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
@@ -121,7 +133,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                   duration: 0.3 
                 }}
               >
-                <div className="h-full flex flex-col">
+                <div className="h-full flex flex-col max-h-screen">
                   {/* Fixed Header */}
                   <div className="flex-shrink-0 border-b border-gray-100">
                     <div className="px-8 py-6">
@@ -155,8 +167,8 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                   </div>
 
                   {/* Scrollable Content */}
-                  <div className="flex-1 overflow-y-auto">
-                    <div className="px-8 py-8">
+                  <div className="flex-1 overflow-y-auto overscroll-contain">
+                    <div className="px-4 sm:px-8 py-6 sm:py-8 pb-24 sm:pb-8 min-h-0">
                       {/* Success Message */}
                       <AnimatePresence>
                         {showSuccess && (
@@ -316,11 +328,12 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                         </div>
 
                         {/* Submit Button */}
-                        <div className="pt-4">
+                        <div className="pt-6 sm:pt-4 mt-4 sm:mt-0">
                           <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full px-6 py-4 text-sm font-medium text-white bg-gray-900 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-[0.98]"
+                            className="w-full px-6 py-4 sm:py-4 text-base sm:text-sm font-semibold sm:font-medium text-white bg-gray-900 rounded-lg sm:rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform active:scale-[0.98] touch-manipulation"
+                            style={{ minHeight: '52px' }}
                           >
                             {isSubmitting ? (
                               <span className="flex items-center justify-center">

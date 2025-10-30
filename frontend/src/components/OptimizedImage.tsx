@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Image, { ImageProps } from 'next/image';
 
 interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
@@ -9,6 +9,9 @@ interface OptimizedImageProps extends Omit<ImageProps, 'onLoad'> {
   avif?: string;
   lazy?: boolean;
   critical?: boolean;
+  enableBlurDataURL?: boolean;
+  quality?: number;
+  progressive?: boolean;
 }
 
 export default function OptimizedImage({
@@ -19,6 +22,9 @@ export default function OptimizedImage({
   avif,
   lazy = true,
   critical = false,
+  enableBlurDataURL = true,
+  quality = 85,
+  progressive = true,
   className = '',
   ...props
 }: OptimizedImageProps) {

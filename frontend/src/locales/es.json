@@ -1,12 +1,13 @@
 {
   "navbar": {
     "company": "Dafel Technologies",
-    "scheduleConsultation": "Programar Consulta"
+    "scheduleConsultation": "Programar Asesoría",
+    "login": "Iniciar Sesión"
   },
   "hero": {
-    "title": "Datos Complejos.",
-    "titleHighlight": "Resultados Exactos.",
-    "description": "Transformamos datos complejos en decisiones exactas. Nuestra IA automatiza cálculos críticos, optimiza procesos financieros y elimina errores en operaciones que requieren precisión absoluta.",
+    "title": "Servicios Actuariales.",
+    "titleHighlight": "Precisión Absoluta.",
+    "description": "Consultoria actuarial especializada en valuación de obligaciones laborales. Cumplimiento total con NIF D-3, IFRS-19 y USGAAP para su empresa.",
     "exploreButton": "Explorar Soluciones",
     "demoButton": "Solicitar Demo"
   },
@@ -46,21 +47,21 @@
     }
   },
   "services": {
-    "title": "Capacidades Core",
-    "subtitle": "Tecnología avanzada diseñada para impulsar resultados empresariales tangibles",
+    "title": "Servicios Especializados",
+    "subtitle": "Consultoría actuarial integral para el cumplimiento de obligaciones laborales",
     "aiDecisions": {
-      "title": "IA para Decisiones",
-      "description": "Algoritmos de aprendizaje profundo que analizan patrones complejos para proporcionar insights accionables y recomendaciones estratégicas en tiempo real."
+      "title": "Prima de Antigüedad",
+      "description": "Valuación actuarial de obligaciones por prima de antigüedad conforme a la Ley Federal del Trabajo y NIF D-3."
     },
     "automation": {
-      "title": "Automatización Inteligente",
-      "description": "Sistemas autónomos que optimizan flujos de trabajo, reducen errores operativos y liberan recursos humanos para tareas de mayor valor estratégico."
+      "title": "Indemnizaciones",
+      "description": "Cálculo de pasivos por indemnizaciones legales y planes de beneficios definidos bajo estándares internacionales."
     },
     "predictive": {
-      "title": "Análisis Predictivo",
-      "description": "Modelos estadísticos avanzados que anticipan tendencias del mercado, comportamiento del cliente y oportunidades de crecimiento con precisión excepcional."
+      "title": "Planes de Pensiones",
+      "description": "Diseño y valuación de planes de jubilación, análisis de riesgos actuariales y proyecciones demográficas."
     },
-    "learnMore": "Aprender más →"
+    "learnMore": "Conocer más →"
   },
   "cta": {
     "title": "Comienza tu transformación digital",

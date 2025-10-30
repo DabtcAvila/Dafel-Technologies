@@ -1,6 +1,165 @@
 @import './design-tokens.css';
 @import './windsurf-engine.css';
 @import './windsurf-animations.css';
+
+/* Eliminación inmediata de scrollbars para evitar flash inicial */
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  box-sizing: border-box !important;
+  /* Ocultar scrollbars pero mantener funcionalidad */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* Internet Explorer 10+ */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+body {
+  margin-top: 0 !important;
+  /* Compensar el ancho de scrollbar */
+  width: calc(100vw + 17px) !important;
+  max-width: calc(100vw + 17px) !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+#__next {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* Ocultar scrollbars en todos los elementos */
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+/* Clases de scale personalizadas para banda baja */
+.scale-105 {
+  transform: scale(1.05) !important;
+}
+
+.scale-120 {
+  transform: scale(1.2) !important;
+}
+
+/* Optimizaciones móviles */
+@media (max-width: 768px) {
+  /* Prevenir zoom en inputs */
+  input, select, textarea, button {
+    font-size: 16px !important;
+  }
+  
+  /* Mejorar performance en móvil */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Permitir selección en elementos de texto */
+  p, span, h1, h2, h3, h4, h5, h6 {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+  
+  /* Optimizar scrolling */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Windsurf Wave Background Styles */
+.windsurf-wave-background {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  perspective: 1000px;
+  isolation: isolate;
+}
+
+.windsurf-wave-path {
+  animation: windsurf-wave-flow 15s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.windsurf-floating-wave {
+  animation: windsurf-wave-float 20s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+@keyframes windsurf-wave-flow {
+  0%, 100% {
+    transform: translateX(0) scale(1);
+    opacity: 0.8;
+  }
+  33% {
+    transform: translateX(-20px) scale(1.02);
+    opacity: 1;
+  }
+  66% {
+    transform: translateX(20px) scale(0.98);
+    opacity: 0.9;
+  }
+}
+
+@keyframes windsurf-wave-float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 0.6;
+  }
+  25% {
+    transform: translateY(-30px) rotate(1deg) scale(1.05);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(0) rotate(-1deg) scale(0.95);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translateY(20px) rotate(0.5deg) scale(1.02);
+    opacity: 0.9;
+  }
+}
+
+/* Performance optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .windsurf-wave-path,
+  .windsurf-floating-wave {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* GPU acceleration for better performance */
+.windsurf-wave-background svg {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

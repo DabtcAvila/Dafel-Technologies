@@ -9,11 +9,13 @@ import HeroWindsurf, { type HeroWindsurfProps } from './HeroWindsurf';
 import RainbowBackground, { type RainbowBackgroundProps } from './RainbowBackground';
 import AnimatedText, { type AnimatedTextProps } from './AnimatedText';
 import WindsurfButton, { type WindsurfButtonProps } from './WindsurfButton';
+import WindsurfWaveBackground, { type WindsurfWaveBackgroundProps } from './WindsurfWaveBackground';
 
 export { HeroWindsurf, type HeroWindsurfProps };
 export { RainbowBackground, type RainbowBackgroundProps };
 export { AnimatedText, type AnimatedTextProps };
 export { WindsurfButton, type WindsurfButtonProps };
+export { WindsurfWaveBackground, type WindsurfWaveBackgroundProps };
 
 // ===== RE-EXPORTS FROM WINDSURF ANIMATIONS =====
 import {
@@ -62,7 +64,8 @@ export const WindsurfComponents = {
   HeroWindsurf,
   RainbowBackground,
   AnimatedText,
-  WindsurfButton
+  WindsurfButton,
+  WindsurfWaveBackground
 } as const;
 
 export const WindsurfAnimationComponents = {

@@ -34,7 +34,7 @@ const connectorRegistry: Map<DataSourceType, ConnectorConstructor> = new Map();
  */
 export class ConnectionFactory {
   private static logger = Logger.getInstance();
-  private static vault = VaultManager.getInstance();
+  private static vault = process.env.NODE_ENV === 'production' ? null : VaultManager.getInstance();
 
   /**
    * Static initializer to register all connectors
@@ -209,7 +209,7 @@ export class ConnectionFactory {
     // Decrypt password if present
     if (config.password) {
       try {
-        decrypted.password = await this.vault.decrypt(config.password);
+        decrypted.password = this.vault ? await this.vault.decrypt(config.password) : config.password;
       } catch (error) {
         this.logger.warn('Failed to decrypt password, using as-is', {
           connectionId: config.id,
@@ -221,7 +221,7 @@ export class ConnectionFactory {
     // Decrypt API key if present
     if (config.apiKey) {
       try {
-        decrypted.apiKey = await this.vault.decrypt(config.apiKey);
+        decrypted.apiKey = this.vault ? await this.vault.decrypt(config.apiKey) : config.apiKey;
       } catch (error) {
         this.logger.warn('Failed to decrypt API key, using as-is', {
           connectionId: config.id,
@@ -233,7 +233,7 @@ export class ConnectionFactory {
     // Decrypt any sensitive configuration fields
     if (config.configuration?.credentials) {
       try {
-        decrypted.configuration.credentials = await this.vault.decrypt(config.configuration.credentials);
+        decrypted.configuration.credentials = this.vault ? await this.vault.decrypt(config.configuration.credentials) : config.configuration.credentials;
       } catch (error) {
         this.logger.warn('Failed to decrypt credentials, using as-is', {
           connectionId: config.id,

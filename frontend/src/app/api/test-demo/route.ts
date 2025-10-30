@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
   try {
     // Get or create a test user
-    let user = await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email: 'admin@dafel.tech' },
     });
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const { Pool } = pg;
 
     // Decrypt password
-    let password = 'DafelSecure2025!';
+    const password = 'DafelSecure2025!';
     
     const pool = new Pool({
       host: 'localhost',

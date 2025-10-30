@@ -139,7 +139,7 @@ export default function DafelSection({ className = '' }: DafelSectionProps) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(to bottom, #ffffff, #f9fafb)',
+        background: '#ffffff',
         padding: '4rem 2rem'
       }}
     >

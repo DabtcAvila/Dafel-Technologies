@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/button';
 import { ArrowRightIcon, CheckIcon } from '@heroicons/react/24/outline';
 import HeroSection from '@/components/landing/Hero/HeroSection';
 import { 
@@ -10,7 +10,8 @@ import {
   InteractiveElement, 
   ScrollAnimated,
   PerformanceContainer,
-  WindsurfProvider 
+  WindsurfProvider,
+  WindsurfWaveBackground 
 } from '@/components/windsurf';
 import { WindsurfEngine } from '@/lib/windsurf-engine';
 
@@ -58,15 +59,13 @@ export default function NewLandingPage() {
     <WindsurfProvider config={windsurfConfig}>
       <PerformanceContainer monitoring={true}>
         <main className="min-h-screen bg-white relative overflow-hidden">
-          {/* Enhanced Rainbow Background */}
-          <RainbowBackground 
+          {/* Windsurf Wave Background - Replica exacta de Windsurf.com */}
+          <WindsurfWaveBackground 
             intensity="medium" 
-            speed="normal" 
-            direction="diagonal"
+            animated={true}
+            responsive={true}
             className="absolute inset-0 z-0"
-          >
-            <div className="windsurf-gradient-system" />
-          </RainbowBackground>
+          />
           
           {/* Content Layer */}
           <div className="relative z-10">

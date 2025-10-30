@@ -20,19 +20,20 @@ import {
 } from '@heroicons/react/24/outline';
 
 // Import view components
-import CanvasView from '@/components/studio/views/CanvasView';
-import DataSourcesView from '@/components/studio/views/DataSourcesView';
-import AIModelsView from '@/components/studio/views/AIModelsView';
-import TestingView from '@/components/studio/views/TestingView';
-import AnalyticsView from '@/components/studio/views/AnalyticsView';
+import EstudiosView from '@/components/studio/views/EstudiosView';
+import ReportesView from '@/components/studio/views/ReportesView';
+import DocumentosView from '@/components/studio/views/DocumentosView';
+import EstadoCuentaView from '@/components/studio/views/EstadoCuentaView';
+import MensajesView from '@/components/studio/views/MensajesView';
 import SettingsView from '@/components/studio/views/SettingsView';
 
 export default function StudioPage() {
   const { messages } = useLanguage();
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [activeView, setActiveView] = useState('canvas');
+  const [activeView, setActiveView] = useState('estudios');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -40,6 +41,17 @@ export default function StudioPage() {
       router.push('/login');
     }
   }, [status, router]);
+
+  // Add timeout for loading state to prevent infinite spinner
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (status === 'loading') {
+        setLoadingTimeout(true);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(timer);
+  }, [status]);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -86,16 +98,16 @@ export default function StudioPage() {
   };
 
   const sidebarItems = [
-    { Icon: CubeIcon, id: 'canvas', label: 'Canvas' },
-    { Icon: CircleStackIcon, id: 'data-sources', label: 'Data Sources' },
-    { Icon: CpuChipIcon, id: 'ai-models', label: 'AI Models' },
-    { Icon: BeakerIcon, id: 'testing', label: 'Testing' },
-    { Icon: ChartBarIcon, id: 'analytics', label: 'Analytics' },
+    { Icon: CubeIcon, id: 'estudios', label: 'Mis Estudios' },
+    { Icon: ChartBarIcon, id: 'reportes', label: 'Reportes' },
+    { Icon: CircleStackIcon, id: 'documentos', label: 'Documentos' },
+    { Icon: CpuChipIcon, id: 'estado-cuenta', label: 'Estado de Cuenta' },
+    { Icon: BeakerIcon, id: 'mensajes', label: 'Mensajes' },
     { Icon: Cog6ToothIcon, id: 'settings', label: 'Settings' }
   ];
 
-  // Show loading state while session is being fetched
-  if (status === 'loading') {
+  // Show loading state while session is being fetched (with timeout)
+  if (status === 'loading' && !loadingTimeout) {
     return (
       <div className="h-screen flex items-center justify-center bg-gray-50">
         <motion.div
@@ -130,8 +142,8 @@ export default function StudioPage() {
       <Toaster position="top-right" />
       <div className="h-screen flex bg-gray-50 overflow-hidden">
         {/* Sidebar */}
-        <div className="w-[60px] bg-gray-900 flex flex-col items-center py-6 relative z-10">
-          <div className="flex-1 space-y-6">
+        <div className="w-[60px] bg-gray-900 flex flex-col items-center justify-center relative z-10">
+          <div className="space-y-6">
             {sidebarItems.map(({ Icon, id, label }) => (
               <div key={id} className="relative group">
                 <button
@@ -154,26 +166,26 @@ export default function StudioPage() {
                 </div>
               </div>
             ))}
-          </div>
-          
-          {/* Admin Access Button (only for admins) */}
-          {session?.user?.role === 'ADMIN' && (
-            <div className="relative group mb-4">
-              <button
-                onClick={navigateToAdmin}
-                className="p-2 rounded-lg transition-all duration-200 text-amber-400 hover:bg-gray-800"
-              >
-                <UsersIcon className="h-6 w-6" />
-              </button>
-              <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <div className="relative bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
-                  Admin Panel
-                  {/* Arrow pointing to the icon */}
-                  <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-gray-800"></div>
+            
+            {/* Admin Access Button (only for admins) */}
+            {session?.user?.role === 'ADMIN' && (
+              <div className="relative group mt-8">
+                <button
+                  onClick={navigateToAdmin}
+                  className="p-2 rounded-lg transition-all duration-200 text-amber-400 hover:bg-gray-800"
+                >
+                  <UsersIcon className="h-6 w-6" />
+                </button>
+                <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="relative bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                    Admin Panel
+                    {/* Arrow pointing to the icon */}
+                    <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-r-4 border-r-gray-800"></div>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Main Canvas Area */}
@@ -183,9 +195,11 @@ export default function StudioPage() {
             <div className="flex justify-between items-center h-full">
               {/* Left side */}
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-mono font-light tracking-wider text-gray-900">
-                  Dafel Studio
-                </h1>
+                <img
+                  src="/dafel-logo-optimized.svg"
+                  alt="Dafel Consulting Portal"
+                  className="h-16 w-auto"
+                />
                 
                 {/* Status Pill */}
                 <div className="flex items-center gap-2 px-3 py-1.5 bg-[#f9fafb] rounded-[20px]">
@@ -195,12 +209,7 @@ export default function StudioPage() {
                     <div className="absolute inset-0 w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
                   </div>
                   
-                  <span className="text-sm text-gray-700">Admin</span>
-                  
-                  {/* Role Badge */}
-                  <div className="px-2 py-0.5 bg-[#dbeafe] text-[#1e40af] text-xs font-medium rounded">
-                    {session?.user?.role || 'ADMIN'}
-                  </div>
+                  <span className="text-sm text-gray-700">{(session?.user?.role || 'VIEWER').toLowerCase()}</span>
                 </div>
               </div>
               
@@ -236,7 +245,7 @@ export default function StudioPage() {
           </div>
 
           {/* Main Content Area */}
-          <div className={`flex-1 relative ${activeView === 'canvas' ? 'p-8' : ''}`}>
+          <div className={`flex-1 relative ${activeView === 'estudios' ? 'p-8' : ''}`}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeView}
@@ -246,11 +255,11 @@ export default function StudioPage() {
                 transition={{ duration: 0.2 }}
                 className="h-full"
               >
-                {activeView === 'canvas' && <CanvasView />}
-                {activeView === 'data-sources' && <DataSourcesView />}
-                {activeView === 'ai-models' && <AIModelsView />}
-                {activeView === 'testing' && <TestingView />}
-                {activeView === 'analytics' && <AnalyticsView />}
+                {activeView === 'estudios' && <EstudiosView />}
+                {activeView === 'reportes' && <ReportesView />}
+                {activeView === 'documentos' && <DocumentosView />}
+                {activeView === 'estado-cuenta' && <EstadoCuentaView />}
+                {activeView === 'mensajes' && <MensajesView />}
                 {activeView === 'settings' && <SettingsView />}
               </motion.div>
             </AnimatePresence>

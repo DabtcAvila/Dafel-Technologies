@@ -4,10 +4,34 @@ import { useEffect } from 'react';
 
 export default function ServiceWorkerRegistration() {
   useEffect(() => {
+    // Unregister service worker in development to prevent caching issues
     if (
       typeof window !== 'undefined' &&
       'serviceWorker' in navigator &&
-      process.env.NODE_ENV === 'production'
+      process.env.NODE_ENV === 'development'
+    ) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        registrations.forEach(registration => {
+          registration.unregister();
+          console.log('Service Worker unregistered in development');
+        });
+      });
+      // Clear all caches
+      if ('caches' in window) {
+        caches.keys().then(cacheNames => {
+          cacheNames.forEach(cacheName => {
+            caches.delete(cacheName);
+            console.log('Cache cleared:', cacheName);
+          });
+        });
+      }
+      return;
+    }
+
+    if (
+      typeof window !== 'undefined' &&
+      'serviceWorker' in navigator &&
+      process.env.NODE_ENV === 'production_disabled'
     ) {
       // Register service worker
       navigator.serviceWorker

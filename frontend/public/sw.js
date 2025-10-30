@@ -1,9 +1,20 @@
 // Dafel Technologies Service Worker - Ultra Performance Caching
-// Version: 1.0.0
+// Version: 2.0.0 - Enterprise Optimized
 
-const CACHE_NAME = 'dafel-v1';
-const STATIC_CACHE = 'dafel-static-v1';
-const RUNTIME_CACHE = 'dafel-runtime-v1';
+const CACHE_VERSION = '2.0.0';
+const CACHE_NAME = `dafel-v${CACHE_VERSION}`;
+const STATIC_CACHE = `dafel-static-v${CACHE_VERSION}`;
+const RUNTIME_CACHE = `dafel-runtime-v${CACHE_VERSION}`;
+const IMAGE_CACHE = `dafel-images-v${CACHE_VERSION}`;
+const API_CACHE = `dafel-api-v${CACHE_VERSION}`;
+
+// Cache size limits (in bytes)
+const CACHE_LIMITS = {
+  static: 50 * 1024 * 1024, // 50MB
+  runtime: 30 * 1024 * 1024, // 30MB
+  images: 100 * 1024 * 1024, // 100MB
+  api: 10 * 1024 * 1024 // 10MB
+};
 
 // Resources to cache immediately
 const PRECACHE_URLS = [
@@ -11,8 +22,30 @@ const PRECACHE_URLS = [
   '/login',
   '/favicon.svg',
   '/favicon.ico',
-  '/manifest.json'
+  '/manifest.json',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
+
+// Critical resources that must be cached
+const CRITICAL_RESOURCES = [
+  '/_next/static/css/',
+  '/_next/static/chunks/framework',
+  '/_next/static/chunks/main',
+  '/_next/static/chunks/pages'
+];
+
+// Cache strategies configuration
+const CACHE_STRATEGIES = {
+  '/': 'networkFirst',
+  '/login': 'networkFirst', 
+  '/studio': 'networkFirst',
+  '/_next/static/': 'cacheFirst',
+  '/api/': 'networkOnly',
+  '/favicon': 'cacheFirst',
+  '/icon': 'cacheFirst',
+  '/manifest.json': 'cacheFirst'
+};
 
 // Install event - precache critical resources
 self.addEventListener('install', event => {
@@ -52,19 +85,35 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Handle different types of requests
+  // Determine caching strategy based on request type
+  let strategy = 'staleWhileRevalidate'; // default
+  
+  for (const [pattern, strategyName] of Object.entries(CACHE_STRATEGIES)) {
+    if (url.pathname.startsWith(pattern)) {
+      strategy = strategyName;
+      break;
+    }
+  }
+
+  // Handle different types of requests with optimized strategies
   if (request.destination === 'document') {
     // Network first for HTML pages
     event.respondWith(networkFirst(request));
   } else if (request.destination === 'image') {
-    // Cache first for images
-    event.respondWith(cacheFirst(request));
+    // Advanced image caching
+    event.respondWith(cacheImage(request));
   } else if (request.url.includes('/_next/static/')) {
     // Cache first for static assets (they're immutable)
     event.respondWith(cacheFirst(request));
   } else if (request.url.includes('/api/')) {
-    // Network only for API calls
-    event.respondWith(fetch(request));
+    // Intelligent API caching
+    event.respondWith(cacheAPI(request));
+  } else if (request.destination === 'font') {
+    // Long-term cache for fonts
+    event.respondWith(cacheFirst(request));
+  } else if (request.destination === 'style' || request.destination === 'script') {
+    // Cache first for CSS/JS with fallback
+    event.respondWith(cacheFirst(request));
   } else {
     // Stale while revalidate for other resources
     event.respondWith(staleWhileRevalidate(request));
@@ -119,6 +168,95 @@ async function staleWhileRevalidate(request) {
   }).catch(() => cachedResponse);
 
   return cachedResponse || fetchPromise;
+}
+
+// Advanced image caching with compression detection
+async function cacheImage(request) {
+  const cache = await caches.open(IMAGE_CACHE);
+  const cachedResponse = await cache.match(request);
+  
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok && networkResponse.headers.get('content-type')?.includes('image')) {
+      // Check cache size before storing
+      await manageCacheSize(IMAGE_CACHE, CACHE_LIMITS.images);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    // Return offline placeholder for images
+    return new Response(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#f3f4f6"/><text x="100" y="100" text-anchor="middle" fill="#9ca3af">Offline</text></svg>',
+      { headers: { 'Content-Type': 'image/svg+xml' } }
+    );
+  }
+}
+
+// Cache size management
+async function manageCacheSize(cacheName, maxSize) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  let totalSize = 0;
+  
+  // Calculate current cache size
+  for (const key of keys) {
+    const response = await cache.match(key);
+    if (response) {
+      const size = parseInt(response.headers.get('content-length') || '0');
+      totalSize += size;
+    }
+  }
+  
+  // Remove oldest entries if over limit
+  if (totalSize > maxSize) {
+    const entriesToRemove = Math.ceil(keys.length * 0.1); // Remove 10% oldest
+    for (let i = 0; i < entriesToRemove; i++) {
+      await cache.delete(keys[i]);
+    }
+  }
+}
+
+// Intelligent API caching
+async function cacheAPI(request) {
+  const url = new URL(request.url);
+  const isGET = request.method === 'GET';
+  const isPublicAPI = url.pathname.includes('/api/public/');
+  
+  if (!isGET || !isPublicAPI) {
+    return fetch(request);
+  }
+  
+  const cache = await caches.open(API_CACHE);
+  const cachedResponse = await cache.match(request);
+  
+  // Check if cached response is still fresh (5 minutes)
+  if (cachedResponse) {
+    const cachedDate = new Date(cachedResponse.headers.get('date') || 0);
+    const now = new Date();
+    const age = (now.getTime() - cachedDate.getTime()) / 1000;
+    
+    if (age < 300) { // 5 minutes
+      return cachedResponse;
+    }
+  }
+  
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok) {
+      await manageCacheSize(API_CACHE, CACHE_LIMITS.api);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    return cachedResponse || new Response('{"error": "Offline"}', {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
 
 // Background sync for critical actions

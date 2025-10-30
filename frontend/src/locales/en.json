@@ -1,12 +1,13 @@
 {
   "navbar": {
     "company": "Dafel Technologies",
-    "scheduleConsultation": "Schedule Consultation"
+    "scheduleConsultation": "Schedule Advisory",
+    "login": "Login"
   },
   "hero": {
-    "title": "Complex Data.",
-    "titleHighlight": "Exact Results.",
-    "description": "We transform complex data into exact decisions. Our AI automates critical calculations, optimizes financial processes, and eliminates errors in operations requiring absolute precision.",
+    "title": "Actuarial Services.",
+    "titleHighlight": "Absolute Precision.",
+    "description": "Specialized actuarial consulting for labor obligation valuations. Full compliance with NIF D-3, IFRS-19 and USGAAP for your company.",
     "exploreButton": "Explore Solutions",
     "demoButton": "Request Demo"
   },
@@ -46,19 +47,19 @@
     }
   },
   "services": {
-    "title": "Core Capabilities",
-    "subtitle": "Advanced technology designed to drive tangible business results",
+    "title": "Specialized Services",
+    "subtitle": "Comprehensive actuarial consulting for labor obligation compliance",
     "aiDecisions": {
-      "title": "AI for Decisions",
-      "description": "Deep learning algorithms that analyze complex patterns to provide actionable insights and strategic recommendations in real-time."
+      "title": "Seniority Premium",
+      "description": "Actuarial valuation of seniority premium obligations in accordance with Federal Labor Law and NIF D-3."
     },
     "automation": {
-      "title": "Intelligent Automation",
-      "description": "Autonomous systems that optimize workflows, reduce operational errors, and free up human resources for higher strategic value tasks."
+      "title": "Severance Pay",
+      "description": "Calculation of liabilities for legal severance and defined benefit plans under international standards."
     },
     "predictive": {
-      "title": "Predictive Analytics",
-      "description": "Advanced statistical models that anticipate market trends, customer behavior, and growth opportunities with exceptional precision."
+      "title": "Pension Plans",
+      "description": "Design and valuation of retirement plans, actuarial risk analysis and demographic projections."
     },
     "learnMore": "Learn more →"
   },

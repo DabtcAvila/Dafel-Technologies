@@ -86,7 +86,21 @@ const HomePage = memo(function HomePage() {
       </nav>
 
       {/* Hero Section - Optimized for LCP with banda baja integration */}
-      <section className="relative min-h-screen w-screen" style={{ background: 'rgba(255, 255, 255, 0.1)', left: 0, right: 0, margin: 0, padding: 0 }}>
+      <section className="relative min-h-screen w-screen" style={{ 
+        backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        left: 0, right: 0, margin: 0, padding: 0 
+      }}>
+        {/* Overlay azul profesional */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.4) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(147, 197, 253, 0.2) 100%)',
+            backdropFilter: 'blur(0.5px)'
+          }}
+        />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
           <motion.div
             className="mx-auto max-w-4xl text-center relative z-10"
@@ -94,26 +108,38 @@ const HomePage = memo(function HomePage() {
             animate="animate"
             variants={staggerChildren}
           >
+            {/* Dafel Logo */}
+            <motion.div
+              className="flex justify-center mb-6 sm:mb-8"
+              variants={fadeIn}
+            >
+              <motion.img
+                src="/dafel-logo-optimized.svg"
+                alt="Dafel Consulting Services"
+                className="h-16 sm:h-20 w-auto"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              />
+            </motion.div>
 
             <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-light tracking-wider text-gray-900"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-light tracking-wider text-white"
               variants={fadeIn}
               style={{ 
-                textShadow: '0 2px 4px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(255, 255, 255, 0.6)'
+                textShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4)'
               }}
             >
-              {messages.hero.title}
-              <span className="block font-mono font-normal tracking-wider">{messages.hero.titleHighlight}</span>
+              ¿Necesitas una consultoría empresarial?
             </motion.h1>
             
             <motion.p
-              className="mx-auto mt-6 sm:mt-8 max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-gray-700"
+              className="mx-auto mt-6 sm:mt-8 max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-white"
               variants={fadeIn}
               style={{ 
-                textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
               }}
             >
-              {messages.hero.description}
+              ¡Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP!
             </motion.p>
 
             <motion.div

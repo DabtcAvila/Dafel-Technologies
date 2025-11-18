@@ -85,35 +85,25 @@ const HomePage = memo(function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section Profesional con Carrusel de Imágenes */}
-      <section className="relative min-h-screen w-screen overflow-hidden" style={{ left: 0, right: 0, margin: 0, padding: 0 }}>
-        {/* Carrusel de Imágenes de Fondo */}
-        <div className="absolute inset-0 w-full h-full">
-          {/* Imagen 1 */}
-          <motion.div
-            className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg)',
-              opacity: scrollY < 100 ? 1 : 0
-            }}
-            initial={{ opacity: 1, scale: 1.1 }}
-            animate={{ 
-              opacity: scrollY < 100 ? 1 : 0,
-              scale: scrollY < 100 ? 1 : 1.1
-            }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          />
-          
-          {/* Filtro azul profesional */}
-          <div 
-            className="absolute inset-0 w-full h-full"
-            style={{
-              background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.4) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(147, 197, 253, 0.2) 100%)',
-              backdropFilter: 'blur(0.5px)'
-            }}
-          />
-        </div>
-
+      {/* Hero Section Profesional con Imagen de Fondo */}
+      <section className="relative min-h-screen w-screen overflow-hidden">
+        {/* Imagen de fondo profesional */}
+        <div 
+          className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg)'
+          }}
+        />
+        
+        {/* Overlay azul profesional */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.4) 0%, rgba(59, 130, 246, 0.3) 50%, rgba(147, 197, 253, 0.2) 100%)',
+            backdropFilter: 'blur(0.5px)'
+          }}
+        />
+        
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
           <motion.div
             className="mx-auto max-w-4xl text-center"
@@ -122,41 +112,37 @@ const HomePage = memo(function HomePage() {
             variants={staggerChildren}
           >
             <motion.h1
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold tracking-tight text-white mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-wider text-white"
               variants={fadeIn}
               style={{ 
-                textShadow: '0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(0, 0, 0, 0.3)',
-                fontFamily: 'system-ui, -apple-system, sans-serif'
+                textShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4)'
               }}
             >
               ¿Necesitas una consultoría empresarial?
             </motion.h1>
             
             <motion.p
-              className="mx-auto mt-6 sm:mt-8 max-w-3xl text-lg sm:text-xl lg:text-2xl font-medium leading-relaxed text-white"
+              className="mx-auto mt-6 sm:mt-8 max-w-3xl text-lg sm:text-xl font-medium leading-relaxed text-white"
               variants={fadeIn}
               style={{ 
-                textShadow: '0 2px 10px rgba(0, 0, 0, 0.5), 0 1px 5px rgba(0, 0, 0, 0.3)'
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
               }}
             >
               ¡Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP!
             </motion.p>
 
             <motion.div
-              className="mt-10 sm:mt-16 flex justify-center"
+              className="mt-8 sm:mt-12 flex justify-center"
               variants={fadeIn}
             >
               <button 
                 onClick={() => router.push('/login')}
-                className="group relative overflow-hidden rounded-xl bg-white text-blue-900 px-10 sm:px-16 lg:px-24 py-4 sm:py-5 text-lg sm:text-xl font-bold transition-all duration-300 hover:bg-blue-50 hover:scale-105 shadow-2xl border-2 border-white/20 backdrop-blur-sm">
-                <span className="relative z-10 flex items-center space-x-2">
-                  <span>{messages.navbar.login}</span>
-                  <span className="group-hover:translate-x-1 transition-transform">→</span>
-                </span>
+                className="group relative overflow-hidden rounded-lg bg-white border-2 border-white px-8 sm:px-16 lg:px-32 py-4 sm:py-5 text-base sm:text-lg font-bold text-blue-900 transition-all duration-300 hover:bg-blue-900 hover:text-white hover:border-blue-900 shadow-2xl transform hover:scale-105">
+                <span className="relative z-10">Iniciar Sesión</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-800 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
               </button>
             </motion.div>
           </motion.div>
-        </div>
 
           {/* Banda Baja Animation - Solo en Hero Section */}
           <div 

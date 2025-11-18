@@ -1,0 +1,563 @@
+name: 🧪 Comprehensive Testing Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run full test suite daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of test to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - unit
+        - integration
+        - e2e
+        - security
+        - performance
+
+env:
+  NODE_VERSION: '20'
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dafel_test
+  NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET || 'test-secret-key' }}
+  NEXTAUTH_URL: http://localhost:3000
+
+jobs:
+  # Pre-flight checks
+  preflight:
+    name: 🚀 Pre-flight Checks
+    runs-on: ubuntu-latest
+    outputs:
+      should-run-unit: ${{ steps.check.outputs.unit }}
+      should-run-integration: ${{ steps.check.outputs.integration }}
+      should-run-e2e: ${{ steps.check.outputs.e2e }}
+      should-run-security: ${{ steps.check.outputs.security }}
+      should-run-performance: ${{ steps.check.outputs.performance }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Determine test scope
+        id: check
+        run: |
+          TEST_TYPE="${{ github.event.inputs.test_type || 'all' }}"
+          echo "Test type: $TEST_TYPE"
+          
+          if [[ "$TEST_TYPE" == "all" || "$TEST_TYPE" == "unit" ]]; then
+            echo "unit=true" >> $GITHUB_OUTPUT
+          fi
+          if [[ "$TEST_TYPE" == "all" || "$TEST_TYPE" == "integration" ]]; then
+            echo "integration=true" >> $GITHUB_OUTPUT
+          fi
+          if [[ "$TEST_TYPE" == "all" || "$TEST_TYPE" == "e2e" ]]; then
+            echo "e2e=true" >> $GITHUB_OUTPUT
+          fi
+          if [[ "$TEST_TYPE" == "all" || "$TEST_TYPE" == "security" ]]; then
+            echo "security=true" >> $GITHUB_OUTPUT
+          fi
+          if [[ "$TEST_TYPE" == "all" || "$TEST_TYPE" == "performance" ]]; then
+            echo "performance=true" >> $GITHUB_OUTPUT
+          fi
+
+  # Code quality and linting
+  code-quality:
+    name: 📝 Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run type checking
+        run: npm run type-check
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Check code formatting
+        run: npm run format -- --check
+
+  # Unit tests with comprehensive coverage
+  unit-tests:
+    name: 🧪 Unit Tests (Coverage 95%+)
+    runs-on: ubuntu-latest
+    needs: [preflight, code-quality]
+    if: needs.preflight.outputs.should-run-unit == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+      - name: Check coverage thresholds
+        run: |
+          echo "Verifying 95%+ coverage requirement..."
+          node -e "
+            const coverage = require('./coverage/coverage-summary.json');
+            const total = coverage.total;
+            const thresholds = { lines: 95, functions: 95, branches: 95, statements: 95 };
+            
+            let failed = false;
+            Object.entries(thresholds).forEach(([key, threshold]) => {
+              const actual = total[key].pct;
+              console.log(\`\${key}: \${actual}% (required: \${threshold}%)\`);
+              if (actual < threshold) {
+                console.error(\`❌ \${key} coverage (\${actual}%) below threshold (\${threshold}%)\`);
+                failed = true;
+              }
+            });
+            
+            if (failed) {
+              console.error('💥 Coverage requirements not met!');
+              process.exit(1);
+            } else {
+              console.log('✅ All coverage requirements met!');
+            }
+          "
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage/lcov.info
+          flags: unit
+
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-coverage
+          path: coverage/
+
+  # Integration tests
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    needs: [preflight, code-quality]
+    if: needs.preflight.outputs.should-run-integration == 'true'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dafel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup database
+        run: |
+          npm run prisma:generate
+          npm run prisma:migrate
+          npm run prisma:seed
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          REDIS_URL: redis://localhost:6379
+
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: integration-test-results
+          path: test-results/
+
+  # End-to-End tests with Playwright
+  e2e-tests:
+    name: 🎭 E2E Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: [preflight, code-quality]
+    if: needs.preflight.outputs.should-run-e2e == 'true'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dafel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Setup database
+        run: |
+          npm run prisma:generate
+          npm run prisma:migrate
+          npm run prisma:seed
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run Playwright tests
+        run: npm run test:e2e
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  # Security testing with OWASP ZAP
+  security-tests:
+    name: 🔒 Security Tests (OWASP ZAP)
+    runs-on: ubuntu-latest
+    needs: [preflight, code-quality]
+    if: needs.preflight.outputs.should-run-security == 'true'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dafel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup database
+        run: |
+          npm run prisma:generate
+          npm run prisma:migrate
+          npm run prisma:seed
+
+      - name: Build and start application
+        run: |
+          npm run build
+          npm start &
+          sleep 30 # Wait for app to start
+
+      - name: Run OWASP ZAP baseline scan
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://localhost:3000'
+          rules_file_name: '.zap/rules.tsv'
+          cmd_options: '-a'
+
+      - name: Run custom security tests
+        run: npm run test:security
+        continue-on-error: true
+
+      - name: Upload security reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-reports
+          path: |
+            security-reports/
+            report_html.html
+            report_md.md
+            report_json.json
+
+  # Performance testing with k6
+  performance-tests:
+    name: ⚡ Performance Tests (k6)
+    runs-on: ubuntu-latest
+    needs: [preflight, code-quality]
+    if: needs.preflight.outputs.should-run-performance == 'true'
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dafel_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup database
+        run: |
+          npm run prisma:generate
+          npm run prisma:migrate
+          npm run prisma:seed
+
+      - name: Build and start application
+        run: |
+          npm run build
+          npm start &
+          sleep 30
+
+      - name: Run load tests
+        run: |
+          echo "Running load tests..."
+          k6 run tests/performance/load-test.js --out json=load-test-results.json
+        continue-on-error: true
+
+      - name: Run stress tests (on schedule only)
+        if: github.event_name == 'schedule'
+        run: |
+          echo "Running stress tests..."
+          k6 run tests/performance/stress-test.js --out json=stress-test-results.json
+        continue-on-error: true
+
+      - name: Run spike tests
+        run: |
+          echo "Running spike tests..."
+          k6 run tests/performance/spike-test.js --out json=spike-test-results.json
+        continue-on-error: true
+
+      - name: Upload performance reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-reports
+          path: |
+            *-test-results.json
+            *-test-summary.json
+            *-test-summary.html
+
+  # Consolidate and report results
+  test-summary:
+    name: 📊 Test Summary & Reports
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, e2e-tests, security-tests, performance-tests]
+    if: always()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: test-artifacts/
+
+      - name: Generate comprehensive test report
+        run: |
+          echo "# 🧪 Comprehensive Test Report" > test-summary.md
+          echo "" >> test-summary.md
+          echo "## Test Execution Summary" >> test-summary.md
+          echo "" >> test-summary.md
+          
+          # Unit tests
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
+            echo "✅ **Unit Tests**: PASSED (95%+ coverage)" >> test-summary.md
+          else
+            echo "❌ **Unit Tests**: FAILED" >> test-summary.md
+          fi
+          
+          # Integration tests
+          if [[ "${{ needs.integration-tests.result }}" == "success" ]]; then
+            echo "✅ **Integration Tests**: PASSED" >> test-summary.md
+          else
+            echo "❌ **Integration Tests**: FAILED" >> test-summary.md
+          fi
+          
+          # E2E tests
+          if [[ "${{ needs.e2e-tests.result }}" == "success" ]]; then
+            echo "✅ **E2E Tests**: PASSED" >> test-summary.md
+          else
+            echo "❌ **E2E Tests**: FAILED" >> test-summary.md
+          fi
+          
+          # Security tests
+          if [[ "${{ needs.security-tests.result }}" == "success" ]]; then
+            echo "✅ **Security Tests**: PASSED" >> test-summary.md
+          else
+            echo "⚠️ **Security Tests**: NEEDS REVIEW" >> test-summary.md
+          fi
+          
+          # Performance tests
+          if [[ "${{ needs.performance-tests.result }}" == "success" ]]; then
+            echo "✅ **Performance Tests**: PASSED" >> test-summary.md
+          else
+            echo "⚠️ **Performance Tests**: NEEDS REVIEW" >> test-summary.md
+          fi
+          
+          echo "" >> test-summary.md
+          echo "## Quality Gates" >> test-summary.md
+          echo "" >> test-summary.md
+          echo "- 🎯 Code Coverage: 95%+ (Required for merge)" >> test-summary.md
+          echo "- 🔒 Security Scan: Clean (No critical vulnerabilities)" >> test-summary.md
+          echo "- ⚡ Performance: P95 < 2s (Load test requirement)" >> test-summary.md
+          echo "- 🎭 E2E: All critical user journeys working" >> test-summary.md
+          
+          echo "" >> test-summary.md
+          echo "## Artifacts" >> test-summary.md
+          echo "- Coverage reports in \`unit-test-coverage/\`" >> test-summary.md
+          echo "- Playwright report in \`playwright-report/\`" >> test-summary.md
+          echo "- Security reports in \`security-reports/\`" >> test-summary.md
+          echo "- Performance reports in \`performance-reports/\`" >> test-summary.md
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const testSummary = fs.readFileSync('test-summary.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: testSummary
+            });
+
+      - name: Upload consolidated test report
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprehensive-test-report
+          path: |
+            test-summary.md
+            test-artifacts/
+
+      - name: Fail if critical tests failed
+        run: |
+          if [[ "${{ needs.unit-tests.result }}" == "failure" ]]; then
+            echo "❌ Unit tests failed - blocking merge"
+            exit 1
+          fi
+          if [[ "${{ needs.integration-tests.result }}" == "failure" ]]; then
+            echo "❌ Integration tests failed - blocking merge"
+            exit 1
+          fi
+          if [[ "${{ needs.e2e-tests.result }}" == "failure" ]]; then
+            echo "❌ E2E tests failed - blocking merge"
+            exit 1
+          fi
+          echo "✅ All critical tests passed"
+
+  # Deploy test results to GitHub Pages (optional)
+  deploy-reports:
+    name: 📈 Deploy Test Reports
+    runs-on: ubuntu-latest
+    needs: [test-summary]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Download test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: reports/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

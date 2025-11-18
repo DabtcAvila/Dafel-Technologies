@@ -141,16 +141,19 @@ curl -I https://dafel.com.mx
 ## 📊 VERIFICACIÓN DE ÉXITO
 
 ### Señales de que todo está bien:
-- ✅ `ps aux | grep cloudflared` muestra el túnel correcto
+- ✅ `ps aux | grep cloudflared` muestra el túnel correcto (30ecd250-6d2c-45a5-987b-67b354281f90)
 - ✅ `lsof -i:3000` muestra proceso node
 - ✅ `curl -I https://dafel.com.mx` devuelve 200
+- ✅ `curl -I https://dafel.com.mx/dev/v00` devuelve 200 (versión baseline)
 - ✅ `curl -I http://localhost:3000` devuelve 200
+- ✅ `ls versions/v0.0.0` muestra backup completo
 
 ### Señales de problemas:
 - ❌ Túnel ID incorrecto en `ps aux | grep cloudflared`
 - ❌ Puerto 3000 ocupado por proceso no-node
 - ❌ curl devuelve 502, 503, o timeout
 - ❌ Error "credenciales no encontradas"
+- ❌ `curl /dev/v00` devuelve 404 (falta contenido real)
 
 ## 🔧 COMANDOS DE ADMINISTRACIÓN
 
@@ -178,6 +181,21 @@ cloudflared tunnel run 30ecd250-6d2c-45a5-987b-67b354281f90 --loglevel debug
 ---
 
 **🎯 REGLA DE ORO: Si no sabes qué hacer, ejecuta `/dafelwork` y `/start` - resuelve 95% de los problemas**
+
+## 🚀 SISTEMA VERSIÓN 0.0.0 BASELINE ESTABLECIDO
+
+### ✅ Estado Actual - COMPLETAMENTE FUNCIONAL
+- 📊 **Versión 0.0.0**: Contenido real de producción capturado en /dev/v00
+- 🌐 **URLs Activas**: dafel.com.mx, dafel.com.mx/dev, dafel.com.mx/dev/v00  
+- 💾 **Backup Completo**: versions/v0.0.0/ con código funcional
+- 🔄 **Sistema Automático**: /newversion listo para futuras versiones
+- 🛡️ **A Prueba de Bobos**: Documentación completa para cualquier AI
+
+### 🎯 Verificación Rápida del Sistema Completo
+```bash
+# Verificar todo en un comando
+curl -I https://dafel.com.mx && curl -I https://dafel.com.mx/dev/v00 && ls versions/v0.0.0 && echo "✅ SISTEMA COMPLETAMENTE FUNCIONAL"
+```
 
 ---
 

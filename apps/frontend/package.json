@@ -1,13 +1,26 @@
 {
   "name": "dafel-technologies-frontend",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Dafel Technologies - Corporate AI Solutions",
+  "description": "Dafel Technologies - Enterprise Data Platform with AI Solutions",
   "author": "Dafel Technologies",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DabtcAvila/Dafel-Technologies.git"
+  },
+  "homepage": "https://dafel.com.mx",
   "scripts": {
     "dev": "next dev -p 3000",
+    "dev:dev": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development next dev -p 3000",
+    "dev:staging": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=staging next dev -p 3000",
     "build": "next build",
+    "build:dev": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development next build",
+    "build:staging": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=staging next build",
+    "build:production": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=production next build",
     "start": "next start",
+    "start:dev": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development next start",
+    "start:staging": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=staging next start",
+    "start:production": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=production next start",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",

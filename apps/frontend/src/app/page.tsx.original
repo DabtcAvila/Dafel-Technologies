@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, lazy, Suspense, memo } from 'react';
-import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
 import { MagnifyingGlassIcon, Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,12 @@ import { useRouter } from 'next/navigation';
 // Lazy load heavy components for better LCP
 const DafelSection = lazy(() => import('@/components/DafelSection'));
 const ContactModal = lazy(() => import('@/components/ContactModal'));
+
+// Dynamic import with no SSR for motion (better performance)
+const motion = dynamic(() => import('framer-motion').then(mod => mod.motion), { 
+  ssr: false,
+  loading: () => <div style={{ opacity: 0 }}>Loading...</div>
+});
 
 // Memoize the main component for better performance
 const HomePage = memo(function HomePage() {
@@ -428,7 +434,7 @@ const HomePage = memo(function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-white py-24">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-24">
         <motion.div
           className="mx-auto max-w-4xl px-6 text-center lg:px-8"
           initial={{ opacity: 0 }}

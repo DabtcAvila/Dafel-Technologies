@@ -1,3 +1,5 @@
+# 🔒 DAFEL TECHNOLOGIES - GITIGNORE
+
 # Dependencies
 node_modules/
 .pnp
@@ -5,6 +7,7 @@ node_modules/
 
 # Testing
 coverage/
+.nyc_output
 
 # Next.js
 .next/
@@ -12,54 +15,85 @@ out/
 build/
 dist/
 
-# Production
+# Production builds
 *.local
 
-# Debug
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# Local env files
+# Environment variables (NUNCA commitear)
+.env
 .env*.local
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
-# Vercel
+# Plataformas de deployment
 .vercel
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-# Misc
+# Archivos del sistema
 .DS_Store
 *.pem
+Thumbs.db
 
-# IDE
-.vscode/
+# IDEs y editores
+.vscode/settings.json
 .idea/
 *.swp
 *.swo
 *~
 
-# Local files backup (contains sensitive data)
+# Archivos locales sensibles
 .local-files/
 
 # Claude settings
 .claude/settings.local.json
 
-# Logs
+# Logs y monitoreo
 logs/
 *.log
+debug.log
+error.log
+access.log
 
-# Database
+# Base de datos
 *.db
 *.sqlite
 *.sqlite3
 
-# Docker volumes
+# Docker
 postgres_data/
+docker-volumes/
+
+# Archivos temporales
+temp/
+tmp/
+.cache/
+*.tmp
+*.backup
+*.bak
+
+# Archivos de seguridad (NUNCA commitear)
+*.key
+*.p12
+config/secrets/
+.env.vault
+
+# Archivos específicos de apps
+apps/*/temp/
+apps/*/tmp/
+apps/*/logs/
+apps/*/node_modules/
+
+# Mantener archivos importantes
+!.gitkeep
+!.protected-branches
+!.git/hooks/pre-commit

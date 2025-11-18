@@ -10,7 +10,7 @@
   },
   "homepage": "https://dafel.com.mx",
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "next dev",
     "dev:dev": "NODE_ENV=development NEXT_PUBLIC_APP_ENV=development next dev -p 3000",
     "dev:staging": "NODE_ENV=production NEXT_PUBLIC_APP_ENV=staging next dev -p 3000",
     "build": "next build",

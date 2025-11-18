@@ -7,6 +7,19 @@
 
 **Plataforma empresarial de conectores de datos con seguridad bancaria y monitoreo en tiempo real.**
 
+## 🤖 PARA INTELIGENCIA ARTIFICIAL - COMANDO OBLIGATORIO
+
+### ⚠️ PRIMER COMANDO SIEMPRE:
+```bash
+/dafelwork
+```
+
+**NUNCA trabajar sin ejecutar este comando primero. Configura el entorno seguro y proporciona toda la información necesaria.**
+
+📖 **Documentación IA**: [SETUP_DAFELWORK.md](./SETUP_DAFELWORK.md) | [docs/WORKFLOW.md](./docs/WORKFLOW.md)
+
+---
+
 ## ⚡ Inicio Rápido
 
 ```bash

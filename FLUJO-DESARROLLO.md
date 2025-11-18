@@ -1,72 +1,108 @@
-# 🔄 FLUJO DE DESARROLLO CORRECTO
+# 🔄 FLUJO DE DESARROLLO PROFESIONAL
 
-## 🚫 **PROBLEMA DETECTADO Y CORREGIDO**
+## 🏗️ **ARQUITECTURA IMPLEMENTADA**
 
-**Lo que NO se debe hacer:**
-- ❌ Modificar `/apps/frontend/` directamente
-- ❌ Hacer cambios en versiones de respaldo Y versión activa
-- ❌ Crear duplicaciones de código
-- ❌ Generar confusión sobre "fuente de verdad"
+**Estructura Enterprise-Grade:**
+```
+Dafel-Technologies/
+├── apps/frontend/          ← SANDBOX (desarrollo activo)
+├── versions/
+│   ├── v000/              ← BASELINE (backup v0.0.0)  
+│   ├── v001/              ← DEVELOPMENT (trabajo actual)
+│   ├── v002/              ← FUTURE VERSIONS
+│   └── produccion/        ← PRODUCTION (dafel.com.mx)
+│       ├── DEPLOYMENT.md  ← Guía de deploy
+│       ├── changelog-produccion.md
+│       ├── LAST-DEPLOY.md
+│       └── apps/frontend/ ← Código EXACTO de producción
+├── ARQUITECTURA-PROFESIONAL.md
+└── FLUJO-DESARROLLO.md    ← Este archivo
+```
 
 ---
 
-## ✅ **FLUJO CORRECTO DE TRABAJO**
+## ✅ **FLUJO DE 3 NIVELES**
 
-### **1. FUENTE DE VERDAD ÚNICA**
+### **1. DESARROLLO (apps/frontend/)**
 ```
-/versions/v001/    ← AQUÍ SE TRABAJA (development)
-├── CAMBIOS.md     ← Documentación de cambios
-└── apps/frontend/ ← Código fuente maestro
+🎯 Propósito: Testing local y experimentos
+🔧 Uso: npm run dev, debugging rápido
+📝 Estado: Sandbox libre, NO es fuente de verdad
+⚠️ REGLA: Solo para testing, NUNCA commit directo
 ```
 
-### **2. VERSIÓN ACTIVA (SOLO DEPLOY)**
+### **2. VERSIONES (versions/vXXX/)**
 ```
-/apps/frontend/    ← SOLO para testing/producción
-└── src/app/       ← Copia desde v001 cuando esté lista
+🎯 Propósito: Fuente de verdad por versión
+🔧 Uso: Desarrollo de features, documentación
+📝 Estado: Estable por versión, cada una independiente
+✅ REGLA: Aquí se hace TODO el desarrollo real
+```
+
+### **3. PRODUCCIÓN (versions/produccion/)**
+```
+🎯 Propósito: Código EXACTO de dafel.com.mx
+🔧 Uso: Deploy a servidores, versión live
+📝 Estado: Ultra estable, cambios solo aprobados
+🔒 REGLA: Solo copias desde versions/ cuando esté perfecto
 ```
 
 ---
 
 ## 🔧 **PROCESO PASO A PASO**
 
-### **DESARROLLO (en v001):**
+### **FASE 1: Desarrollo (versions/vXXX/)**
 1. Trabajar en `/versions/v001/apps/frontend/`
 2. Hacer modificaciones necesarias
-3. Documentar en `/versions/v001/CAMBIOS.md`
-4. Testing local si es necesario
+3. Documentar TODO en `/versions/v001/CAMBIOS.md`
 
-### **DEPLOY A ACTIVO:**
-1. Solo cuando v001 esté completamente lista
-2. Copiar desde v001 → apps/frontend/
-3. Testing final en servidor activo
-4. Commit y push a GitHub
+### **FASE 2: Testing Local (apps/frontend/)**
+1. Copiar de v001 → apps/frontend/ para testing
+2. `npm run dev` para verificar
+3. Testing completo hasta perfección
+4. Volver a v001 para ajustes si es necesario
+
+### **FASE 3: Release a Producción (versions/produccion/)**
+1. Solo cuando v001 esté PERFECTO
+2. Copiar desde v001 → versions/produccion/
+3. Actualizar documentación de producción
+4. Deploy a dafel.com.mx (automático via Cloudflare)
 
 ---
 
 ## 📋 **COMANDOS ESTÁNDAR**
 
-### **Trabajar en desarrollo:**
+### **DESARROLLO (versions/vXXX/):**
 ```bash
-# Editar en v001
-vi /versions/v001/apps/frontend/src/app/dev/v01/page.tsx
+# 1. Trabajar en versión específica
+vi versions/v001/apps/frontend/src/app/dev/v01/page.tsx
 
-# Documentar cambios
-vi /versions/v001/CAMBIOS.md
+# 2. Documentar TODOS los cambios
+vi versions/v001/CAMBIOS.md
 ```
 
-### **Deploy a activo (solo cuando esté listo):**
+### **TESTING LOCAL (apps/frontend/):**
 ```bash
-# Copiar archivo específico
-cp versions/v001/apps/frontend/src/app/dev/v01/page.tsx apps/frontend/src/app/dev/v01/page.tsx
+# 3. Copiar para testing
+cp -r versions/v001/apps/frontend/* apps/frontend/
 
-# O copiar carpeta completa
-cp -r versions/v001/apps/frontend/ apps/
+# 4. Testing local
+cd apps/frontend && npm run dev
+# Verificar en http://localhost:3000
 ```
 
-### **Sincronizar con GitHub:**
+### **RELEASE A PRODUCCIÓN (versions/produccion/):**
 ```bash
+# 5. Solo cuando esté perfecto
+cp -r versions/v001/apps/frontend/* versions/produccion/apps/frontend/
+
+# 6. Documentar deploy
+vi versions/produccion/changelog-produccion.md
+vi versions/produccion/LAST-DEPLOY.md
+
+# 7. Commit todo
 git add -A
-git commit -m "v001: [descripción de cambios]"
+git commit -m "DEPLOY v001 → producción: [descripción]"
 git push origin development-v0.0.1
 ```
 

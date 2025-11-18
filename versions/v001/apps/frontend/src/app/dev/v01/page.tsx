@@ -86,8 +86,8 @@ const HomePage = memo(function HomePage() {
       </nav>
 
       {/* Hero Section - Optimized for LCP with banda baja integration */}
-      <section className="relative min-h-screen w-screen" style={{ 
-        backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg)',
+      <section className="relative min-h-screen w-screen z-0" style={{ 
+        backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg?v=001)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

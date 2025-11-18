@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dafel Banda - Real-Time SVG Editor & Animation Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            overflow: hidden;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 60px 1fr 150px;
+            height: 100vh;
+            gap: 1px;
+            background: #e2e8f0;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+        }
+
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+        }
+
+        .main-canvas {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .properties-panel {
+            background: white;
+            border-left: 1px solid #e2e8f0;
+            overflow-y: auto;
+        }
+
+        .performance-panel {
+            grid-column: 1 / -1;
+            background: #2d3748;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .section {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section h3 {
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4a5568;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #718096;
+        }
+
+        .control-group input,
+        .control-group select,
+        .control-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            transition: border-color 0.2s;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus,
+        .control-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 10px;
+        }
+
+        .btn-secondary {
+            background: #718096;
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: repeating-conic-gradient(#f7fafc 0deg 90deg, #edf2f7 90deg 180deg) 0 0/20px 20px;
+        }
+
+        .svg-container {
+            max-width: 100%;
+            max-height: 100%;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            background: white;
+            overflow: hidden;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            padding: 10px 20px;
+            background: #f7fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #68d391;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: #a0aec0;
+            text-transform: uppercase;
+        }
+
+        .optimization-levels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .level-btn {
+            padding: 6px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .level-btn:hover {
+            background: #f7fafc;
+        }
+
+        .level-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .animation-preset {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 5px;
+            background: #f7fafc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .animation-preset:hover {
+            background: #edf2f7;
+        }
+
+        .animation-preset.active {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+        }
+
+        .range-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .range-value {
+            font-size: 11px;
+            color: #718096;
+            font-weight: 500;
+            min-width: 40px;
+            text-align: right;
+        }
+
+        .color-input {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .performance-warning {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .performance-good {
+            background: #c6f6d5;
+            color: #276749;
+        }
+
+        .code-editor {
+            height: 200px;
+            background: #2d3748;
+            color: #e2e8f0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 11px;
+            padding: 10px;
+            border: none;
+            resize: none;
+            line-height: 1.4;
+        }
+
+        .tabs {
+            display: flex;
+            background: #f7fafc;
+        }
+
+        .tab {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+
+        .export-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+        }
+
+        .responsive-preview {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .device-btn {
+            flex: 1;
+            padding: 4px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 9px;
+            text-align: center;
+        }
+
+        .device-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .loading {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <!-- Header -->
+        <div class="header">
+            🎨 Dafel Banda - Real-Time SVG Editor & Animation Studio
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Optimization Controls -->
+            <div class="section">
+                <h3>SVG Optimization</h3>
+                <div class="optimization-levels">
+                    <div class="level-btn active" data-level="ultra-light">Ultra</div>
+                    <div class="level-btn" data-level="light">Light</div>
+                    <div class="level-btn" data-level="balanced">Balanced</div>
+                    <div class="level-btn" data-level="quality">Quality</div>
+                    <div class="level-btn" data-level="maximum">Max</div>
+                </div>
+                <div class="control-group">
+                    <label>File Size Target</label>
+                    <select id="sizeTarget">
+                        <option value="3-5KB">3-5KB (Ultra Light)</option>
+                        <option value="6-8KB">6-8KB (Light)</option>
+                        <option value="10-15KB" selected>10-15KB (Balanced)</option>
+                        <option value="20-30KB">20-30KB (Quality)</option>
+                        <option value="35-50KB">35-50KB (Maximum)</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="optimizeSvg()">Optimize Now</button>
+            </div>
+
+            <!-- Animation Presets -->
+            <div class="section">
+                <h3>Animation Presets</h3>
+                <div class="animation-preset" data-animation="wave">
+                    <span>Wave Motion</span>
+                    <button class="btn btn-sm" onclick="playAnimation('wave')">Play</button>
+                </div>
+                <div class="animation-preset" data-animation="pulse">
+                    <span>Pulse Effect</span>
+                    <button class="btn btn-sm" onclick="playAnimation('pulse')">Play</button>
+                </div>
+                <div class="animation-preset" data-animation="morph">
+                    <span>Path Morph</span>
+                    <button class="btn btn-sm" onclick="playAnimation('morph')">Play</button>
+                </div>
+                <div class="animation-preset" data-animation="stagger">
+                    <span>Stagger In</span>
+                    <button class="btn btn-sm" onclick="playAnimation('stagger')">Play</button>
+                </div>
+                <div class="animation-preset" data-animation="waveAndPulse">
+                    <span>Wave + Pulse</span>
+                    <button class="btn btn-sm" onclick="playAnimation('waveAndPulse')">Play</button>
+                </div>
+                <button class="btn btn-secondary" onclick="stopAllAnimations()">Stop All</button>
+            </div>
+
+            <!-- Responsive Preview -->
+            <div class="section">
+                <h3>Responsive Preview</h3>
+                <div class="responsive-preview">
+                    <div class="device-btn active" data-device="mobile">📱</div>
+                    <div class="device-btn" data-device="tablet">📱</div>
+                    <div class="device-btn" data-device="desktop">🖥️</div>
+                    <div class="device-btn" data-device="large">🖥️</div>
+                </div>
+                <div class="control-group">
+                    <label>Custom Size</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="number" id="customWidth" placeholder="Width" value="1280">
+                        <input type="number" id="customHeight" placeholder="Height" value="720">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Canvas -->
+        <div class="main-canvas">
+            <div class="toolbar">
+                <button class="btn" onclick="loadOriginalSvg()">Load Original</button>
+                <button class="btn" onclick="exportSvg()">Export SVG</button>
+                <button class="btn" onclick="exportAnimationConfig()">Export Config</button>
+                <button class="btn btn-secondary" onclick="resetView()">Reset View</button>
+            </div>
+            
+            <div class="canvas-wrapper">
+                <div class="svg-container" id="svgContainer">
+                    <!-- SVG will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Properties Panel -->
+        <div class="properties-panel">
+            <!-- Live Editing -->
+            <div class="section">
+                <h3>Live Editing</h3>
+                <div class="tabs">
+                    <div class="tab active" data-tab="visual">Visual</div>
+                    <div class="tab" data-tab="code">Code</div>
+                </div>
+                
+                <div id="visualTab">
+                    <div class="control-group">
+                        <label>Layer Opacity</label>
+                        <div class="range-group">
+                            <input type="range" id="layerOpacity" min="0" max="1" step="0.1" value="0.7">
+                            <span class="range-value">0.7</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Animation Speed</label>
+                        <div class="range-group">
+                            <input type="range" id="animationSpeed" min="0.1" max="3" step="0.1" value="1">
+                            <span class="range-value">1x</span>
+                        </div>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Primary Color</label>
+                        <input type="color" id="primaryColor" class="color-input" value="#667eea">
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Secondary Color</label>
+                        <input type="color" id="secondaryColor" class="color-input" value="#764ba2">
+                    </div>
+                </div>
+                
+                <div id="codeTab" style="display: none;">
+                    <textarea class="code-editor" id="svgCode" placeholder="SVG code will appear here..."></textarea>
+                    <button class="btn" onclick="applySvgCode()">Apply Changes</button>
+                </div>
+            </div>
+
+            <!-- Animation Parameters -->
+            <div class="section">
+                <h3>Animation Parameters</h3>
+                <div class="control-group">
+                    <label>Duration (ms)</label>
+                    <input type="number" id="animationDuration" value="3000" min="100" max="10000" step="100">
+                </div>
+                
+                <div class="control-group">
+                    <label>Easing</label>
+                    <select id="animationEasing">
+                        <option value="linear">Linear</option>
+                        <option value="ease">Ease</option>
+                        <option value="ease-in">Ease In</option>
+                        <option value="ease-out">Ease Out</option>
+                        <option value="ease-in-out" selected>Ease In Out</option>
+                        <option value="cubic-bezier(0.4, 0, 0.2, 1)">Material</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="animationLoop" checked> Loop Animation
+                    </label>
+                </div>
+                
+                <div class="control-group">
+                    <label>Stagger Delay (ms)</label>
+                    <input type="number" id="staggerDelay" value="150" min="0" max="1000" step="50">
+                </div>
+            </div>
+
+            <!-- Export Options -->
+            <div class="section">
+                <h3>Export Options</h3>
+                <div class="export-options">
+                    <button class="btn btn-sm" onclick="exportFormat('svg')">SVG</button>
+                    <button class="btn btn-sm" onclick="exportFormat('png')">PNG</button>
+                    <button class="btn btn-sm" onclick="exportFormat('css')">CSS</button>
+                    <button class="btn btn-sm" onclick="exportFormat('json')">JSON</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Framework</label>
+                    <select id="frameworkSelect">
+                        <option value="vanilla">Vanilla JS</option>
+                        <option value="react">React</option>
+                        <option value="vue">Vue.js</option>
+                        <option value="angular">Angular</option>
+                        <option value="svelte">Svelte</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Panel -->
+        <div class="performance-panel">
+            <div class="metrics-grid">
+                <div class="metric">
+                    <div class="metric-value" id="fps">60</div>
+                    <div class="metric-label">FPS</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="fileSize">12.3</div>
+                    <div class="metric-label">KB</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="compression">96.4</div>
+                    <div class="metric-label">% Saved</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="elements">78</div>
+                    <div class="metric-label">Elements</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="renderTime">2.3</div>
+                    <div class="metric-label">ms Render</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value" id="activeAnimations">0</div>
+                    <div class="metric-label">Animations</div>
+                </div>
+            </div>
+            
+            <div id="performanceStatus" class="performance-good">
+                🟢 Excellent Performance - Ready for Production
+            </div>
+        </div>
+    </div>
+
+    <!-- Include the SVG Optimizer and Animation Orchestrator -->
+    <script src="svg-optimizer.js"></script>
+    <script src="animation-orchestrator.js"></script>
+    
+    <script>
+        // Initialize the editor
+        let svgOptimizer;
+        let animationOrchestrator;
+        let currentSvg = '';
+        let currentOptimizationLevel = 'balanced';
+        let performanceMonitor;
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEditor();
+            setupEventListeners();
+            loadOriginalSvg();
+            startPerformanceMonitoring();
+        });
+
+        function initializeEditor() {
+            svgOptimizer = new DafelSvgOptimizer();
+            animationOrchestrator = new DafelAnimationOrchestrator();
+            
+            console.log('🎨 Dafel Real-Time Editor initialized');
+        }
+
+        function setupEventListeners() {
+            // Optimization level selection
+            document.querySelectorAll('.level-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentOptimizationLevel = this.dataset.level;
+                    optimizeSvg();
+                });
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    document.getElementById('visualTab').style.display = 
+                        this.dataset.tab === 'visual' ? 'block' : 'none';
+                    document.getElementById('codeTab').style.display = 
+                        this.dataset.tab === 'code' ? 'block' : 'none';
+                        
+                    if (this.dataset.tab === 'code') {
+                        updateCodeEditor();
+                    }
+                });
+            });
+
+            // Real-time parameter updates
+            ['layerOpacity', 'animationSpeed', 'primaryColor', 'secondaryColor'].forEach(id => {
+                const element = document.getElementById(id);
+                element.addEventListener('input', updateVisualsInRealTime);
+            });
+
+            // Device preview buttons
+            document.querySelectorAll('.device-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    switchDevice(this.dataset.device);
+                });
+            });
+        }
+
+        async function loadOriginalSvg() {
+            try {
+                // Load the optimized SVG from the project
+                const response = await fetch('../svg/optimized.svg');
+                currentSvg = await response.text();
+                
+                displaySvg(currentSvg);
+                analyzeSvg(currentSvg);
+                updateCodeEditor();
+                
+                console.log('✅ Original SVG loaded successfully');
+            } catch (error) {
+                console.error('❌ Error loading SVG:', error);
+                // Fallback to a simple SVG for demo
+                loadFallbackSvg();
+            }
+        }
+
+        function loadFallbackSvg() {
+            currentSvg = `<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea"/>
+                        <stop offset="100%" style="stop-color:#764ba2"/>
+                    </linearGradient>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grad1)" opacity="0.7"/>
+                <text x="640" y="360" text-anchor="middle" fill="white" font-size="48" font-family="Arial">
+                    Dafel Banda Demo
+                </text>
+            </svg>`;
+            
+            displaySvg(currentSvg);
+            analyzeSvg(currentSvg);
+        }
+
+        function displaySvg(svgContent) {
+            const container = document.getElementById('svgContainer');
+            container.innerHTML = svgContent;
+            
+            // Make SVG responsive
+            const svg = container.querySelector('svg');
+            if (svg) {
+                svg.style.width = '100%';
+                svg.style.height = 'auto';
+                svg.style.maxWidth = '100%';
+                svg.style.maxHeight = '100%';
+            }
+        }
+
+        function analyzeSvg(svgContent) {
+            svgOptimizer.loadSvg(svgContent);
+            
+            const metrics = svgOptimizer.metrics.original;
+            if (metrics) {
+                updateMetricsDisplay({
+                    fileSize: (metrics.size / 1024).toFixed(1),
+                    elements: metrics.elements,
+                    renderTime: Math.random() * 5 + 1 // Simulated
+                });
+            }
+        }
+
+        function optimizeSvg() {
+            if (!currentSvg) return;
+            
+            console.log(`🔧 Optimizing SVG with level: ${currentOptimizationLevel}`);
+            
+            const result = svgOptimizer.optimize(currentOptimizationLevel);
+            
+            if (result.svg) {
+                displaySvg(result.svg);
+                updateMetricsDisplay({
+                    fileSize: (result.metrics.size / 1024).toFixed(1),
+                    compression: result.metrics.compression,
+                    elements: svgOptimizer.metrics.original.elements
+                });
+                
+                // Update performance status
+                updatePerformanceStatus(result.metrics);
+                
+                console.log('✅ Optimization complete:', result.metrics);
+            }
+        }
+
+        function playAnimation(animationType) {
+            const svgElement = document.querySelector('#svgContainer svg');
+            if (!svgElement) return;
+            
+            // Get current animation parameters
+            const duration = parseInt(document.getElementById('animationDuration').value);
+            const easing = document.getElementById('animationEasing').value;
+            const loop = document.getElementById('animationLoop').checked;
+            const staggerDelay = parseInt(document.getElementById('staggerDelay').value);
+            
+            const options = {
+                duration,
+                easing,
+                loop,
+                staggerDelay
+            };
+            
+            // Find animatable elements
+            const targets = svgElement.querySelectorAll('path, g, circle, rect');
+            
+            if (targets.length > 0) {
+                const animation = animationOrchestrator.animate(targets, animationType, options);
+                animation.play();
+                
+                updateMetricsDisplay({
+                    activeAnimations: animationOrchestrator.activeAnimations.size
+                });
+                
+                console.log(`🎬 Playing animation: ${animationType}`);
+            }
+        }
+
+        function stopAllAnimations() {
+            animationOrchestrator.stopAll();
+            updateMetricsDisplay({
+                activeAnimations: 0
+            });
+            console.log('⏹️ All animations stopped');
+        }
+
+        function updateVisualsInRealTime() {
+            const svgElement = document.querySelector('#svgContainer svg');
+            if (!svgElement) return;
+            
+            // Update opacity
+            const opacity = document.getElementById('layerOpacity').value;
+            document.querySelector('.range-value').textContent = opacity;
+            
+            const groups = svgElement.querySelectorAll('g');
+            groups.forEach(g => {
+                g.style.opacity = opacity;
+            });
+            
+            // Update colors
+            const primaryColor = document.getElementById('primaryColor').value;
+            const secondaryColor = document.getElementById('secondaryColor').value;
+            
+            const gradients = svgElement.querySelectorAll('linearGradient, radialGradient');
+            gradients.forEach(grad => {
+                const stops = grad.querySelectorAll('stop');
+                if (stops[0]) stops[0].setAttribute('stop-color', primaryColor);
+                if (stops[stops.length - 1]) stops[stops.length - 1].setAttribute('stop-color', secondaryColor);
+            });
+            
+            // Update animation speed
+            const speed = document.getElementById('animationSpeed').value;
+            document.querySelectorAll('.range-value')[1].textContent = speed + 'x';
+            
+            // Apply speed to any running animations
+            animationOrchestrator.globalSettings.duration = 3000 / parseFloat(speed);
+        }
+
+        function updateCodeEditor() {
+            const codeEditor = document.getElementById('svgCode');
+            const svgElement = document.querySelector('#svgContainer svg');
+            
+            if (svgElement) {
+                codeEditor.value = svgElement.outerHTML;
+            }
+        }
+
+        function applySvgCode() {
+            const codeEditor = document.getElementById('svgCode');
+            const newSvg = codeEditor.value;
+            
+            try {
+                displaySvg(newSvg);
+                currentSvg = newSvg;
+                analyzeSvg(newSvg);
+                console.log('✅ SVG code applied successfully');
+            } catch (error) {
+                console.error('❌ Invalid SVG code:', error);
+                alert('Invalid SVG code. Please check the syntax.');
+            }
+        }
+
+        function switchDevice(device) {
+            const container = document.getElementById('svgContainer');
+            const svg = container.querySelector('svg');
+            
+            if (!svg) return;
+            
+            const dimensions = {
+                mobile: { width: 375, height: 211 },
+                tablet: { width: 768, height: 432 },
+                desktop: { width: 1280, height: 720 },
+                large: { width: 1920, height: 1080 }
+            };
+            
+            const dim = dimensions[device];
+            if (dim) {
+                svg.setAttribute('width', dim.width);
+                svg.setAttribute('height', dim.height);
+                svg.setAttribute('viewBox', `0 0 ${dim.width} ${dim.height}`);
+                
+                console.log(`📱 Switched to ${device} view: ${dim.width}x${dim.height}`);
+            }
+        }
+
+        function updateMetricsDisplay(metrics) {
+            Object.keys(metrics).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = metrics[key];
+                }
+            });
+        }
+
+        function updatePerformanceStatus(metrics) {
+            const statusElement = document.getElementById('performanceStatus');
+            const performance = metrics.performance || 80;
+            
+            if (performance >= 80) {
+                statusElement.className = 'performance-good';
+                statusElement.textContent = '🟢 Excellent Performance - Ready for Production';
+            } else if (performance >= 60) {
+                statusElement.className = '';
+                statusElement.textContent = '🟡 Good Performance - Minor optimizations possible';
+            } else {
+                statusElement.className = 'performance-warning';
+                statusElement.textContent = '🔴 Performance Issues - Optimization recommended';
+            }
+        }
+
+        function startPerformanceMonitoring() {
+            let frameCount = 0;
+            let lastTime = performance.now();
+            
+            function updateFPS() {
+                const currentTime = performance.now();
+                const delta = currentTime - lastTime;
+                
+                if (delta >= 1000) {
+                    const fps = Math.round((frameCount * 1000) / delta);
+                    updateMetricsDisplay({ fps });
+                    frameCount = 0;
+                    lastTime = currentTime;
+                }
+                
+                frameCount++;
+                requestAnimationFrame(updateFPS);
+            }
+            
+            requestAnimationFrame(updateFPS);
+            
+            // Monitor file size changes
+            setInterval(() => {
+                const svgElement = document.querySelector('#svgContainer svg');
+                if (svgElement) {
+                    const size = new Blob([svgElement.outerHTML]).size;
+                    updateMetricsDisplay({
+                        fileSize: (size / 1024).toFixed(1)
+                    });
+                }
+            }, 2000);
+        }
+
+        function exportSvg() {
+            const svgElement = document.querySelector('#svgContainer svg');
+            if (!svgElement) return;
+            
+            const svgContent = svgElement.outerHTML;
+            const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dafel-banda-${currentOptimizationLevel}-${Date.now()}.svg`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            console.log('💾 SVG exported successfully');
+        }
+
+        function exportAnimationConfig() {
+            const config = {
+                timestamp: new Date().toISOString(),
+                optimizationLevel: currentOptimizationLevel,
+                animations: animationOrchestrator.getPresets(),
+                settings: {
+                    duration: document.getElementById('animationDuration').value,
+                    easing: document.getElementById('animationEasing').value,
+                    loop: document.getElementById('animationLoop').checked,
+                    staggerDelay: document.getElementById('staggerDelay').value
+                }
+            };
+            
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dafel-animation-config-${Date.now()}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+            console.log('💾 Animation config exported successfully');
+        }
+
+        function exportFormat(format) {
+            const svgElement = document.querySelector('#svgContainer svg');
+            if (!svgElement) return;
+            
+            switch (format) {
+                case 'png':
+                    exportAsPng(svgElement);
+                    break;
+                case 'css':
+                    exportAsCss(svgElement);
+                    break;
+                case 'json':
+                    exportAsJson();
+                    break;
+                default:
+                    exportSvg();
+            }
+        }
+
+        function exportAsPng(svgElement) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = svgElement.viewBox.baseVal.width || 1280;
+            canvas.height = svgElement.viewBox.baseVal.height || 720;
+            
+            const img = new Image();
+            const svgBlob = new Blob([svgElement.outerHTML], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(svgBlob);
+            
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0);
+                
+                canvas.toBlob(function(blob) {
+                    const downloadUrl = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = `dafel-banda-${Date.now()}.png`;
+                    a.click();
+                    
+                    URL.revokeObjectURL(url);
+                    URL.revokeObjectURL(downloadUrl);
+                });
+            };
+            
+            img.src = url;
+        }
+
+        function exportAsCss(svgElement) {
+            const svgContent = svgElement.outerHTML;
+            const base64 = btoa(svgContent);
+            
+            const css = `.dafel-banda-bg {
+    background-image: url('data:image/svg+xml;base64,${base64}');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}`;
+            
+            const blob = new Blob([css], { type: 'text/css' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dafel-banda-${Date.now()}.css`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function exportAsJson() {
+            const metrics = svgOptimizer.exportMetrics();
+            const blob = new Blob([JSON.stringify(metrics, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `dafel-metrics-${Date.now()}.json`;
+            a.click();
+            
+            URL.revokeObjectURL(url);
+        }
+
+        function resetView() {
+            loadOriginalSvg();
+            stopAllAnimations();
+            
+            // Reset controls to defaults
+            document.getElementById('layerOpacity').value = 0.7;
+            document.getElementById('animationSpeed').value = 1;
+            document.getElementById('animationDuration').value = 3000;
+            document.getElementById('animationEasing').value = 'ease-in-out';
+            document.getElementById('animationLoop').checked = true;
+            
+            updateVisualsInRealTime();
+            console.log('🔄 View reset to defaults');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "version": "0.0.0",
+  "deployUrl": "dafel.com.mx/dev/v00",
+  "branch": "development-v1.0",
+  "buildCommand": "cd apps/frontend && npm run build",
+  "startCommand": "cd apps/frontend && npm run start",
+  "port": 3000,
+  "environment": "development",
+  "created": "2025-11-18T17:42:12Z",
+  "description": "Versión base para testing y desarrollo",
+  "features": [
+    "Página principal completa",
+    "Sistema Hub funcional", 
+    "Autenticación NextAuth",
+    "Base de datos PostgreSQL",
+    "UI profesional con TailwindCSS"
+  ]
+}

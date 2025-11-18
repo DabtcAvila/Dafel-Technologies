@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Language Switch</title>
+    <style>
+        body { font-family: system-ui; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; }
+        .lang-btn { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .active { background: #333; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Test de Cambio de Idioma - Framework Section</h1>
+    
+    <div>
+        <button class="lang-btn active" onclick="showLang('es')">Español</button>
+        <button class="lang-btn" onclick="showLang('en')">English</button>
+    </div>
+    
+    <div id="es" class="test-section">
+        <h2>Español</h2>
+        <h3>La Fundición Ontológica</h3>
+        <p>Activa el poder de tus datos y análisis.</p>
+        <p><strong>Botón:</strong> Comenzar con la Ontología →</p>
+        <p><strong>Panel:</strong> Núcleo Ontológico</p>
+        <h4>Capas:</h4>
+        <ul>
+            <li><strong>Semántico:</strong> Objetos y Enlaces Dinámicos, Propiedades Multi-Modales, Primitivos Ontológicos</li>
+            <li><strong>Cinético:</strong> Acciones y Funciones Impulsadas por IA, Minería de Procesos y Automatización, Orquestación de Acciones, Monitoreo en Tiempo Real</li>
+            <li><strong>Dinámico:</strong> Decisiones Potenciadas por IA, Simulaciones Multi-Paso, Captura y Aprendizaje de Decisiones</li>
+        </ul>
+    </div>
+    
+    <div id="en" class="test-section" style="display:none;">
+        <h2>English</h2>
+        <h3>The Foundry Ontology</h3>
+        <p>Activate the power of your data and analytics.</p>
+        <p><strong>Button:</strong> Get Started with the Ontology →</p>
+        <p><strong>Panel:</strong> Ontology Core</p>
+        <h4>Layers:</h4>
+        <ul>
+            <li><strong>Semantic:</strong> Dynamic Objects & Links, Multi-Modal Properties, Ontology Primitives</li>
+            <li><strong>Kinetic:</strong> AI-Driven Actions & Functions, Process Mining & Automation, Action Orchestration, Real-Time Monitoring</li>
+            <li><strong>Dynamic:</strong> AI-Powered Decisions, Multi-Step Simulations, Decision Capture & Learning</li>
+        </ul>
+    </div>
+    
+    <script>
+        function showLang(lang) {
+            document.getElementById('es').style.display = lang === 'es' ? 'block' : 'none';
+            document.getElementById('en').style.display = lang === 'en' ? 'block' : 'none';
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

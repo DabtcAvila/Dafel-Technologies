@@ -240,7 +240,319 @@ chmod +x "$DEPLOY_DIR/deploy.sh"
 
 echo -e "${GREEN}   ✅ Configuración de deployment creada: $DEPLOY_DIR${NC}"
 
-# 7. COMMIT INICIAL DE NUEVA VERSIÓN
+# 7. CREAR PÁGINA DE DESARROLLO /dev/vXX
+echo -e "${BLUE}📱 7. Creando página de desarrollo /dev/v$(printf "%02d" $NEW_MINOR)...${NC}"
+DEV_PAGE_DIR="apps/frontend/src/app/dev/v$(printf "%02d" $NEW_MINOR)"
+mkdir -p "$DEV_PAGE_DIR"
+
+cat > "$DEV_PAGE_DIR/page.tsx" << EOF
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { CheckCircleIcon, CodeBracketIcon, ServerIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+
+export default function DevV$(printf "%02d" $NEW_MINOR)Page() {
+  const [buildTime] = useState(new Date().toLocaleString());
+  const [systemInfo, setSystemInfo] = useState({
+    version: '$NEW_VERSION',
+    environment: 'development',
+    status: 'active'
+  });
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSystemInfo({
+        version: '$NEW_VERSION',
+        environment: 'development', 
+        status: 'active'
+      });
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const features = [
+    {
+      name: 'Nuevas Funcionalidades',
+      description: 'Características implementadas en esta versión',
+      status: 'development',
+      icon: CheckCircleIcon
+    },
+    {
+      name: 'Sistema Base',
+      description: 'Hereda todas las funcionalidades de v0.0.0',
+      status: 'completed',
+      icon: ServerIcon
+    },
+    {
+      name: 'Mejoras y Optimizaciones',
+      description: 'Refinamientos y nuevas características',
+      status: 'development',
+      icon: CodeBracketIcon
+    },
+    {
+      name: 'Testing y Validación',
+      description: 'Pruebas completas antes de producción',
+      status: 'development',
+      icon: GlobeAltIcon
+    }
+  ];
+
+  const urls = [
+    {
+      name: 'Esta Versión',
+      url: 'https://dafel.com.mx/dev/v$(printf "%02d" $NEW_MINOR)',
+      description: 'Versión $NEW_VERSION en desarrollo'
+    },
+    {
+      name: 'Versión Base',
+      url: 'https://dafel.com.mx/dev/v00',
+      description: 'Versión base v0.0.0 estable'
+    },
+    {
+      name: 'Página Principal',
+      url: 'https://dafel.com.mx',
+      description: 'Sitio principal en producción'
+    },
+    {
+      name: 'Desarrollo Local',
+      url: 'http://localhost:3000',
+      description: 'Servidor de desarrollo local'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <div className="bg-white shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-6">
+            <div className="flex items-center space-x-4">
+              <img
+                src="/dafel-logo-optimized.svg"
+                alt="Dafel Technologies"
+                className="h-12 w-auto"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Dafel Technologies</h1>
+                <p className="text-sm text-gray-600">Versión de Desarrollo v{\`\${systemInfo.version}\`}</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-blue-600">En Desarrollo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Hero Section */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mb-6">
+            <CodeBracketIcon className="w-4 h-4 mr-2" />
+            Nueva Versión v$NEW_VERSION - Development Environment
+          </div>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+            🚀 Versión $NEW_VERSION
+          </h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Nueva versión en desarrollo con funcionalidades mejoradas y características adicionales.
+            Basada en la versión base v0.0.0 con todas las funcionalidades estables.
+          </p>
+        </motion.div>
+
+        {/* System Status */}
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Estado</h3>
+              <CheckCircleIcon className="w-6 h-6 text-blue-500" />
+            </div>
+            <p className="text-3xl font-bold text-blue-600 mb-2">Desarrollo</p>
+            <p className="text-sm text-gray-600">Version activa en desarrollo</p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Versión</h3>
+              <CodeBracketIcon className="w-6 h-6 text-green-500" />
+            </div>
+            <p className="text-3xl font-bold text-green-600 mb-2">v{\`\${systemInfo.version}\`}</p>
+            <p className="text-sm text-gray-600">Nueva versión incremental</p>
+          </div>
+
+          <div className="bg-white rounded-lg p-6 shadow-sm border">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Build</h3>
+              <ServerIcon className="w-6 h-6 text-purple-500" />
+            </div>
+            <p className="text-lg font-bold text-purple-600 mb-2">{\`\${buildTime.split(',')[1]}\`}</p>
+            <p className="text-sm text-gray-600">{\`\${buildTime.split(',')[0]}\`}</p>
+          </div>
+        </motion.div>
+
+        {/* Features Status */}
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">Estado de Desarrollo</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature, index) => (
+              <motion.div
+                key={feature.name}
+                className="bg-white rounded-lg p-6 shadow-sm border"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 * index }}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="flex-shrink-0">
+                    <feature.icon className={\`w-8 h-8 \${feature.status === 'completed' ? 'text-green-500' : 'text-blue-500'}\`} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-2 mb-2">
+                      <h4 className="text-lg font-semibold text-gray-900">{feature.name}</h4>
+                      <span className={\`px-2 py-1 text-xs font-medium rounded-full \${feature.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}\`}>
+                        {feature.status === 'completed' ? '✅ Completo' : '🔄 En desarrollo'}
+                      </span>
+                    </div>
+                    <p className="text-gray-600">{feature.description}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* URLs Available */}
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <h3 className="text-2xl font-bold text-gray-900 mb-8">URLs de Testing</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {urls.map((url, index) => (
+              <motion.div
+                key={url.name}
+                className="bg-white rounded-lg p-4 shadow-sm border hover:border-blue-300 transition-colors"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 * index }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{url.name}</h4>
+                    <p className="text-sm text-gray-600">{url.description}</p>
+                    <a 
+                      href={url.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-blue-600 hover:text-blue-800 font-mono break-all"
+                    >
+                      {url.url}
+                    </a>
+                  </div>
+                  <GlobeAltIcon className="w-5 h-5 text-gray-400" />
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Development Info */}
+        <motion.div
+          className="bg-gradient-to-r from-blue-900 to-indigo-900 rounded-lg p-8 text-white"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <h3 className="text-2xl font-bold mb-6">Información de Desarrollo</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+              <p className="text-sm text-blue-200 mb-1">Framework</p>
+              <p className="font-mono text-green-300">Next.js 14.2.32</p>
+            </div>
+            <div>
+              <p className="text-sm text-blue-200 mb-1">Lenguaje</p>
+              <p className="font-mono text-blue-300">TypeScript 5.5.4</p>
+            </div>
+            <div>
+              <p className="text-sm text-blue-200 mb-1">Base de Datos</p>
+              <p className="font-mono text-purple-300">PostgreSQL + Prisma</p>
+            </div>
+            <div>
+              <p className="text-sm text-blue-200 mb-1">Versión Base</p>
+              <p className="font-mono text-yellow-300">v0.0.0 Estable</p>
+            </div>
+          </div>
+          
+          <div className="mt-8 pt-6 border-t border-blue-700">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-lg font-semibold mb-2">🎯 Nuevas características en desarrollo:</p>
+                <ul className="text-sm text-blue-200 space-y-1">
+                  <li>• Funcionalidades mejoradas del sistema base</li>
+                  <li>• Optimizaciones de rendimiento</li>
+                  <li>• Nuevas características de usuario</li>
+                  <li>• Mejoras en la experiencia de usuario</li>
+                  <li>• Testing y validación extendidos</li>
+                </ul>
+              </div>
+              <div className="mt-6 md:mt-0">
+                <Link
+                  href="/dev"
+                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-blue-900 bg-white hover:bg-gray-50 transition-colors"
+                >
+                  ← Ver todas las versiones
+                </Link>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Footer */}
+        <motion.div
+          className="text-center mt-12 pt-8 border-t border-gray-200"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+        >
+          <p className="text-gray-600">
+            <strong>Versión de Desarrollo v$NEW_VERSION</strong> - Basada en sistema base v0.0.0
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Esta versión hereda toda la funcionalidad estable y agrega nuevas características
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+EOF
+
+echo -e "${GREEN}   ✅ Página de desarrollo creada: /dev/v$(printf "%02d" $NEW_MINOR)${NC}"
+
+# 8. COMMIT INICIAL DE NUEVA VERSIÓN
 echo -e "${BLUE}💾 7. Creando commit inicial de nueva versión...${NC}"
 git add .
 git commit -m "🚀 NUEVA VERSIÓN v$NEW_VERSION iniciada

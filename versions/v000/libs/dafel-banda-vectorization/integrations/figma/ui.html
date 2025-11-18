@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dafel Banda Animations</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: var(--figma-color-text);
+            background: var(--figma-color-bg);
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--figma-color-border);
+        }
+        
+        .logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+            background: linear-gradient(135deg, #D0E8F5, #1E7FA4);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--figma-color-text);
+        }
+        
+        .section {
+            margin-bottom: 24px;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--figma-color-text);
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--figma-color-text-secondary);
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--figma-color-border);
+            border-radius: 4px;
+            background: var(--figma-color-bg);
+            color: var(--figma-color-text);
+            font-size: 12px;
+            box-sizing: border-box;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--figma-color-text-brand);
+            box-shadow: 0 0 0 2px var(--figma-color-bg-brand-tertiary);
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .checkbox {
+            margin-right: 8px;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--figma-color-bg-brand);
+            color: var(--figma-color-text-onbrand);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: opacity 0.2s;
+        }
+        
+        .button:hover {
+            opacity: 0.9;
+        }
+        
+        .button:active {
+            opacity: 0.8;
+        }
+        
+        .button-secondary {
+            background: var(--figma-color-bg-secondary);
+            color: var(--figma-color-text);
+            border: 1px solid var(--figma-color-border);
+        }
+        
+        .button-small {
+            padding: 6px 12px;
+            font-size: 11px;
+            width: auto;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .preview-container {
+            border: 1px solid var(--figma-color-border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: var(--figma-color-bg-secondary);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .preview-placeholder {
+            color: var(--figma-color-text-secondary);
+            text-align: center;
+            font-style: italic;
+        }
+        
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 8px;
+        }
+        
+        .color-swatch {
+            width: 100%;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid var(--figma-color-border);
+            position: relative;
+        }
+        
+        .color-swatch::after {
+            content: attr(data-color);
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: var(--figma-color-text-secondary);
+            white-space: nowrap;
+        }
+        
+        .size-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        
+        .custom-size {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--figma-color-bg-secondary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--figma-color-bg-brand);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .message {
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 11px;
+        }
+        
+        .message-success {
+            background: var(--figma-color-bg-success-secondary);
+            color: var(--figma-color-text-success);
+            border: 1px solid var(--figma-color-border-success);
+        }
+        
+        .message-error {
+            background: var(--figma-color-bg-danger-secondary);
+            color: var(--figma-color-text-danger);
+            border: 1px solid var(--figma-color-border-danger);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--figma-color-border);
+        }
+        
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-size: 12px;
+            color: var(--figma-color-text-secondary);
+            transition: all 0.2s;
+        }
+        
+        .tab.active {
+            color: var(--figma-color-text-brand);
+            border-bottom-color: var(--figma-color-bg-brand);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .advanced-section {
+            background: var(--figma-color-bg-secondary);
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 16px;
+        }
+        
+        .batch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">DB</div>
+        <div class="title">Dafel Banda Animations</div>
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" data-tab="create">Create</div>
+        <div class="tab" data-tab="batch">Batch</div>
+        <div class="tab" data-tab="library">Library</div>
+    </div>
+    
+    <!-- Create Tab -->
+    <div class="tab-content active" id="create-tab">
+        <div class="section">
+            <div class="section-title">Animation Settings</div>
+            
+            <div class="form-group">
+                <label class="form-label">Animation Type</label>
+                <select id="animation-select">
+                    <option value="fadeIn">Fade In</option>
+                    <option value="wave">Wave</option>
+                    <option value="pulse">Pulse</option>
+                    <option value="staggerIn">Stagger In</option>
+                    <option value="interactive">Interactive</option>
+                    <option value="scroll">Scroll Based</option>
+                    <option value="waveSmooth">Wave Smooth</option>
+                    <option value="gridShimmer">Grid Shimmer</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Color Scheme</label>
+                <select id="color-scheme-select">
+                    <option value="default">Default Blue</option>
+                    <option value="dark">Dark Mode</option>
+                    <option value="sunset">Sunset</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="forest">Forest</option>
+                </select>
+                <div class="color-palette" id="color-palette">
+                    <!-- Color swatches will be populated by JS -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Size Settings</div>
+            
+            <div class="form-group">
+                <label class="form-label">Size</label>
+                <select id="size-select">
+                    <option value="small">Small (640×360)</option>
+                    <option value="medium">Medium (1024×576)</option>
+                    <option value="large" selected>Large (1280×720)</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            
+            <div class="custom-size" id="custom-size" style="display: none;">
+                <div>
+                    <label class="form-label">Width</label>
+                    <input type="number" id="custom-width" placeholder="1280" min="100" max="5000">
+                </div>
+                <div>
+                    <label class="form-label">Height</label>
+                    <input type="number" id="custom-height" placeholder="720" min="100" max="5000">
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Options</div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="interactive-checkbox" class="checkbox">
+                <label for="interactive-checkbox" class="form-label">Interactive Hover Effects</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="animation-css-checkbox" class="checkbox" checked>
+                <label for="animation-css-checkbox" class="form-label">Include Animation Properties</label>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Preview</div>
+            <div class="preview-container" id="preview-container">
+                <div class="preview-placeholder">Select settings above to preview</div>
+            </div>
+            <button class="button button-secondary button-small" id="preview-btn">Update Preview</button>
+            <button class="button button-secondary button-small" id="refresh-preview-btn">Refresh</button>
+        </div>
+        
+        <div id="message-container"></div>
+        
+        <button class="button" id="create-btn">Create Animation</button>
+        <button class="button button-secondary" id="export-to-library-btn">Export to Library</button>
+    </div>
+    
+    <!-- Batch Tab -->
+    <div class="tab-content" id="batch-tab">
+        <div class="section">
+            <div class="section-title">Batch Export</div>
+            <p style="margin-bottom: 16px; color: var(--figma-color-text-secondary); font-size: 11px;">
+                Create multiple variations at once for your design system.
+            </p>
+            
+            <div class="form-group">
+                <label class="form-label">Color Schemes to Export</label>
+                <div class="batch-grid" id="batch-schemes">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Animations to Include</label>
+                <div class="batch-grid">
+                    <label><input type="checkbox" checked> Fade In</label>
+                    <label><input type="checkbox" checked> Wave</label>
+                    <label><input type="checkbox" checked> Pulse</label>
+                    <label><input type="checkbox" checked> Stagger In</label>
+                </div>
+            </div>
+            
+            <div class="progress-bar" id="batch-progress" style="display: none;">
+                <div class="progress-fill" id="batch-progress-fill"></div>
+            </div>
+            
+            <button class="button" id="batch-export-btn">Create All Variations</button>
+        </div>
+    </div>
+    
+    <!-- Library Tab -->
+    <div class="tab-content" id="library-tab">
+        <div class="section">
+            <div class="section-title">Library Management</div>
+            
+            <div class="form-group">
+                <label class="form-label">Export Format</label>
+                <select id="export-format-select">
+                    <option value="component">Figma Component</option>
+                    <option value="svg">SVG File</option>
+                    <option value="both">Both</option>
+                </select>
+            </div>
+            
+            <button class="button" id="publish-to-library-btn">Publish to Team Library</button>
+            <button class="button button-secondary" id="save-settings-btn">Save Settings</button>
+            <button class="button button-secondary" id="load-settings-btn">Load Settings</button>
+        </div>
+        
+        <div class="advanced-section">
+            <div class="section-title">Advanced Options</div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="include-variants-checkbox" class="checkbox">
+                <label for="include-variants-checkbox" class="form-label">Include Color Variants</label>
+            </div>
+            
+            <div class="checkbox-group">
+                <input type="checkbox" id="auto-organize-checkbox" class="checkbox" checked>
+                <label for="auto-organize-checkbox" class="form-label">Auto-organize Components</label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plugin communication
+        let currentSettings = {
+            animation: 'fadeIn',
+            colorScheme: 'default',
+            size: 'large',
+            interactive: false,
+            exportFormat: 'component',
+            includeAnimationCSS: true
+        };
+        
+        let colorSchemes = [];
+        
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update active content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        // Size select handler
+        document.getElementById('size-select').addEventListener('change', (e) => {
+            const customSizeDiv = document.getElementById('custom-size');
+            if (e.target.value === 'custom') {
+                customSizeDiv.style.display = 'grid';
+            } else {
+                customSizeDiv.style.display = 'none';
+            }
+        });
+        
+        // Color scheme change handler
+        document.getElementById('color-scheme-select').addEventListener('change', (e) => {
+            updateColorPalette(e.target.value);
+        });
+        
+        function updateColorPalette(schemeName) {
+            const scheme = colorSchemes.find(cs => cs.name === schemeName);
+            if (!scheme) return;
+            
+            const palette = document.getElementById('color-palette');
+            palette.innerHTML = '';
+            
+            scheme.colors.gradientStops.forEach(color => {
+                const swatch = document.createElement('div');
+                swatch.className = 'color-swatch';
+                swatch.style.backgroundColor = color;
+                swatch.setAttribute('data-color', color);
+                palette.appendChild(swatch);
+            });
+        }
+        
+        function showMessage(message, type = 'success') {
+            const container = document.getElementById('message-container');
+            const messageEl = document.createElement('div');
+            messageEl.className = `message message-${type} animate-fadeIn`;
+            messageEl.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 5000);
+        }
+        
+        function updateProgress(percent) {
+            const progressFill = document.getElementById('batch-progress-fill');
+            const progressBar = document.getElementById('batch-progress');
+            
+            if (percent > 0) {
+                progressBar.style.display = 'block';
+                progressFill.style.width = `${percent}%`;
+            } else {
+                progressBar.style.display = 'none';
+            }
+        }
+        
+        function gatherSettings() {
+            const settings = {
+                animation: document.getElementById('animation-select').value,
+                colorScheme: document.getElementById('color-scheme-select').value,
+                size: document.getElementById('size-select').value,
+                interactive: document.getElementById('interactive-checkbox').checked,
+                exportFormat: document.getElementById('export-format-select').value,
+                includeAnimationCSS: document.getElementById('animation-css-checkbox').checked
+            };
+            
+            if (settings.size === 'custom') {
+                settings.customWidth = parseInt(document.getElementById('custom-width').value) || 1280;
+                settings.customHeight = parseInt(document.getElementById('custom-height').value) || 720;
+            }
+            
+            return settings;
+        }
+        
+        // Button handlers
+        document.getElementById('create-btn').addEventListener('click', () => {
+            const settings = gatherSettings();
+            parent.postMessage({ 
+                pluginMessage: { type: 'create-banda', settings } 
+            }, '*');
+        });
+        
+        document.getElementById('preview-btn').addEventListener('click', () => {
+            const settings = gatherSettings();
+            parent.postMessage({ 
+                pluginMessage: { type: 'preview-banda', settings } 
+            }, '*');
+        });
+        
+        document.getElementById('export-to-library-btn').addEventListener('click', () => {
+            const settings = gatherSettings();
+            parent.postMessage({ 
+                pluginMessage: { type: 'export-to-library', settings } 
+            }, '*');
+        });
+        
+        document.getElementById('batch-export-btn').addEventListener('click', () => {
+            const selectedSchemes = Array.from(
+                document.querySelectorAll('#batch-schemes input:checked')
+            ).map(input => input.value);
+            
+            if (selectedSchemes.length === 0) {
+                showMessage('Please select at least one color scheme', 'error');
+                return;
+            }
+            
+            parent.postMessage({ 
+                pluginMessage: { type: 'batch-export', schemes: selectedSchemes } 
+            }, '*');
+        });
+        
+        document.getElementById('save-settings-btn').addEventListener('click', () => {
+            const settings = gatherSettings();
+            parent.postMessage({ 
+                pluginMessage: { type: 'save-settings', settings } 
+            }, '*');
+        });
+        
+        document.getElementById('load-settings-btn').addEventListener('click', () => {
+            parent.postMessage({ 
+                pluginMessage: { type: 'load-settings' } 
+            }, '*');
+        });
+        
+        // Listen for messages from plugin
+        window.onmessage = (event) => {
+            const message = event.data.pluginMessage;
+            
+            switch (message.type) {
+                case 'color-schemes':
+                    colorSchemes = message.schemes;
+                    populateBatchSchemes();
+                    updateColorPalette('default');
+                    break;
+                    
+                case 'creation-success':
+                case 'export-success':
+                case 'batch-success':
+                    showMessage(message.message, 'success');
+                    break;
+                    
+                case 'error':
+                    showMessage(message.message, 'error');
+                    break;
+                    
+                case 'settings-loaded':
+                    loadSettingsToUI(message.settings);
+                    break;
+                    
+                case 'preview-data':
+                    updatePreview(message.settings, message.colorScheme);
+                    break;
+            }
+        };
+        
+        function populateBatchSchemes() {
+            const container = document.getElementById('batch-schemes');
+            container.innerHTML = '';
+            
+            colorSchemes.forEach(scheme => {
+                const label = document.createElement('label');
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = scheme.name;
+                checkbox.checked = true;
+                
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(` ${scheme.name.charAt(0).toUpperCase() + scheme.name.slice(1)}`));
+                
+                container.appendChild(label);
+            });
+        }
+        
+        function loadSettingsToUI(settings) {
+            document.getElementById('animation-select').value = settings.animation;
+            document.getElementById('color-scheme-select').value = settings.colorScheme;
+            document.getElementById('size-select').value = settings.size;
+            document.getElementById('interactive-checkbox').checked = settings.interactive;
+            document.getElementById('animation-css-checkbox').checked = settings.includeAnimationCSS;
+            
+            if (settings.size === 'custom') {
+                document.getElementById('custom-size').style.display = 'grid';
+                document.getElementById('custom-width').value = settings.customWidth || 1280;
+                document.getElementById('custom-height').value = settings.customHeight || 720;
+            }
+            
+            updateColorPalette(settings.colorScheme);
+        }
+        
+        function updatePreview(settings, colorScheme) {
+            const container = document.getElementById('preview-container');
+            
+            // Create simple preview SVG
+            const svg = `
+                <svg width="200" height="112" viewBox="0 0 1280 720" class="preview-svg animate-${settings.animation}">
+                    <defs>
+                        <linearGradient id="preview-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="${colorScheme.colors.primary}" />
+                            <stop offset="100%" stop-color="${colorScheme.colors.accent}" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,180 C320,120 640,240 1280,180 L1280,540 C640,600 320,480 0,540 Z" 
+                          fill="url(#preview-grad)" opacity="0.8"/>
+                    <path d="M0,260 C320,200 640,320 1280,260 L1280,620 C640,680 320,560 0,620 Z" 
+                          fill="${colorScheme.colors.secondary}" opacity="0.6"/>
+                    <text x="640" y="400" text-anchor="middle" fill="white" font-size="48" font-family="Inter">
+                        ${settings.animation}
+                    </text>
+                </svg>
+            `;
+            
+            container.innerHTML = svg;
+        }
+        
+        // Initialize
+        parent.postMessage({ 
+            pluginMessage: { type: 'get-color-schemes' } 
+        }, '*');
+        
+        parent.postMessage({ 
+            pluginMessage: { type: 'load-settings' } 
+        }, '*');
+    </script>
+</body>
+</html>

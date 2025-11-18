@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dafel Banda Baja - Preview Standalone</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #fff, #a8edea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      font-weight: 300;
+    }
+
+    .controls {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .controls h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button.active {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    }
+
+    .preview-area {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+      overflow: hidden;
+    }
+
+    .svg-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 500px;
+      background: #F8FBFD;
+      border-radius: 12px;
+    }
+
+    svg {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .info-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin: 0.2rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    /* ============================================
+       ANIMACIONES CSS
+       ============================================ */
+
+    .band-curved {
+      transform-origin: center center;
+      will-change: transform, opacity;
+    }
+
+    @keyframes wave-horizontal {
+      0%, 100% {
+        transform: translateX(0) translateY(0);
+      }
+      25% {
+        transform: translateX(-8px) translateY(-3px);
+      }
+      50% {
+        transform: translateX(0) translateY(0);
+      }
+      75% {
+        transform: translateX(8px) translateY(3px);
+      }
+    }
+
+    .animate-wave-horizontal .band-curved {
+      animation: wave-horizontal var(--duration, 4s) ease-in-out infinite;
+    }
+
+    .animate-wave-horizontal [data-layer="1"] { animation-delay: 0s; }
+    .animate-wave-horizontal [data-layer="2"] { animation-delay: 0.15s; }
+    .animate-wave-horizontal [data-layer="3"] { animation-delay: 0.3s; }
+    .animate-wave-horizontal [data-layer="4"] { animation-delay: 0.45s; }
+    .animate-wave-horizontal [data-layer="5"] { animation-delay: 0.6s; }
+    .animate-wave-horizontal [data-layer="6"] { animation-delay: 0.75s; }
+    .animate-wave-horizontal [data-layer="7"] { animation-delay: 0.9s; }
+
+    @keyframes pulse-opacity {
+      0%, 100% {
+        opacity: var(--base-opacity, 0.7);
+      }
+      50% {
+        opacity: calc(var(--base-opacity, 0.7) + 0.15);
+      }
+    }
+
+    @keyframes pulse-scale {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+    }
+
+    .animate-pulse .band-curved {
+      animation:
+        pulse-opacity 3s ease-in-out infinite,
+        pulse-scale 3s ease-in-out infinite;
+    }
+
+    .animate-pulse [data-layer="1"] { --base-opacity: 0.45; animation-delay: 0s; }
+    .animate-pulse [data-layer="2"] { --base-opacity: 0.55; animation-delay: 0.2s; }
+    .animate-pulse [data-layer="3"] { --base-opacity: 0.38; animation-delay: 0.4s; }
+    .animate-pulse [data-layer="4"] { --base-opacity: 0.65; animation-delay: 0.6s; }
+    .animate-pulse [data-layer="5"] { --base-opacity: 0.70; animation-delay: 0.8s; }
+    .animate-pulse [data-layer="6"] { --base-opacity: 0.75; animation-delay: 1s; }
+    .animate-pulse [data-layer="7"] { --base-opacity: 0.82; animation-delay: 1.2s; }
+
+    @keyframes fade-slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+      }
+      to {
+        opacity: var(--final-opacity, 1);
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .animate-stagger-in .band-curved {
+      animation: fade-slide-in 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .animate-stagger-in [data-layer="1"] { --final-opacity: 0.45; animation-delay: 0.1s; }
+    .animate-stagger-in [data-layer="2"] { --final-opacity: 0.55; animation-delay: 0.2s; }
+    .animate-stagger-in [data-layer="3"] { --final-opacity: 0.38; animation-delay: 0.3s; }
+    .animate-stagger-in [data-layer="4"] { --final-opacity: 0.65; animation-delay: 0.4s; }
+    .animate-stagger-in [data-layer="5"] { --final-opacity: 0.70; animation-delay: 0.5s; }
+    .animate-stagger-in [data-layer="6"] { --final-opacity: 0.75; animation-delay: 0.6s; }
+    .animate-stagger-in [data-layer="7"] { --final-opacity: 0.82; animation-delay: 0.7s; }
+
+    .interactive-hover .band-curved {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .interactive-hover .band-curved:hover {
+      opacity: 1 !important;
+      transform: translateY(-5px) scale(1.02);
+      filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 Dafel Banda Baja</h1>
+      <p class="subtitle">Diseño vectorizado de alta calidad con animaciones</p>
+    </header>
+
+    <div class="controls">
+      <h2>🎬 Controles de Animación</h2>
+      <div class="button-grid">
+        <button onclick="setAnimation('none')">❌ Sin Animación</button>
+        <button onclick="setAnimation('animate-wave-horizontal')" class="active">🌊 Wave Horizontal</button>
+        <button onclick="setAnimation('animate-pulse')">💓 Pulse</button>
+        <button onclick="setAnimation('animate-stagger-in')">📥 Stagger In</button>
+        <button onclick="setAnimation('interactive-hover')">👆 Interactive Hover</button>
+      </div>
+      <p style="text-align: center; opacity: 0.8; margin-top: 1rem;">
+        ✅ Vista Standalone - No requiere servidor web
+      </p>
+    </div>
+
+    <div class="preview-area">
+      <div class="svg-container" id="svg-container">
+        <!-- SVG embebido aquí -->
+        <svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg"
+             class="dafel-banda-animatable animate-wave-horizontal" data-version="1.0">
+          <defs>
+            <radialGradient id="grad-blue-light-radial" cx="30%" cy="40%">
+              <stop offset="0%" stop-color="#D0E8F5"/>
+              <stop offset="50%" stop-color="#A8D1E6"/>
+              <stop offset="100%" stop-color="#7DBBDB"/>
+            </radialGradient>
+
+            <linearGradient id="grad-blue-light-linear" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#C0DFF0"/>
+              <stop offset="100%" stop-color="#6FB3D9"/>
+            </linearGradient>
+
+            <radialGradient id="grad-green-lime" cx="35%" cy="45%">
+              <stop offset="0%" stop-color="#D5EDB8"/>
+              <stop offset="50%" stop-color="#AAD989"/>
+              <stop offset="100%" stop-color="#7BC77F"/>
+            </radialGradient>
+
+            <linearGradient id="grad-teal" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#5FD4C4"/>
+              <stop offset="50%" stop-color="#3AAFA3"/>
+              <stop offset="100%" stop-color="#1B8F9A"/>
+            </linearGradient>
+
+            <linearGradient id="grad-blue-medium" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#5AAED0"/>
+              <stop offset="50%" stop-color="#3493B8"/>
+              <stop offset="100%" stop-color="#1E7FA4"/>
+            </linearGradient>
+
+            <linearGradient id="grad-blue-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2B88AA"/>
+              <stop offset="50%" stop-color="#1A6983"/>
+              <stop offset="100%" stop-color="#0E5F7E"/>
+            </linearGradient>
+
+            <linearGradient id="grad-blue-deepest" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1B7696"/>
+              <stop offset="50%" stop-color="#115A75"/>
+              <stop offset="100%" stop-color="#094A62"/>
+            </linearGradient>
+
+            <pattern id="pattern-grid-teal" width="18" height="18" patternUnits="userSpaceOnUse">
+              <path d="M0 0v18M0 0h18" stroke="#fff" stroke-width="1.5" opacity=".25"/>
+            </pattern>
+
+            <pattern id="pattern-grid-blue-medium" width="16" height="16" patternUnits="userSpaceOnUse">
+              <path d="M0 0v16M0 0h16" stroke="#fff" stroke-width="1.8" opacity=".3"/>
+            </pattern>
+
+            <pattern id="pattern-grid-blue-dark" width="14" height="14" patternUnits="userSpaceOnUse">
+              <path d="M0 0v14M0 0h14" stroke="#fff" stroke-width="2" opacity=".32"/>
+            </pattern>
+
+            <filter id="filter-shadow-subtle">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+              <feOffset dy="2"/>
+              <feComponentTransfer><feFuncA type="linear" slope=".15"/></feComponentTransfer>
+              <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+
+          <rect width="1280" height="720" fill="#F8FBFD"/>
+
+          <g class="layer-background band-curved" opacity="0.45" data-layer="1">
+            <path fill="url(#grad-blue-light-radial)" d="M60 280Q200 240 340 220T600 240T860 300T1120 380Q1160 400 1200 420V600Q1160 580 1120 560T860 480T600 420T340 400Q200 420 60 460Z"/>
+          </g>
+
+          <g class="layer-background band-curved" opacity="0.55" data-layer="2">
+            <path fill="url(#grad-blue-light-linear)" d="M80 240Q220 210 360 200T620 220T880 280Q950 305 1020 330V450Q950 425 880 400T620 340T360 320Q220 330 80 360Z"/>
+          </g>
+
+          <g class="layer-middle band-curved" opacity="0.38" data-layer="3">
+            <path fill="url(#grad-green-lime)" d="M140 260Q280 240 420 230T680 260T940 330Q980 355 1020 380V520Q980 495 940 470T680 400T420 370Q280 380 140 400Z"/>
+          </g>
+
+          <g class="layer-middle band-curved band-with-grid" opacity="0.65" data-layer="4">
+            <path fill="url(#grad-teal)" d="M180 320Q320 300 460 290T720 320T980 390Q1050 425 1120 460V560Q1050 525 980 490T720 420T460 390Q320 400 180 420Z"/>
+            <path fill="url(#pattern-grid-teal)" d="M180 320Q320 300 460 290T720 320T980 390Q1050 425 1120 460V560Q1050 525 980 490T720 420T460 390Q320 400 180 420Z"/>
+          </g>
+
+          <g class="layer-middle band-curved band-with-grid" opacity="0.7" data-layer="5">
+            <path fill="url(#grad-blue-medium)" d="M220 380Q360 360 500 350T760 380T1020 450Q1090 485 1160 520V605Q1090 570 1020 535T760 465T500 435Q360 445 220 465Z"/>
+            <path fill="url(#pattern-grid-blue-medium)" d="M220 380Q360 360 500 350T760 380T1020 450Q1090 485 1160 520V605Q1090 570 1020 535T760 465T500 435Q360 445 220 465Z"/>
+          </g>
+
+          <g class="layer-front band-curved band-with-grid" opacity="0.75" filter="url(#filter-shadow-subtle)" data-layer="6">
+            <path fill="url(#grad-blue-dark)" d="M260 440Q400 420 540 410T800 440T1060 510Q1130 545 1200 580V655Q1130 620 1060 585T800 515T540 485Q400 495 260 515Z"/>
+            <path fill="url(#pattern-grid-blue-dark)" d="M260 440Q400 420 540 410T800 440T1060 510Q1130 545 1200 580V655Q1130 620 1060 585T800 515T540 485Q400 495 260 515Z"/>
+          </g>
+
+          <g class="layer-front band-curved" opacity="0.82" filter="url(#filter-shadow-subtle)" data-layer="7">
+            <path fill="url(#grad-blue-deepest)" d="M300 500Q440 480 580 470T840 500T1100 570Q1170 605 1240 640V705Q1170 670 1100 635T840 565T580 535Q440 545 300 565Z"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <footer>
+      <p>🎨 Dafel Technologies • Vectorización Premium • 2025</p>
+      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+        ✅ Vista Standalone - Funciona sin servidor web
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    function setAnimation(animationClass) {
+      const svg = document.querySelector('svg');
+
+      if (!svg) {
+        alert('SVG no encontrado');
+        return;
+      }
+
+      // Remover todas las clases de animación
+      svg.className.baseVal = svg.className.baseVal
+        .split(' ')
+        .filter(c => !c.startsWith('animate-') && c !== 'interactive-hover')
+        .join(' ');
+
+      // Agregar nueva clase
+      if (animationClass !== 'none') {
+        svg.classList.add(animationClass);
+      }
+
+      // Actualizar botón activo
+      document.querySelectorAll('button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Forzar reflow para reiniciar animación
+      svg.style.animation = 'none';
+      svg.offsetHeight;
+      svg.style.animation = null;
+    }
+  </script>
+</body>
+</html>

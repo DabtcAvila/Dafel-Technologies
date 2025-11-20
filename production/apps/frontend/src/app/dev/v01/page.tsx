@@ -16,6 +16,26 @@ const HomePage = memo(function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Carrusel data from dafelconsulting.com.mx
+  const carouselSlides = [
+    {
+      image: '/slider-images/slide1-ejecutivo-cerrando-negocio.jpg',
+      title: '¿Necesitas una consultoría empresarial?',
+      subtitle: '¡Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP!'
+    },
+    {
+      image: '/slider-images/slide2-ejecutivo1.jpg',
+      title: 'Estudios Actuariales',
+      subtitle: 'Valuaciones de Pasivos Laborales con metodología internacional'
+    },
+    {
+      image: '/slider-images/slide3-estadisticas-negocios.jpg',
+      title: 'Precios de Transferencia',
+      subtitle: 'Análisis económico-financiero para cumplimiento fiscal internacional'
+    }
+  ];
   const router = useRouter();
 
   useEffect(() => {
@@ -23,6 +43,15 @@ const HomePage = memo(function HomePage() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [carouselSlides.length]);
   
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -86,13 +115,22 @@ const HomePage = memo(function HomePage() {
       </nav>
 
       {/* Hero Section - Optimized for LCP with banda baja integration */}
-      <section className="relative min-h-screen w-screen z-0" style={{ 
-        backgroundImage: 'url(/slider-images/slide1-ejecutivo-cerrando-negocio.jpg?v=001)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+      <section className="relative min-h-screen w-screen z-0 overflow-hidden" style={{ 
         left: 0, right: 0, margin: 0, padding: 0 
       }}>
+        {/* Carousel Background Images */}
+        {carouselSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              backgroundImage: `url(${slide.image}?v=001)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        ))}
         {/* Overlay azul profesional */}
         <div 
           className="absolute inset-0 w-full h-full"
@@ -123,23 +161,29 @@ const HomePage = memo(function HomePage() {
             </motion.div>
 
             <motion.h1
+              key={`title-${currentSlide}`}
               className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-light tracking-wider text-white"
-              variants={fadeIn}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
               style={{ 
                 textShadow: '0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.4)'
               }}
             >
-              ¿Necesitas una consultoría empresarial?
+              {carouselSlides[currentSlide].title}
             </motion.h1>
             
             <motion.p
+              key={`subtitle-${currentSlide}`}
               className="mx-auto mt-6 sm:mt-8 max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-white"
-              variants={fadeIn}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
               style={{ 
                 textShadow: '0 2px 8px rgba(0, 0, 0, 0.4)'
               }}
             >
-              ¡Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP!
+              {carouselSlides[currentSlide].subtitle}
             </motion.p>
 
             <motion.div
@@ -152,6 +196,55 @@ const HomePage = memo(function HomePage() {
                 <span className="relative z-10">{messages.navbar.login}</span>
               </button>
             </motion.div>
+
+            {/* Carousel Indicators */}
+            <motion.div
+              className="mt-8 flex justify-center space-x-3"
+              variants={fadeIn}
+            >
+              {carouselSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    index === currentSlide 
+                      ? 'bg-white scale-110' 
+                      : 'bg-white/50 hover:bg-white/75'
+                  }`}
+                  style={{ 
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+                  }}
+                />
+              ))}
+            </motion.div>
+
+            {/* Navigation Arrows */}
+            <div className="absolute inset-y-0 left-4 sm:left-8 flex items-center">
+              <button
+                onClick={() => setCurrentSlide((prev) => prev === 0 ? carouselSlides.length - 1 : prev - 1)}
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-200 group"
+                style={{ 
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            </div>
+            <div className="absolute inset-y-0 right-4 sm:right-8 flex items-center">
+              <button
+                onClick={() => setCurrentSlide((prev) => (prev + 1) % carouselSlides.length)}
+                className="bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-full p-2 sm:p-3 transition-all duration-200 group"
+                style={{ 
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+                }}
+              >
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </motion.div>
 
           {/* Banda Baja Animation - Solo en Hero Section */}

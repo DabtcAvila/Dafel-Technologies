@@ -20,21 +20,6 @@ export default function DevIndexPage() {
         'Backup completo disponible'
       ],
       date: '2024-11-18'
-    },
-    {
-      version: 'v0.0.1',
-      name: 'Versión Desarrollo',
-      description: 'Nueva versión para experimentación y desarrollo iterativo',
-      url: '/dev/v01',
-      status: 'development',
-      features: [
-        'Copia exacta de v0.0.0 como base',
-        'Lista para modificaciones experimentales',
-        'Backup automático incluido',
-        'Versión independiente y segura',
-        'Sin afectar producción ni v00'
-      ],
-      date: '2024-11-18'
     }
   ];
 

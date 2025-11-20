@@ -1,0 +1,72 @@
+# GitHub Pages Configuration for Dafel Technologies
+
+# Site settings
+title: "Dafel Technologies - Enterprise AI & Data Platform"
+description: "Production-ready Next.js platform with enterprise PostgreSQL connectors, AES-256-GCM encryption, and real-time Dashboard Studio"
+url: "https://davicho1981.github.io"
+baseurl: "/Dafel-Technologies"
+
+# Theme
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO
+author: "Dafel Technologies"
+twitter:
+  username: dafeltech
+  card: summary_large_image
+
+social:
+  name: Dafel Technologies
+  links:
+    - https://github.com/davicho1981/Dafel-Technologies
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+# Collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:name/
+
+# Exclude from processing
+exclude:
+  - node_modules/
+  - frontend/node_modules/
+  - frontend/.next/
+  - frontend/dist/
+  - frontend/build/
+  - Gemfile
+  - Gemfile.lock
+  - package.json
+  - package-lock.json
+  - README.md
+
+# Include files
+include:
+  - _pages
+  - frontend/src
+  - frontend/prisma
+
+# Default layouts
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "page"

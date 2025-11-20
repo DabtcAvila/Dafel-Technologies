@@ -79,82 +79,66 @@ const HomePage = memo(function HomePage() {
   return (
     <>
       
-      {/* Navbar - Liquid Glass Effect */}
-      <nav 
-        className="fixed top-0 z-50 w-screen border-b border-white/20 backdrop-blur-2xl shadow-2xl" 
-        style={{ 
-          left: 0, 
-          right: 0,
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%)',
-          backdropFilter: 'blur(20px) saturate(180%) brightness(1.1) contrast(1.05)',
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 12px 32px rgba(0,0,0,0.08), inset 0 0 20px rgba(255,255,255,0.1)'
-        }}
-      >
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-[60px] sm:h-[70px] items-center">
-            <div className="flex items-center flex-1">
-              {/* Logo completo desde archivo SVG */}
-              <motion.img
-                src="/dafel-logo-optimized.svg"
-                alt="Dafel Consulting Services"
-                className="h-[60px] sm:h-[70px] w-auto"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              />
-            </div>
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Botones principales - responsive */}
-              <button 
-                onClick={() => router.push('/login')}
-                className="hidden sm:block group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 100%)',
-                  backdropFilter: 'blur(16px) brightness(1.15) saturate(120%)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.1)'
-                }}
-              >
-                <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-sm">
-                  {messages.navbar.login}
-                </span>
-              </button>
-              <button 
-                onClick={() => setIsContactModalOpen(true)}
-                className="group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-3 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
-                style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 100%)',
-                  backdropFilter: 'blur(16px) brightness(1.15) saturate(120%)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.1)'
-                }}
-              >
-                <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-sm">
-                  <span className="hidden sm:inline">{messages.navbar.scheduleConsultation}</span>
-                  <span className="sm:hidden">{locale === 'es' ? 'Asesoría' : 'Advisory'}</span>
-                </span>
-              </button>
-              <button 
-                onClick={() => changeLocale(locale === 'es' ? 'en' : 'es')}
-                className="flex items-center text-xs sm:text-sm text-gray-600 transition-all hover:text-gray-900 px-2"
-              >
-                <span className={`${locale === 'es' ? 'font-semibold' : ''}`}>ES</span>
-                <span className="mx-1 text-gray-400">|</span>
-                <span className={`${locale === 'en' ? 'font-semibold' : ''}`}>EN</span>
-              </button>
-              <button className="text-gray-600 transition-colors hover:text-gray-900 p-2">
-                <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* Minimalist Navigation - Pure Floating Buttons */}
+      <div className="fixed top-6 left-6 right-6 z-50 flex justify-between items-center">
+        {/* Left Button - Hamburger + Logo */}
+        <motion.button
+          className="group relative overflow-hidden rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-5 py-4 flex items-center space-x-3 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 100%)',
+            backdropFilter: 'blur(12px) brightness(1.2) saturate(120%)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.15)'
+          }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
+          <Bars3Icon className="h-6 w-6 text-gray-700 transition-colors group-hover:text-gray-900" />
+          <motion.img
+            src="/dafel-logo-optimized.svg"
+            alt="Dafel"
+            className="h-10 w-auto"
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          />
+        </motion.button>
 
+        {/* Right Button - Search + Login */}
+        <motion.button
+          onClick={() => router.push('/login')}
+          className="group relative overflow-hidden rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-5 py-4 flex items-center space-x-3 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 100%)',
+            backdropFilter: 'blur(12px) brightness(1.2) saturate(120%)',
+            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.15)'
+          }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
+          <svg 
+            className="h-6 w-6 text-gray-700 transition-colors group-hover:text-gray-900" 
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <span className="text-base font-medium text-gray-700 transition-colors group-hover:text-gray-900 group-hover:drop-shadow-sm">
+            {messages.navbar.login}
+          </span>
+        </motion.button>
+      </div>
+
+      
       {/* Hero Section - Optimized for LCP with banda baja integration */}
-      <section className="relative min-h-screen w-screen z-0 overflow-hidden" style={{ left: 0, right: 0, margin: 0, padding: 0 }}>
+      <section className="relative h-screen w-screen z-0 overflow-hidden" style={{ left: 0, right: 0, margin: 0, padding: 0 }}>
         {/* Carousel Background Images */}
         {carouselSlides.map((slide, index) => (
           <div
             key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute w-full h-full transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
             style={{
+              top: 0,
+              height: '100vh',
               backgroundImage: `url(${slide.image}?v=001)`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
@@ -163,8 +147,8 @@ const HomePage = memo(function HomePage() {
           />
         ))}
         
-        {/* Professional Blue Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/55 via-blue-800/45 to-blue-700/35 backdrop-blur-[1px]" />
+        {/* Professional Blue Overlay - Single Layer */}
+        <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-[1px]" />
         
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
           <motion.div
@@ -179,7 +163,7 @@ const HomePage = memo(function HomePage() {
               <AnimatePresence mode="wait">
                 {showText && (
                   <motion.h1
-                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-mono font-light tracking-wider text-white leading-tight text-center"
+                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-light leading-tight text-center text-white"
                     style={{ 
                       textShadow: '0 2px 4px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6)'
                     }}
@@ -229,9 +213,9 @@ const HomePage = memo(function HomePage() {
                 onClick={() => router.push('/login')}
                 className="group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-8 sm:px-16 lg:px-32 py-3 sm:py-4 text-base sm:text-lg font-medium text-white transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-2xl hover:scale-105 shadow-lg"
                 style={{
-                  background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
-                  backdropFilter: 'blur(16px) brightness(1.2) saturate(130%)',
-                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 32px rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.08)'
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 100%)',
+                  backdropFilter: 'blur(12px) brightness(1.2) saturate(130%)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 8px 32px rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.15)'
                 }}
               >
                 <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-lg">
@@ -244,16 +228,17 @@ const HomePage = memo(function HomePage() {
 
           {/* Banda Baja Animation - Solo en Hero Section */}
           <div 
-            className="absolute inset-0 w-full h-full pointer-events-none overflow-hidden"
+            className="absolute inset-0 w-full pointer-events-none overflow-hidden"
             style={{ 
               zIndex: 1,
+              height: '100vh',
               opacity: Math.max(0, 1 - scrollY / 500), // Se desvanece al hacer scroll
               transition: 'opacity 0.3s ease-out'
             }}
           >
             <iframe
               src="/bandabaja-animated.svg"
-              className="border-none absolute inset-0 scale-120 sm:scale-105"
+              className="border-none absolute scale-120 sm:scale-105"
               style={{ 
                 background: 'transparent',
                 pointerEvents: 'none',

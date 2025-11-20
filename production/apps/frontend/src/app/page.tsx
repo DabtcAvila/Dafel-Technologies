@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, lazy, Suspense, memo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
@@ -16,13 +16,51 @@ const HomePage = memo(function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [showText, setShowText] = useState(true);
   const router = useRouter();
+
+  // Carrusel data with updated titles
+  const carouselSlides = [
+    {
+      image: '/slider-images/slide1-ejecutivo-cerrando-negocio.jpg',
+      title: '¿Necesitas una consultoría empresarial?\n\n¡Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP!'
+    },
+    {
+      image: '/slider-images/slide2-ejecutivo1.jpg',
+      title: '¡Conoce DAFEL Consulting!\n¡Queremos ayudarte!'
+    },
+    {
+      image: '/slider-images/slide3-estadisticas-negocios.jpg',
+      title: '¡Acércate y conoce nuestros servicios actuariales!'
+    }
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Auto-advance carousel con gap de texto extendido
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Ocultar texto 1.0 segundo antes del cambio
+      setShowText(false);
+      
+      setTimeout(() => {
+        // Cambiar slide a la mitad del gap (1.0s después)
+        setCurrentSlide((prev) => (prev + 1) % carouselSlides.length);
+        
+        setTimeout(() => {
+          // Mostrar texto 1.0 segundo después del cambio
+          setShowText(true);
+        }, 1000);
+      }, 1000);
+    }, 7000); // Change slide every 7 seconds
+
+    return () => clearInterval(interval);
+  }, [carouselSlides.length]);
   
   const fadeIn = {
     initial: { opacity: 0, y: 20 },
@@ -41,8 +79,17 @@ const HomePage = memo(function HomePage() {
   return (
     <>
       
-      {/* Navbar - Optimizada para móvil */}
-      <nav className="fixed top-0 z-50 w-screen border-b border-gray-100/50 bg-white/90 backdrop-blur-xl shadow-lg" style={{ left: 0, right: 0 }}>
+      {/* Navbar - Liquid Glass Effect */}
+      <nav 
+        className="fixed top-0 z-50 w-screen border-b border-white/20 backdrop-blur-2xl shadow-2xl" 
+        style={{ 
+          left: 0, 
+          right: 0,
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%)',
+          backdropFilter: 'blur(20px) saturate(180%) brightness(1.1) contrast(1.05)',
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 12px 32px rgba(0,0,0,0.08), inset 0 0 20px rgba(255,255,255,0.1)'
+        }}
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-[60px] sm:h-[70px] items-center">
             <div className="flex items-center flex-1">
@@ -59,15 +106,30 @@ const HomePage = memo(function HomePage() {
               {/* Botones principales - responsive */}
               <button 
                 onClick={() => router.push('/login')}
-                className="hidden sm:block rounded-lg border border-gray-300 px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all hover:border-gray-900">
-                {messages.navbar.login}
+                className="hidden sm:block group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 100%)',
+                  backdropFilter: 'blur(16px) brightness(1.15) saturate(120%)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.1)'
+                }}
+              >
+                <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-sm">
+                  {messages.navbar.login}
+                </span>
               </button>
               <button 
                 onClick={() => setIsContactModalOpen(true)}
-                className="rounded-lg border border-gray-300 px-3 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all hover:border-gray-900"
+                className="group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-3 sm:px-6 lg:px-8 py-2 sm:py-3 text-xs sm:text-sm font-medium text-gray-900 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.15) 100%)',
+                  backdropFilter: 'blur(16px) brightness(1.15) saturate(120%)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.1)'
+                }}
               >
-                <span className="hidden sm:inline">{messages.navbar.scheduleConsultation}</span>
-                <span className="sm:hidden">{locale === 'es' ? 'Asesoría' : 'Advisory'}</span>
+                <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-sm">
+                  <span className="hidden sm:inline">{messages.navbar.scheduleConsultation}</span>
+                  <span className="sm:hidden">{locale === 'es' ? 'Asesoría' : 'Advisory'}</span>
+                </span>
               </button>
               <button 
                 onClick={() => changeLocale(locale === 'es' ? 'en' : 'es')}
@@ -86,7 +148,24 @@ const HomePage = memo(function HomePage() {
       </nav>
 
       {/* Hero Section - Optimized for LCP with banda baja integration */}
-      <section className="relative min-h-screen w-screen" style={{ background: 'rgba(255, 255, 255, 0.1)', left: 0, right: 0, margin: 0, padding: 0 }}>
+      <section className="relative min-h-screen w-screen z-0 overflow-hidden" style={{ left: 0, right: 0, margin: 0, padding: 0 }}>
+        {/* Carousel Background Images */}
+        {carouselSlides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+            style={{
+              backgroundImage: `url(${slide.image}?v=001)`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+        ))}
+        
+        {/* Professional Blue Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/55 via-blue-800/45 to-blue-700/35 backdrop-blur-[1px]" />
+        
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
           <motion.div
             className="mx-auto max-w-4xl text-center relative z-10"
@@ -94,49 +173,71 @@ const HomePage = memo(function HomePage() {
             animate="animate"
             variants={staggerChildren}
           >
-            {/* Dafel Logo */}
-            <motion.div
-              className="flex justify-center mb-6 sm:mb-8"
-              variants={fadeIn}
-            >
-              <motion.img
-                src="/dafel-logo-optimized.svg"
-                alt="Dafel Consulting Services"
-                className="h-16 sm:h-20 w-auto"
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              />
-            </motion.div>
 
-            <motion.h1
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-mono font-light tracking-wider text-gray-900"
-              variants={fadeIn}
-              style={{ 
-                textShadow: '0 2px 4px rgba(255, 255, 255, 0.8), 0 4px 8px rgba(255, 255, 255, 0.6)'
-              }}
-            >
-              {messages.hero.title}
-              <span className="block font-mono font-normal tracking-wider">{messages.hero.titleHighlight}</span>
-            </motion.h1>
+            {/* Contenedor de altura fija para el título - evita movimiento */}
+            <div className="h-24 sm:h-28 md:h-32 lg:h-36 xl:h-40 flex items-center justify-center mb-20 sm:mb-24">
+              <AnimatePresence mode="wait">
+                {showText && (
+                  <motion.h1
+                    className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-mono font-light tracking-wider text-white leading-tight text-center"
+                    style={{ 
+                      textShadow: '0 2px 4px rgba(0, 0, 0, 0.8), 0 4px 8px rgba(0, 0, 0, 0.6)'
+                    }}
+                    key={`${currentSlide}-${showText}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ 
+                      duration: 1.5,
+                      ease: "easeInOut"
+                    }}
+                  >
+                    {carouselSlides[currentSlide].title.split('\n').map((line, index) => {
+                      if (line === '') {
+                        // Línea vacía - crear espacio extra
+                        return <div key={index} className="h-3"></div>;
+                      }
+                      return (
+                        <span key={index}>
+                          {line}
+                          {index < carouselSlides[currentSlide].title.split('\n').length - 1 && <br />}
+                        </span>
+                      );
+                    })}
+                  </motion.h1>
+                )}
+              </AnimatePresence>
+            </div>
             
+            {/* Texto descriptivo - AHORA SIN MARGIN TOP */}
             <motion.p
-              className="mx-auto mt-6 sm:mt-8 max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-gray-700"
+              className="mx-auto max-w-2xl text-base sm:text-lg font-sans leading-relaxed text-white/90 text-center"
               variants={fadeIn}
               style={{ 
-                textShadow: '0 1px 2px rgba(255, 255, 255, 0.8)'
+                textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)'
               }}
             >
-              {messages.hero.description}
+              Consultoría actuarial especializada en valuación de obligaciones laborales. Cumplimiento total con NIF D-3, IFRS-19 y USGAAP para su empresa.
             </motion.p>
 
+            {/* Botón - SEPARACIÓN LIGERAMENTE MAYOR */}
             <motion.div
-              className="mt-8 sm:mt-12 flex justify-center"
+              className="mt-10 sm:mt-12 flex justify-center"
               variants={fadeIn}
             >
               <button 
                 onClick={() => router.push('/login')}
-                className="group relative overflow-hidden rounded-lg border-2 border-gray-900 bg-white px-8 sm:px-16 lg:px-32 py-3 sm:py-4 text-base sm:text-lg font-medium text-gray-900 transition-all hover:bg-gray-900 hover:text-white shadow-lg">
-                <span className="relative z-10">{messages.navbar.login}</span>
+                className="group relative overflow-hidden rounded-lg border border-white/30 bg-white/10 backdrop-blur-md px-8 sm:px-16 lg:px-32 py-3 sm:py-4 text-base sm:text-lg font-medium text-white transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-2xl hover:scale-105 shadow-lg"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.08) 100%)',
+                  backdropFilter: 'blur(16px) brightness(1.2) saturate(130%)',
+                  boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25), 0 8px 32px rgba(0,0,0,0.1), inset 0 0 20px rgba(255,255,255,0.08)'
+                }}
+              >
+                <span className="relative z-10 transition-all duration-300 group-hover:drop-shadow-lg">
+                  {messages.navbar.login}
+                </span>
+                <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-sm"></div>
               </button>
             </motion.div>
           </motion.div>

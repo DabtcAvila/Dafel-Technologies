@@ -7,15 +7,18 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-// Lazy load heavy components for better LCP
+// Lazy load heavy components for better LCP  
 const DafelSection = lazy(() => import('@/components/DafelSection'));
-const ContactModal = lazy(() => import('@/components/ContactModal'));
+// Direct import para evitar ChunkLoadError
+import ContactModal from '@/components/ContactModal';
 
 // Memoize the main component for better performance
 const HomePage = memo(function HomePage() {
   const { locale, messages, changeLocale } = useLanguage();
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [navbarVisible, setNavbarVisible] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [showText, setShowText] = useState(true);
   const router = useRouter();
@@ -28,19 +31,44 @@ const HomePage = memo(function HomePage() {
     },
     {
       image: '/slider-images/slide2-ejecutivo1.jpg',
-      title: '¡Conoce DAFEL Consulting!\n¡Queremos ayudarte!'
+      title: '¿Tienes pasivos laborales por cubrir?\n\n¡Prima de Antigüedad, Indemnizaciones y Planes de Jubilación!'
     },
     {
       image: '/slider-images/slide3-estadisticas-negocios.jpg',
-      title: '¡Acércate y conoce nuestros servicios actuariales!'
+      title: '¡Optimiza los beneficios de tus empleados!\n\nPrevisión Social, Pensiones y Administración de Riesgos'
+    },
+    {
+      image: '/slider-images/slide1-ejecutivo-cerrando-negocio.jpg',
+      title: '¿Planeas el retiro de tus empleados?\n\nTrámites IMSS, Individualización de Planes y Asesoría Fiscal'
+    },
+    {
+      image: '/slider-images/slide2-ejecutivo1.jpg',
+      title: '¡Conoce DAFEL Consulting!\n¡Expertos en Actuaría y Beneficios Corporativos!'
     }
   ];
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
+      
+      // Altura de la navbar (72px = h-18)
+      const navbarHeight = 72;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > navbarHeight) {
+        // Scrolling hacia abajo - ocultar navbar
+        setNavbarVisible(false);
+      } else if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 10) {
+        // Scrolling hacia arriba con movimiento mínimo - mostrar navbar
+        setNavbarVisible(true);
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   // Auto-advance carousel con gap de texto extendido
   useEffect(() => {
@@ -79,54 +107,60 @@ const HomePage = memo(function HomePage() {
   return (
     <>
       
-      {/* Minimalist Navigation - Pure Floating Buttons */}
-      <div className="fixed top-6 left-6 right-6 z-50 flex justify-between items-center">
-        {/* Left Button - Hamburger + Logo */}
-        <motion.button
-          className="group relative overflow-hidden rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-5 py-4 flex items-center space-x-3 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 100%)',
-            backdropFilter: 'blur(12px) brightness(1.2) saturate(120%)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.15)'
-          }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          <Bars3Icon className="h-6 w-6 text-gray-700 transition-colors group-hover:text-gray-900" />
-          <motion.img
-            src="/dafel-logo-optimized.svg"
-            alt="Dafel"
-            className="h-10 w-auto"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          />
-        </motion.button>
+      {/* Traditional Navbar */}
+      <motion.nav 
+        className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-200/20 shadow-sm"
+        initial={{ y: 0 }}
+        animate={{ y: navbarVisible ? 0 : -100 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        style={{ top: 0 }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-18">
+            {/* Logo */}
+            <div className="flex items-center">
+              <img
+                src="/dafel-logo-optimized.svg"
+                alt="Dafel Technologies"
+                className="h-16 w-auto"
+              />
+            </div>
 
-        {/* Right Button - Search + Login */}
-        <motion.button
-          onClick={() => router.push('/login')}
-          className="group relative overflow-hidden rounded-xl border border-white/30 bg-white/10 backdrop-blur-md px-5 py-4 flex items-center space-x-3 transition-all duration-300 hover:bg-white/20 hover:border-white/50 hover:shadow-xl hover:scale-105"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.20) 100%)',
-            backdropFilter: 'blur(12px) brightness(1.2) saturate(120%)',
-            boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4), 0 4px 16px rgba(0,0,0,0.05), inset 0 0 15px rgba(255,255,255,0.15)'
-          }}
-          whileHover={{ scale: 1.02 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-        >
-          <svg 
-            className="h-6 w-6 text-gray-700 transition-colors group-hover:text-gray-900" 
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <span className="text-base font-medium text-gray-700 transition-colors group-hover:text-gray-900 group-hover:drop-shadow-sm">
-            {messages.navbar.login}
-          </span>
-        </motion.button>
-      </div>
+            {/* Navigation Links */}
+            <div className="hidden md:block">
+              <div className="flex items-center space-x-8">
+                <a href="#servicios" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Servicios
+                </a>
+                <a href="#boletines" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Boletines
+                </a>
+                <a href="#nosotros" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Nosotros
+                </a>
+                <a href="#contacto" className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Contacto
+                </a>
+                <button 
+                  onClick={() => router.push('/login')}
+                  className="bg-white text-gray-700 px-4 py-2 rounded-md text-sm font-medium border border-gray-300 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                >
+                  {messages.navbar.login}
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+              >
+                <Bars3Icon className="h-6 w-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.nav>
 
       
       {/* Hero Section - Optimized for LCP with banda baja integration */}
@@ -141,16 +175,16 @@ const HomePage = memo(function HomePage() {
               height: '100vh',
               backgroundImage: `url(${slide.image}?v=001)`,
               backgroundSize: 'cover',
-              backgroundPosition: 'center',
+              backgroundPosition: index === 0 ? 'center' : 'center top',
               backgroundRepeat: 'no-repeat'
             }}
           />
         ))}
         
         {/* Professional Blue Overlay - Single Layer */}
-        <div className="absolute inset-0 bg-blue-900/40 backdrop-blur-[1px]" />
+        <div className="absolute inset-0 bg-blue-500/30 backdrop-blur-[1px]" />
         
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-24">
           <motion.div
             className="mx-auto max-w-4xl text-center relative z-10"
             initial="initial"
@@ -201,7 +235,7 @@ const HomePage = memo(function HomePage() {
                 textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)'
               }}
             >
-              Consultoría actuarial especializada en valuación de obligaciones laborales. Cumplimiento total con NIF D-3, IFRS-19 y USGAAP para su empresa.
+              Consultoría empresarial especializada en planes de beneficios corporativos, obligaciones laborales y gestión de riesgos, ofreciendo servicios integrales y brindando un respaldo total en su toma de decisiones.
             </motion.p>
 
             {/* Botón - SEPARACIÓN LIGERAMENTE MAYOR */}
@@ -626,13 +660,11 @@ const HomePage = memo(function HomePage() {
         </div>
       </footer>
 
-      {/* Contact Modal - Lazy loaded */}
-      <Suspense fallback={null}>
-        <ContactModal 
-          open={isContactModalOpen} 
-          onOpenChange={setIsContactModalOpen} 
-        />
-      </Suspense>
+      {/* Contact Modal - Direct import */}
+      <ContactModal 
+        open={isContactModalOpen} 
+        onOpenChange={setIsContactModalOpen} 
+      />
     </>
   );
 });

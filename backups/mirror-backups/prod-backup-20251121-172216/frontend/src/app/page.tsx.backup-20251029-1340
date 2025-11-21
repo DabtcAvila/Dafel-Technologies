@@ -1,0 +1,702 @@
+'use client';
+
+import { useState, lazy, Suspense, memo } from 'react';
+import { motion } from 'framer-motion';
+import { Bars3Icon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+// Lazy load heavy components for better LCP
+const ContactModal = lazy(() => import('@/components/ContactModal'));
+
+// Memoize the main component for better performance
+const ConsultingHomePage = memo(function ConsultingHomePage() {
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
+  
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6 }
+  };
+
+  const staggerChildren = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const handleAccessStudio = () => {
+    router.push('/login?callbackUrl=/studio&source=consulting');
+  };
+
+  return (
+    <>
+      {/* Navbar */}
+      <nav className="fixed top-0 z-50 w-full border-b border-gray-100 bg-white/80 backdrop-blur-md">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="flex h-[70px] items-center">
+            <div className="flex items-center flex-1">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 100 100" 
+                className="h-7 w-7 mr-2"
+                aria-label="Dafel Consulting Logo"
+              >
+                <path 
+                  d="M 0,0 L 100,0 L 100,100 L 0,100 L 0,0 Z M 8,8 L 8,92 L 92,92 L 92,8 L 8,8 Z" 
+                  style={{ fill: '#0d457f' }} 
+                  fillRule="evenodd"
+                />
+                <circle 
+                  cx="50" 
+                  cy="50" 
+                  r="27.5" 
+                  style={{ fill: '#0d457f' }}
+                />
+              </svg>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tight" style={{ color: '#0d457f' }}>
+                  DAFEL
+                </span>
+                <span className="text-xs text-gray-600 uppercase tracking-wider">
+                  CONSULTING
+                </span>
+              </div>
+            </div>
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
+              <Link href="/tech" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                Dafel Technologies
+              </Link>
+              <button 
+                onClick={() => setIsContactModalOpen(true)}
+                className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-900 transition-all hover:border-gray-900"
+              >
+                Solicitar Cotización
+              </button>
+              <button 
+                onClick={handleAccessStudio}
+                className="rounded-lg text-white px-6 py-2 text-sm font-medium transition-all hover:opacity-90"
+                style={{ backgroundColor: '#0d457f' }}
+              >
+                Dafel Studio
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button 
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Bars3Icon className="h-6 w-6 text-gray-700" />
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu - Enhanced */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100 shadow-lg">
+            <div className="px-4 py-6 space-y-4">
+              <Link 
+                href="/tech" 
+                className="flex items-center justify-between py-3 px-4 text-gray-700 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-50 touch-manipulation"
+                onClick={() => setIsMobileMenuOpen(false)}
+                style={{ minHeight: '48px' }}
+              >
+                <span className="font-medium">Dafel Technologies</span>
+                <span className="text-gray-400">→</span>
+              </Link>
+              <button 
+                onClick={() => {
+                  setIsContactModalOpen(true);
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-between w-full py-3 px-4 text-left text-gray-700 hover:text-gray-900 transition-colors rounded-lg hover:bg-gray-50 touch-manipulation"
+                style={{ minHeight: '48px' }}
+              >
+                <span className="font-medium">Solicitar Cotización</span>
+                <span className="text-gray-400">📝</span>
+              </button>
+              <button 
+                onClick={() => {
+                  handleAccessStudio();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center justify-center w-full text-white px-4 py-4 rounded-lg font-semibold transition-all hover:opacity-90 touch-manipulation"
+                style={{ backgroundColor: '#0d457f', minHeight: '48px' }}
+              >
+                <span>Dafel Studio</span>
+                <span className="ml-2">→</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section - Clear Actuarial Consulting Message */}
+      <section className="relative min-h-screen bg-white">
+        <div className="mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-32 lg:px-8 lg:pt-40">
+          <motion.div
+            className="mx-auto max-w-5xl text-center"
+            initial="initial"
+            animate="animate"
+            variants={staggerChildren}
+          >
+            <motion.h1
+              className="text-2xl font-mono font-light tracking-wide leading-tight sm:text-5xl md:text-6xl lg:text-7xl sm:tracking-wider"
+              variants={fadeIn}
+            >
+              <span style={{ color: '#0d457f' }}>Servicios Actuariales.</span>
+              <span className="block font-mono font-normal tracking-wider text-gray-900">Precisión Absoluta.</span>
+            </motion.h1>
+            
+            <motion.p
+              className="mx-auto mt-4 sm:mt-8 max-w-2xl text-sm leading-relaxed sm:text-lg font-sans sm:leading-relaxed text-gray-600 px-2 sm:px-0"
+              variants={fadeIn}
+            >
+              Transformamos análisis actuariales complejos en decisiones exactas. Nuestra <strong>experiencia de 10+ años</strong> combinada con <strong>IA avanzada</strong> elimina errores en valuaciones que requieren precisión absoluta.
+            </motion.p>
+
+            <motion.div
+              className="mt-6 sm:mt-12 flex flex-col gap-3 sm:gap-4 justify-center px-2 sm:px-0"
+              variants={fadeIn}
+            >
+              <button 
+                onClick={() => setIsContactModalOpen(true)}
+                className="group relative overflow-hidden rounded-lg text-white px-6 py-4 text-base font-semibold sm:px-16 lg:px-32 sm:py-4 sm:text-lg sm:font-medium transition-all hover:opacity-90 shadow-lg w-full sm:w-auto touch-manipulation"
+                style={{ backgroundColor: '#0d457f', minHeight: '48px' }}
+              >
+                <span className="relative z-10">Solicitar Cotización</span>
+              </button>
+              <button 
+                onClick={handleAccessStudio}
+                className="border-2 text-base sm:text-lg font-medium px-6 sm:px-8 py-3 sm:py-4 rounded-xl transition-all duration-300 hover:text-white w-full sm:w-auto"
+                style={{ 
+                  borderColor: '#0d457f', 
+                  color: '#0d457f'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0d457f'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              >
+                Explora Dafel Studio →
+              </button>
+            </motion.div>
+
+            {/* Key Benefits */}
+            <motion.div
+              className="mt-8 sm:mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-8 max-w-4xl mx-auto px-2 sm:px-0"
+              variants={fadeIn}
+            >
+              <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center"
+                     style={{ backgroundColor: '#0d457f15' }}>
+                  <span className="text-xl sm:text-2xl">⚖️</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Cumplimiento Normativo</h3>
+                <p className="text-sm sm:text-base text-gray-600">Evita notas de salvedad en auditorías</p>
+              </div>
+              <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center"
+                     style={{ backgroundColor: '#0d457f15' }}>
+                  <span className="text-xl sm:text-2xl">💰</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Optimización Fiscal</h3>
+                <p className="text-sm sm:text-base text-gray-600">Registro correcto de pasivos laborales</p>
+              </div>
+              <div className="text-center bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100 sm:col-span-2 lg:col-span-1">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-full flex items-center justify-center"
+                     style={{ backgroundColor: '#0d457f15' }}>
+                  <span className="text-xl sm:text-2xl">📊</span>
+                </div>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Análisis Precisos</h3>
+                <p className="text-sm sm:text-base text-gray-600">Valuaciones con metodología probada</p>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Scroll Indicator - Hidden on small mobile */}
+          <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center">
+            <motion.div
+              className="flex flex-col items-center"
+              animate={{
+                y: [0, 6, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <div className="flex items-center justify-center mb-1">
+                <ChevronDownIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+              </div>
+              <span className="text-xs text-gray-600 font-medium tracking-wide hidden xs:block">
+                Conoce nuestros servicios
+              </span>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section - Traditional Actuarial Focus */}
+      <section className="relative py-24 bg-slate-50">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-mono font-light tracking-wider text-gray-900 sm:text-4xl">
+              Capacidades Core
+            </h2>
+            <p className="mt-4 text-lg font-sans text-gray-600">
+              Metodología actuarial tradicional potenciada con IA para resultados superiores
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Prima de Antigüedad - OBLIGATORIO */}
+            <motion.div
+              className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-xl flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f15' }}>
+                <span className="text-2xl">📊</span>
+              </div>
+              <div className="mb-4 h-px w-12" style={{ backgroundColor: '#0d457f' }} />
+              <h3 className="text-lg font-mono font-medium tracking-wider text-gray-900">
+                Valuación IA para Decisiones
+              </h3>
+              <p className="mt-4 text-sm font-sans leading-relaxed text-gray-600">
+                Algoritmos de IA analizan patrones complejos en datos actuariales para proporcionar valuaciones precisas bajo NIF D-3, IFRS-19 y USGAAP en tiempo récord.
+              </p>
+              <button className="mt-6 text-sm font-medium transition-colors" style={{ color: '#0d457f' }}>
+                Aprender más →
+              </button>
+            </motion.div>
+
+            {/* Indemnizaciones por Despido */}
+            <motion.div
+              className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-xl flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f15' }}>
+                <span className="text-2xl">⚖️</span>
+              </div>
+              <div className="mb-4 h-px w-12" style={{ backgroundColor: '#0d457f' }} />
+              <h3 className="text-lg font-mono font-medium tracking-wider text-gray-900">
+                Automatización Inteligente
+              </h3>
+              <p className="mt-4 text-sm font-sans leading-relaxed text-gray-600">
+                Sistemas autónomos que optimizan flujos actuariales, reducen errores en cálculos de indemnizaciones y liberan tiempo para análisis estratégico de mayor valor.
+              </p>
+              <button className="mt-6 text-sm font-medium transition-colors" style={{ color: '#0d457f' }}>
+                Aprender más →
+              </button>
+            </motion.div>
+
+            {/* Planes de Jubilación */}
+            <motion.div
+              className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-xl flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f15' }}>
+                <span className="text-2xl">🏆</span>
+              </div>
+              <div className="mb-4 h-px w-12" style={{ backgroundColor: '#0d457f' }} />
+              <h3 className="text-lg font-mono font-medium tracking-wider text-gray-900">
+                Análisis Predictivo Actuarial
+              </h3>
+              <p className="mt-4 text-sm font-sans leading-relaxed text-gray-600">
+                Modelos estadísticos avanzados que anticipan tendencias en obligaciones laborales, optimizan planes de jubilación y proyectan riesgos con precisión excepcional.
+              </p>
+              <button className="mt-6 text-sm font-medium transition-colors" style={{ color: '#0d457f' }}>
+                Aprender más →
+              </button>
+            </motion.div>
+
+            {/* Análisis de Riesgos */}
+            <motion.div
+              className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition-all duration-300"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <div className="w-16 h-16 mx-auto mb-6 rounded-xl flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f15' }}>
+                <span className="text-2xl">🛡️</span>
+              </div>
+              <div className="mb-4 h-px w-12" style={{ backgroundColor: '#0d457f' }} />
+              <h3 className="text-lg font-mono font-medium tracking-wider text-gray-900">
+                Compliance Automatizado
+              </h3>
+              <p className="mt-4 text-sm font-sans leading-relaxed text-gray-600">
+                IA garantiza cumplimiento total con NIF D-3, IFRS-19 y USGAAP, genera reportes automáticos y elimina riesgos de notas de salvedad en auditorías.
+              </p>
+              <button className="mt-6 text-sm font-medium transition-colors" style={{ color: '#0d457f' }}>
+                Aprender más →
+              </button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Value Proposition Section */}
+      <section className="py-16 sm:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-4xl font-bold text-gray-900 mb-8">
+                  ¿Por qué es <span style={{ color: '#0d457f' }}>obligatorio</span> para tu empresa?
+                </h2>
+                
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                         style={{ backgroundColor: '#0d457f' }}>
+                      <span className="text-white font-bold text-sm">1</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Obligación Legal
+                      </h3>
+                      <p className="text-gray-700">
+                        La <strong>Ley Federal del Trabajo</strong> y las <strong>Normas de Información Financiera (NIF D-3)</strong> 
+                        requieren que empresas con personal de planta registren estas obligaciones.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                         style={{ backgroundColor: '#0d457f' }}>
+                      <span className="text-white font-bold text-sm">2</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Impacto en Auditorías
+                      </h3>
+                      <p className="text-gray-700">
+                        Sin valuación actuarial, los <strong>auditores externos emiten notas de salvedad</strong> 
+                        que afectan la credibilidad financiera de tu empresa.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+                         style={{ backgroundColor: '#0d457f' }}>
+                      <span className="text-white font-bold text-sm">3</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Beneficios Fiscales
+                      </h3>
+                      <p className="text-gray-700">
+                        Registro correcto permite <strong>deducciones fiscales</strong> y optimización 
+                        de la carga tributaria empresarial.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right side - Statistics */}
+            <motion.div
+              className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8"
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
+                Experiencia Comprobada
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div className="text-center bg-white/50 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#0d457f' }}>10+</div>
+                  <p className="text-xs sm:text-sm text-gray-700">Años de experiencia</p>
+                </div>
+                <div className="text-center bg-white/50 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#0d457f' }}>500+</div>
+                  <p className="text-xs sm:text-sm text-gray-700">Empresas atendidas</p>
+                </div>
+                <div className="text-center bg-white/50 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#0d457f' }}>3-7</div>
+                  <p className="text-xs sm:text-sm text-gray-700">Días de entrega</p>
+                </div>
+                <div className="text-center bg-white/50 rounded-lg p-3 sm:p-4">
+                  <div className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2" style={{ color: '#0d457f' }}>100%</div>
+                  <p className="text-xs sm:text-sm text-gray-700">Cumplimiento normativo</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-4 sm:p-6 text-center">
+                <p className="text-sm sm:text-base text-gray-700 mb-4 leading-relaxed">
+                  <strong>¿Sabías que...</strong> empresas sin valuación actuarial pueden tener 
+                  <strong>contingencias no registradas</strong> de hasta el 15% de su nómina anual?
+                </p>
+                <button 
+                  onClick={() => setIsContactModalOpen(true)}
+                  className="text-white px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90 w-full sm:w-auto touch-manipulation"
+                  style={{ backgroundColor: '#0d457f', minHeight: '48px' }}
+                >
+                  Evalúa tu situación →
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section className="py-16 sm:py-24 bg-white">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-4">
+              Nuestro Proceso de <span style={{ color: '#0d457f' }}>Consultoría</span>
+            </h2>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Metodología probada para garantizar cumplimiento y optimización
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12">
+            <motion.div
+              className="text-center px-4 sm:px-0"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f' }}>
+                <span className="text-white font-bold text-2xl">1</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 sm:mb-4">Análisis Inicial</h3>
+              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                Revisamos tu estructura de personal, contratos colectivos y obligaciones actuales. 
+                <strong>Diagnóstico completo en 24-48 horas.</strong>
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="text-center px-4 sm:px-0"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f' }}>
+                <span className="text-white font-bold text-2xl">2</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Cálculo Actuarial</h3>
+              <p className="text-gray-700">
+                Aplicamos metodología actuarial estándar conforme a <strong>NIF D-3, IFRS-19 o USGAAP</strong>. 
+                Cálculos precisos con supuestos justificados.
+              </p>
+            </motion.div>
+
+            <motion.div
+              className="text-center px-4 sm:px-0"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center"
+                   style={{ backgroundColor: '#0d457f' }}>
+                <span className="text-white font-bold text-2xl">3</span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">Entrega e Implementación</h3>
+              <p className="text-gray-700">
+                <strong>Reporte técnico completo</strong> con asientos contables y recomendaciones. 
+                Acompañamiento en implementación.
+              </p>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* AI Enhancement (Subtle mention) */}
+      <section className="py-16 bg-slate-50">
+        <div className="mx-auto max-w-6xl px-6 lg:px-8">
+          <motion.div
+            className="bg-white rounded-2xl p-8 border border-gray-200 shadow-sm"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              <div className="flex-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 text-center lg:text-left">
+                  ¿Buscas más <span style={{ color: '#0d457f' }}>autonomía</span> en tus análisis?
+                </h3>
+                <p className="text-base sm:text-lg text-gray-700 mb-6 text-center lg:text-left">
+                  Para empresas que prefieren realizar análisis actuariales de forma independiente, 
+                  ofrecemos <strong>Dafel Studio</strong> - nuestra plataforma de autoservicio con tecnología IA.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <button 
+                    onClick={() => setIsContactModalOpen(true)}
+                    className="text-white px-6 py-3 rounded-lg font-semibold transition-all hover:opacity-90 w-full sm:w-auto"
+                    style={{ backgroundColor: '#0d457f' }}
+                  >
+                    Seguir con Consultoría
+                  </button>
+                  <button 
+                    onClick={handleAccessStudio}
+                    className="border-2 px-6 py-3 rounded-lg font-semibold transition-all hover:text-white w-full sm:w-auto"
+                    style={{ 
+                      borderColor: '#0d457f', 
+                      color: '#0d457f'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0d457f'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
+                    Conocer Dafel Studio →
+                  </button>
+                </div>
+              </div>
+              <div className="lg:hidden">
+                <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center"
+                     style={{ backgroundColor: '#0d457f15' }}>
+                  <span className="text-4xl sm:text-6xl">🚀</span>
+                </div>
+              </div>
+              <div className="hidden lg:block">
+                <div className="w-32 h-32 rounded-full flex items-center justify-center"
+                     style={{ backgroundColor: '#0d457f15' }}>
+                  <span className="text-6xl">🚀</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-white py-16 sm:py-24">
+        <motion.div
+          className="mx-auto max-w-4xl px-4 sm:px-6 text-center lg:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 mb-6">
+            Protege tu empresa con <span style={{ color: '#0d457f' }}>consultoría actuarial confiable</span>
+          </h2>
+          <p className="text-lg text-gray-700 mb-8">
+            Más de 500 empresas confían en nosotros para cumplir con sus obligaciones laborales contingentes
+          </p>
+          
+          <div className="flex flex-col gap-4 justify-center px-4 sm:px-0">
+            <button 
+              onClick={() => setIsContactModalOpen(true)}
+              className="text-white px-8 py-4 text-lg font-bold rounded-xl transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 w-full sm:w-auto"
+              style={{ backgroundColor: '#0d457f' }}
+            >
+              Solicitar Cotización Gratuita
+            </button>
+            <button 
+              onClick={handleAccessStudio}
+              className="border-2 text-lg font-medium px-8 py-4 rounded-xl transition-all duration-300 hover:text-white w-full sm:w-auto"
+              style={{ 
+                borderColor: '#0d457f', 
+                color: '#0d457f'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#0d457f'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              O prueba Dafel Studio →
+            </button>
+          </div>
+
+          <p className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-600 px-4 sm:px-0">
+            Respuesta en menos de 24 horas • Sin compromiso • Consulta inicial gratuita
+          </p>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-8">
+          <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
+            <div className="flex flex-col items-center sm:items-start">
+              <span className="text-lg font-bold" style={{ color: '#0d457f' }}>
+                DAFEL Consulting
+              </span>
+              <p className="mt-2 text-sm text-gray-600">
+                © 2025 Dafel Technologies. Todos los derechos reservados.
+              </p>
+            </div>
+            <div className="flex space-x-6">
+              <button className="text-sm text-gray-600 hover:text-gray-900">
+                Aviso de Privacidad
+              </button>
+              <button className="text-sm text-gray-600 hover:text-gray-900">
+                Términos y Condiciones
+              </button>
+              <Link href="/tech" className="text-sm text-gray-600 hover:text-gray-900">
+                Dafel Technologies
+              </Link>
+              <button 
+                onClick={handleAccessStudio}
+                className="text-sm hover:text-gray-900 transition-colors"
+                style={{ color: '#0d457f' }}
+              >
+                Dafel Studio
+              </button>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Contact Modal - Lazy loaded */}
+      <Suspense fallback={null}>
+        <ContactModal 
+          open={isContactModalOpen} 
+          onOpenChange={setIsContactModalOpen} 
+        />
+      </Suspense>
+    </>
+  );
+});
+
+export default ConsultingHomePage;

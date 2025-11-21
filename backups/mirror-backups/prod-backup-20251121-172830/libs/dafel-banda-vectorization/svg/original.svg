@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <!--
+    DAFEL BANDA BAJA - SVG Original
+    Fidelidad máxima al diseño original
+    7 capas de bandas curvas con gradientes y efectos
+    Creado: 2025-10-08
+  -->
+
+  <defs>
+    <!-- GRADIENTES -->
+    <radialGradient id="gradient-blue-light" cx="30%" cy="40%">
+      <stop offset="0%" stop-color="#D0E8F5" />
+      <stop offset="50%" stop-color="#A8D1E6" />
+      <stop offset="100%" stop-color="#7DBBDB" />
+    </radialGradient>
+
+    <linearGradient id="gradient-blue-light-linear" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C0DFF0" />
+      <stop offset="100%" stop-color="#6FB3D9" />
+    </linearGradient>
+
+    <radialGradient id="gradient-green-lime" cx="35%" cy="45%">
+      <stop offset="0%" stop-color="#D5EDB8" />
+      <stop offset="50%" stop-color="#AAD989" />
+      <stop offset="100%" stop-color="#7BC77F" />
+    </radialGradient>
+
+    <linearGradient id="gradient-teal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5FD4C4" />
+      <stop offset="50%" stop-color="#3AAFA3" />
+      <stop offset="100%" stop-color="#1B8F9A" />
+    </linearGradient>
+
+    <linearGradient id="gradient-blue-medium" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5AAED0" />
+      <stop offset="50%" stop-color="#3493B8" />
+      <stop offset="100%" stop-color="#1E7FA4" />
+    </linearGradient>
+
+    <linearGradient id="gradient-blue-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2B88AA" />
+      <stop offset="50%" stop-color="#1A6983" />
+      <stop offset="100%" stop-color="#0E5F7E" />
+    </linearGradient>
+
+    <linearGradient id="gradient-blue-deepest" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B7696" />
+      <stop offset="50%" stop-color="#115A75" />
+      <stop offset="100%" stop-color="#094A62" />
+    </linearGradient>
+
+    <!-- PATRONES DE CUADRÍCULA -->
+    <pattern id="grid-pattern-teal" width="18" height="18" patternUnits="userSpaceOnUse">
+      <rect width="18" height="18" fill="none" />
+      <line x1="0" y1="0" x2="0" y2="18" stroke="white" stroke-width="1.5" opacity="0.25" />
+      <line x1="0" y1="0" x2="18" y2="0" stroke="white" stroke-width="1.5" opacity="0.25" />
+    </pattern>
+
+    <pattern id="grid-pattern-blue-medium" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="none" />
+      <line x1="0" y1="0" x2="0" y2="16" stroke="white" stroke-width="1.8" opacity="0.3" />
+      <line x1="0" y1="0" x2="16" y2="0" stroke="white" stroke-width="1.8" opacity="0.3" />
+    </pattern>
+
+    <pattern id="grid-pattern-blue-dark" width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill="none" />
+      <line x1="0" y1="0" x2="0" y2="14" stroke="white" stroke-width="2" opacity="0.32" />
+      <line x1="0" y1="0" x2="14" y2="0" stroke="white" stroke-width="2" opacity="0.32" />
+    </pattern>
+
+    <!-- FILTROS DE SOMBRA SUTIL -->
+    <filter id="subtle-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2" />
+      <feOffset dx="0" dy="2" result="offsetblur" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.15" />
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- FONDO -->
+  <rect width="1280" height="720" fill="#F8FBFD" />
+
+  <!-- CAPA 1: Banda azul clara de fondo (más ancha y suave) -->
+  <g id="banda-azul-clara-fondo" opacity="0.45">
+    <path d="M 60,280 Q 200,240 340,220 T 600,240 T 860,300 T 1120,380 Q 1160,400 1200,420
+             L 1200,600 Q 1160,580 1120,560 T 860,480 T 600,420 T 340,400 Q 200,420 60,460 Z"
+          fill="url(#gradient-blue-light)" />
+  </g>
+
+  <!-- CAPA 2: Segunda banda azul clara (más delgada) -->
+  <g id="banda-azul-clara-superior" opacity="0.55">
+    <path d="M 80,240 Q 220,210 360,200 T 620,220 T 880,280 Q 950,305 1020,330
+             L 1020,450 Q 950,425 880,400 T 620,340 T 360,320 Q 220,330 80,360 Z"
+          fill="url(#gradient-blue-light-linear)" />
+  </g>
+
+  <!-- CAPA 3: Banda verde lima translúcida -->
+  <g id="banda-verde-lima" opacity="0.38">
+    <path d="M 140,260 Q 280,240 420,230 T 680,260 T 940,330 Q 980,355 1020,380
+             L 1020,520 Q 980,495 940,470 T 680,400 T 420,370 Q 280,380 140,400 Z"
+          fill="url(#gradient-green-lime)" />
+  </g>
+
+  <!-- CAPA 4: Banda teal con cuadrícula -->
+  <g id="banda-teal-grid" opacity="0.65">
+    <!-- Base con gradiente -->
+    <path d="M 180,320 Q 320,300 460,290 T 720,320 T 980,390 Q 1050,425 1120,460
+             L 1120,560 Q 1050,525 980,490 T 720,420 T 460,390 Q 320,400 180,420 Z"
+          fill="url(#gradient-teal)" />
+    <!-- Overlay de cuadrícula -->
+    <path d="M 180,320 Q 320,300 460,290 T 720,320 T 980,390 Q 1050,425 1120,460
+             L 1120,560 Q 1050,525 980,490 T 720,420 T 460,390 Q 320,400 180,420 Z"
+          fill="url(#grid-pattern-teal)" />
+  </g>
+
+  <!-- CAPA 5: Banda azul medio con cuadrícula (capa central) -->
+  <g id="banda-azul-media-grid" opacity="0.7">
+    <!-- Base con gradiente -->
+    <path d="M 220,380 Q 360,360 500,350 T 760,380 T 1020,450 Q 1090,485 1160,520
+             L 1160,605 Q 1090,570 1020,535 T 760,465 T 500,435 Q 360,445 220,465 Z"
+          fill="url(#gradient-blue-medium)" />
+    <!-- Overlay de cuadrícula -->
+    <path d="M 220,380 Q 360,360 500,350 T 760,380 T 1020,450 Q 1090,485 1160,520
+             L 1160,605 Q 1090,570 1020,535 T 760,465 T 500,435 Q 360,445 220,465 Z"
+          fill="url(#grid-pattern-blue-medium)" />
+  </g>
+
+  <!-- CAPA 6: Banda azul oscuro con cuadrícula densa -->
+  <g id="banda-azul-oscura-grid" opacity="0.75" filter="url(#subtle-shadow)">
+    <!-- Base con gradiente -->
+    <path d="M 260,440 Q 400,420 540,410 T 800,440 T 1060,510 Q 1130,545 1200,580
+             L 1200,655 Q 1130,620 1060,585 T 800,515 T 540,485 Q 400,495 260,515 Z"
+          fill="url(#gradient-blue-dark)" />
+    <!-- Overlay de cuadrícula -->
+    <path d="M 260,440 Q 400,420 540,410 T 800,440 T 1060,510 Q 1130,545 1200,580
+             L 1200,655 Q 1130,620 1060,585 T 800,515 T 540,485 Q 400,495 260,515 Z"
+          fill="url(#grid-pattern-blue-dark)" />
+  </g>
+
+  <!-- CAPA 7: Banda azul profundo frontal (más definida) -->
+  <g id="banda-azul-profunda-frontal" opacity="0.82" filter="url(#subtle-shadow)">
+    <path d="M 300,500 Q 440,480 580,470 T 840,500 T 1100,570 Q 1170,605 1240,640
+             L 1240,705 Q 1170,670 1100,635 T 840,565 T 580,535 Q 440,545 300,565 Z"
+          fill="url(#gradient-blue-deepest)" />
+  </g>
+</svg>

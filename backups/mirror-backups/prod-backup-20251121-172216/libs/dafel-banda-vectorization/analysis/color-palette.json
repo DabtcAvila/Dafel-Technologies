@@ -1,0 +1,132 @@
+{
+  "project": "Dafel Banda Baja - Color Palette",
+  "version": "1.0",
+  "date": "2025-10-08",
+
+  "primary_colors": {
+    "light_blue_family": {
+      "name": "Azul Claro Dafel",
+      "colors": [
+        { "hex": "#D0E8F5", "rgb": [208, 232, 245], "usage": "Background light start" },
+        { "hex": "#BFDFEF", "rgb": [191, 223, 239], "usage": "Light band primary" },
+        { "hex": "#A8D1E6", "rgb": [168, 209, 230], "usage": "Light band mid-tone" },
+        { "hex": "#7DBBDB", "rgb": [125, 187, 219], "usage": "Light band end" },
+        { "hex": "#6FB3D9", "rgb": [111, 179, 217], "usage": "Light band accent" }
+      ]
+    },
+    "medium_blue_family": {
+      "name": "Azul Medio Dafel",
+      "colors": [
+        { "hex": "#5AAED0", "rgb": [90, 174, 208], "usage": "Medium band start" },
+        { "hex": "#4DA6C7", "rgb": [77, 166, 199], "usage": "Medium blue primary" },
+        { "hex": "#3493B8", "rgb": [52, 147, 184], "usage": "Medium band mid" },
+        { "hex": "#1E7FA4", "rgb": [30, 127, 164], "usage": "Medium band end" }
+      ]
+    },
+    "dark_blue_family": {
+      "name": "Azul Oscuro Dafel",
+      "colors": [
+        { "hex": "#2B88AA", "rgb": [43, 136, 170], "usage": "Dark band start" },
+        { "hex": "#1A6983", "rgb": [26, 105, 131], "usage": "Dark band mid" },
+        { "hex": "#0E5F7E", "rgb": [14, 95, 126], "usage": "Dark band primary" },
+        { "hex": "#094A62", "rgb": [9, 74, 98], "usage": "Deepest blue accent" }
+      ]
+    },
+    "green_family": {
+      "name": "Verde Lima/Teal Dafel",
+      "colors": [
+        { "hex": "#D5EDB8", "rgb": [213, 237, 184], "usage": "Green band light start" },
+        { "hex": "#C8E6A5", "rgb": [200, 230, 165], "usage": "Lime green light" },
+        { "hex": "#AAD989", "rgb": [170, 217, 137], "usage": "Green band mid" },
+        { "hex": "#7BC77F", "rgb": [123, 199, 127], "usage": "Green band end" }
+      ]
+    },
+    "teal_family": {
+      "name": "Teal/Turquesa Dafel",
+      "colors": [
+        { "hex": "#5FD4C4", "rgb": [95, 212, 196], "usage": "Teal band start" },
+        { "hex": "#4AC5B5", "rgb": [74, 197, 181], "usage": "Teal primary" },
+        { "hex": "#3AAFA3", "rgb": [58, 175, 163], "usage": "Teal mid" },
+        { "hex": "#1B8F9A", "rgb": [27, 143, 154], "usage": "Teal dark end" }
+      ]
+    }
+  },
+
+  "accent_colors": {
+    "grid_overlay": {
+      "hex": "#FFFFFF",
+      "rgb": [255, 255, 255],
+      "opacity_range": [0.25, 0.35],
+      "usage": "Grid lines on middle/front bands"
+    },
+    "background": {
+      "hex": "#F8FBFD",
+      "rgb": [248, 251, 253],
+      "usage": "Canvas background (very light blue-white)"
+    }
+  },
+
+  "gradient_definitions": {
+    "gradient_blue_light": {
+      "type": "radial",
+      "stops": [
+        { "offset": "0%", "color": "#D0E8F5" },
+        { "offset": "50%", "color": "#A8D1E6" },
+        { "offset": "100%", "color": "#7DBBDB" }
+      ]
+    },
+    "gradient_blue_medium": {
+      "type": "linear",
+      "angle": "135deg",
+      "stops": [
+        { "offset": "0%", "color": "#5AAED0" },
+        { "offset": "50%", "color": "#3493B8" },
+        { "offset": "100%", "color": "#1E7FA4" }
+      ]
+    },
+    "gradient_blue_dark": {
+      "type": "linear",
+      "angle": "135deg",
+      "stops": [
+        { "offset": "0%", "color": "#2B88AA" },
+        { "offset": "50%", "color": "#1A6983" },
+        { "offset": "100%", "color": "#0E5F7E" }
+      ]
+    },
+    "gradient_green_lime": {
+      "type": "radial",
+      "stops": [
+        { "offset": "0%", "color": "#D5EDB8" },
+        { "offset": "50%", "color": "#AAD989" },
+        { "offset": "100%", "color": "#7BC77F" }
+      ]
+    },
+    "gradient_teal": {
+      "type": "linear",
+      "angle": "135deg",
+      "stops": [
+        { "offset": "0%", "color": "#5FD4C4" },
+        { "offset": "50%", "color": "#3AAFA3" },
+        { "offset": "100%", "color": "#1B8F9A" }
+      ]
+    }
+  },
+
+  "opacity_layers": {
+    "background_layer": 0.45,
+    "light_layer": 0.55,
+    "mid_layer": 0.65,
+    "front_layer": 0.75,
+    "primary_layer": 0.82
+  },
+
+  "accessibility": {
+    "contrast_ratios": {
+      "light_on_white": 1.8,
+      "medium_on_white": 3.2,
+      "dark_on_white": 5.1
+    },
+    "colorblind_safe": true,
+    "notes": "Design uses variation in brightness and saturation, not just hue"
+  }
+}

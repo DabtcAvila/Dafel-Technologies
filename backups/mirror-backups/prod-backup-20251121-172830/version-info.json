@@ -1,0 +1,22 @@
+{
+  "version": "0.0.0",
+  "date": "2025-11-18T17:42:12Z",
+  "branch": "development-v1.0",
+  "commit": "8f1d7f76f8e01033cc4464a2699950df03756752",
+  "description": "Versión base del sistema - Punto de partida para desarrollo",
+  "deployUrl": "https://dafel.com.mx/dev/v00",
+  "technologies": {
+    "nextjs": "14.2.32",
+    "typescript": "5.5.4",
+    "react": "18.3.1",
+    "nodejs": "v24.4.1"
+  },
+  "features": [
+    "Sistema de autenticación NextAuth.js",
+    "Base de datos PostgreSQL + Prisma",
+    "Interface de gestión de clientes (Hub)",
+    "Componentes UI con TailwindCSS",
+    "Sistema de protección de ramas",
+    "Scripts automáticos de deployment"
+  ]
+}

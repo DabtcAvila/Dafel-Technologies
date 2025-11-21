@@ -1,0 +1,349 @@
+{% comment %}
+  Dafel Banda SVG Animation Component for Shopify
+  
+  Usage in templates:
+  {% render 'dafel-banda-animation', 
+     animation: 'wave', 
+     size: 'large', 
+     interactive: true,
+     color_scheme: 'default' %}
+     
+  Parameters:
+  - animation: 'fadeIn', 'wave', 'pulse', 'interactive', 'scroll'
+  - size: 'small', 'medium', 'large', 'full'
+  - interactive: true/false
+  - color_scheme: 'default', 'dark', 'brand', 'custom'
+  - custom_css: Additional CSS styles
+  - loading: 'lazy' or 'eager'
+{% endcomment %}
+
+{% liquid
+  assign animation_type = animation | default: 'fadeIn'
+  assign size_class = size | default: 'large'
+  assign is_interactive = interactive | default: false
+  assign scheme = color_scheme | default: 'default'
+  assign css_classes = 'dafel-banda-container dafel-banda-' | append: size_class | append: ' dafel-banda-scheme-' | append: scheme
+  assign loading_type = loading | default: 'lazy'
+  
+  if is_interactive
+    assign css_classes = css_classes | append: ' dafel-banda-interactive'
+  endif
+  
+  case size_class
+    when 'small'
+      assign width_style = 'max-width: 640px;'
+    when 'medium' 
+      assign width_style = 'max-width: 1024px;'
+    when 'large'
+      assign width_style = 'max-width: 1280px;'
+    when 'full'
+      assign width_style = 'width: 100%;'
+    else
+      assign width_style = 'max-width: 1280px;'
+  endcase
+  
+  assign container_style = width_style
+  if custom_css
+    assign container_style = container_style | append: custom_css
+  endif
+%}
+
+<div 
+  class="{{ css_classes }}"
+  data-animation="{{ animation_type }}"
+  data-interactive="{{ is_interactive }}"
+  data-size="{{ size_class }}"
+  style="{{ container_style }}"
+  {% if loading_type == 'lazy' %}data-loading="lazy"{% endif %}
+>
+  {% case scheme %}
+    {% when 'dark' %}
+      {% render 'dafel-banda-svg-dark', animation: animation_type %}
+    {% when 'brand' %}
+      {% render 'dafel-banda-svg-brand', animation: animation_type %}
+    {% when 'sunset' %}
+      {% render 'dafel-banda-svg-sunset', animation: animation_type %}
+    {% when 'ocean' %}
+      {% render 'dafel-banda-svg-ocean', animation: animation_type %}
+    {% else %}
+      {% render 'dafel-banda-svg-default', animation: animation_type %}
+  {% endcase %}
+</div>
+
+{% comment %} Load required CSS and JS {% endcomment %}
+{{ 'dafel-banda-animations.css' | asset_url | stylesheet_tag }}
+
+{% unless request.design_mode %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize Dafel Banda animations
+      if (typeof DafelBandaShopify !== 'undefined') {
+        DafelBandaShopify.init();
+      }
+    });
+  </script>
+{% endunless %}
+
+{% comment %}
+  Schema for theme customizer
+{% endcomment %}
+{% schema %}
+{
+  "name": "Dafel Banda Animation",
+  "tag": "section",
+  "class": "dafel-banda-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Animation Settings"
+    },
+    {
+      "type": "select",
+      "id": "animation_type",
+      "label": "Animation Type",
+      "default": "fadeIn",
+      "options": [
+        {
+          "value": "fadeIn",
+          "label": "Fade In"
+        },
+        {
+          "value": "wave",
+          "label": "Wave"
+        },
+        {
+          "value": "pulse",
+          "label": "Pulse"
+        },
+        {
+          "value": "staggerIn",
+          "label": "Stagger In"
+        },
+        {
+          "value": "interactive",
+          "label": "Interactive"
+        },
+        {
+          "value": "scroll",
+          "label": "Scroll Based"
+        },
+        {
+          "value": "waveSmooth",
+          "label": "Wave Smooth"
+        },
+        {
+          "value": "gridShimmer",
+          "label": "Grid Shimmer"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "animation_speed",
+      "label": "Animation Speed",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.1,
+      "default": 1,
+      "unit": "s"
+    },
+    {
+      "type": "range",
+      "id": "animation_delay",
+      "label": "Animation Delay",
+      "min": 0,
+      "max": 3,
+      "step": 0.1,
+      "default": 0,
+      "unit": "s"
+    },
+    {
+      "type": "checkbox",
+      "id": "animation_loop",
+      "label": "Loop Animation",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "interactive_hover",
+      "label": "Interactive Hover Effects",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Display Settings"
+    },
+    {
+      "type": "select",
+      "id": "size",
+      "label": "Size",
+      "default": "large",
+      "options": [
+        {
+          "value": "small",
+          "label": "Small (640px)"
+        },
+        {
+          "value": "medium",
+          "label": "Medium (1024px)"
+        },
+        {
+          "value": "large",
+          "label": "Large (1280px)"
+        },
+        {
+          "value": "full",
+          "label": "Full Width"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color Scheme",
+      "default": "default",
+      "options": [
+        {
+          "value": "default",
+          "label": "Default Blue"
+        },
+        {
+          "value": "dark",
+          "label": "Dark Mode"
+        },
+        {
+          "value": "brand",
+          "label": "Brand Colors"
+        },
+        {
+          "value": "sunset",
+          "label": "Sunset"
+        },
+        {
+          "value": "ocean",
+          "label": "Ocean"
+        },
+        {
+          "value": "forest",
+          "label": "Forest"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Top Margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Bottom Margin",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Advanced"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_css",
+      "label": "Custom CSS",
+      "placeholder": "border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);",
+      "info": "Add custom CSS styles"
+    },
+    {
+      "type": "text",
+      "id": "custom_id",
+      "label": "Custom ID",
+      "info": "Add a custom ID for targeting with CSS or JavaScript"
+    },
+    {
+      "type": "checkbox",
+      "id": "lazy_loading",
+      "label": "Enable Lazy Loading",
+      "default": true,
+      "info": "Improves page performance"
+    },
+    {
+      "type": "checkbox",
+      "id": "analytics_tracking",
+      "label": "Enable Analytics Tracking",
+      "default": false,
+      "info": "Track animation interactions"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Background",
+      "settings": {
+        "animation_type": "wave",
+        "size": "full",
+        "color_scheme": "default",
+        "animation_speed": 4,
+        "animation_loop": true
+      }
+    },
+    {
+      "name": "Section Divider",
+      "settings": {
+        "animation_type": "pulse",
+        "size": "large",
+        "color_scheme": "brand",
+        "margin_top": 40,
+        "margin_bottom": 40
+      }
+    },
+    {
+      "name": "Interactive Element",
+      "settings": {
+        "animation_type": "interactive",
+        "size": "medium",
+        "interactive_hover": true,
+        "color_scheme": "default"
+      }
+    },
+    {
+      "name": "Loading Animation",
+      "settings": {
+        "animation_type": "staggerIn",
+        "size": "small",
+        "animation_speed": 1.5,
+        "animation_loop": false
+      }
+    }
+  ]
+}
+{% endschema %}

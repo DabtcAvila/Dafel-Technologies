@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1280" height="720" viewBox="0 0 1280 720" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    DAFEL BANDA BAJA - Versión Correcta
+    Arcos circulares concéntricos desde esquina inferior izquierda
+  -->
+
+  <defs>
+    <!-- Gradiente para arcos azules claros -->
+    <linearGradient id="grad-blue-light" x1="0%" y1="100%" x2="50%" y2="0%">
+      <stop offset="0%" stop-color="#B8D9E8" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#D4E9F5" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <!-- Gradiente para arco azul medio -->
+    <linearGradient id="grad-blue-medium" x1="0%" y1="100%" x2="60%" y2="20%">
+      <stop offset="0%" stop-color="#8DC4DD" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#B5D8E8" stop-opacity="0.3"/>
+    </linearGradient>
+
+    <!-- Gradiente verde/lima -->
+    <linearGradient id="grad-green" x1="30%" y1="80%" x2="60%" y2="30%">
+      <stop offset="0%" stop-color="#C8E6A5" stop-opacity="0.4"/>
+      <stop offset="50%" stop-color="#D5EDB8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#E8F5D8" stop-opacity="0.25"/>
+    </linearGradient>
+
+    <!-- Gradiente teal/turquesa -->
+    <linearGradient id="grad-teal" x1="40%" y1="70%" x2="80%" y2="30%">
+      <stop offset="0%" stop-color="#4AC5B5" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#6BD4C6" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#8DE3D8" stop-opacity="0.4"/>
+    </linearGradient>
+
+    <!-- Gradiente azul oscuro/profundo -->
+    <linearGradient id="grad-blue-dark" x1="50%" y1="60%" x2="90%" y2="20%">
+      <stop offset="0%" stop-color="#1E7FA4" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#3B9FBD" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#5AAED0" stop-opacity="0.5"/>
+    </linearGradient>
+
+    <!-- Gradiente azul muy oscuro frontal -->
+    <linearGradient id="grad-blue-deepest" x1="60%" y1="50%" x2="100%" y2="10%">
+      <stop offset="0%" stop-color="#0E5F7E" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#1A7695" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#2B88AA" stop-opacity="0.6"/>
+    </linearGradient>
+
+    <!-- Patrón de cuadrícula para capas frontales -->
+    <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="20" height="20" fill="none" stroke="white" stroke-width="1.5" opacity="0.3"/>
+    </pattern>
+  </defs>
+
+  <!-- Fondo blanco -->
+  <rect width="1280" height="720" fill="#FFFFFF"/>
+
+  <!-- ARCOS DESDE ESQUINA INFERIOR IZQUIERDA -->
+  <!-- Centro del círculo: (-200, 850) aproximadamente -->
+
+  <!-- Arco 1: Azul claro más externo -->
+  <path d="M 0,720 A 1050,1050 0 0,1 850,0 L 950,0 A 1150,1150 0 0,0 0,720 Z"
+        fill="url(#grad-blue-light)"/>
+
+  <!-- Arco 2: Azul claro medio -->
+  <path d="M 0,720 A 950,950 0 0,1 750,0 L 850,0 A 1050,1050 0 0,0 0,720 Z"
+        fill="url(#grad-blue-medium)"/>
+
+  <!-- Arco 3: Verde/lima -->
+  <path d="M 0,720 A 850,850 0 0,1 650,0 L 750,0 A 950,950 0 0,0 0,720 Z"
+        fill="url(#grad-green)"/>
+
+  <!-- Arco 4: Teal/turquesa con cuadrícula -->
+  <g>
+    <path d="M 0,720 A 750,750 0 0,1 550,50 L 650,0 A 850,850 0 0,0 0,720 Z"
+          fill="url(#grad-teal)"/>
+    <path d="M 0,720 A 750,750 0 0,1 550,50 L 650,0 A 850,850 0 0,0 0,720 Z"
+          fill="url(#grid-pattern)" opacity="0.6"/>
+  </g>
+
+  <!-- Arco 5: Azul medio-oscuro con cuadrícula -->
+  <g>
+    <path d="M 50,720 A 650,650 0 0,1 600,100 L 680,50 A 730,730 0 0,0 100,720 Z"
+          fill="url(#grad-blue-dark)"/>
+    <path d="M 50,720 A 650,650 0 0,1 600,100 L 680,50 A 730,730 0 0,0 100,720 Z"
+          fill="url(#grid-pattern)" opacity="0.7"/>
+  </g>
+
+  <!-- Arco 6: Azul oscuro con cuadrícula densa -->
+  <g>
+    <path d="M 100,720 A 550,550 0 0,1 650,150 L 730,100 A 630,630 0 0,0 150,720 Z"
+          fill="url(#grad-blue-deepest)"/>
+    <path d="M 100,720 A 550,550 0 0,1 650,150 L 730,100 A 630,630 0 0,0 150,720 Z"
+          fill="url(#grid-pattern)" opacity="0.8"/>
+  </g>
+
+  <!-- Arco 7: Frontal azul profundo -->
+  <g>
+    <path d="M 150,720 A 450,450 0 0,1 700,200 L 770,150 A 520,520 0 0,0 200,720 Z"
+          fill="#1E7FA4" opacity="0.9"/>
+    <path d="M 150,720 A 450,450 0 0,1 700,200 L 770,150 A 520,520 0 0,0 200,720 Z"
+          fill="url(#grid-pattern)" opacity="0.85"/>
+  </g>
+
+  <!-- Borde frontal azul sólido -->
+  <path d="M 200,720 A 350,350 0 0,1 750,250 L 800,220 A 390,390 0 0,0 230,720 Z"
+        fill="#0E5F7E" opacity="0.95"/>
+
+</svg>

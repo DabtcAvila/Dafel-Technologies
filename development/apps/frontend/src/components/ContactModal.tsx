@@ -28,26 +28,26 @@ type ValidationMessages = {
 const createContactSchema = (messages: ValidationMessages) => z.object({
   // Campos de normas contables
   accountingStandards: z.array(z.string()).min(1, "Seleccione al menos una norma contable"),
-  
+
   // Información personal
   firstName: z.string().min(1, "Nombre es requerido"),
   lastName: z.string().min(1, "Apellido es requerido"),
   company: z.string().min(1, "Empresa es requerida"),
   quotationRecipient: z.string().min(1, "Destinatario de la cotización es requerido"),
-  
+
   // Información de la empresa
   approximateEmployees: z.string().min(1, "Número de empleados es requerido"),
   state: z.string().min(1, "Estado es requerido"),
-  
+
   // Contacto
   email: z.string()
     .min(1, "Email es requerido")
     .email("Email inválido"),
   phone: z.string().min(1, "Teléfono es requerido"),
-  
+
   // Beneficios a evaluar
   benefits: z.array(z.string()).min(1, "Seleccione al menos un beneficio"),
-  
+
   // Privacidad
   privacyAccepted: z.boolean().refine(val => val === true, {
     message: "Debe aceptar el aviso de privacidad"
@@ -97,7 +97,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
       document.body.style.position = 'unset';
       document.body.style.width = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
       document.body.style.position = 'unset';
@@ -107,15 +107,15 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true);
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     console.log('Contact Form Data:', data);
-    
+
     setIsSubmitting(false);
     setShowSuccess(true);
-    
+
     // Close drawer after success message
     setTimeout(() => {
       setShowSuccess(false);
@@ -146,7 +146,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
             <Dialog.Content asChild>
               <motion.div
                 className="fixed right-0 top-0 h-screen max-h-screen w-full sm:w-[480px] bg-white shadow-2xl z-50 focus:outline-none"
-                style={{ 
+                style={{
                   height: '100vh',
                   maxHeight: '100vh',
                   overflowY: 'hidden'
@@ -154,11 +154,11 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                 initial={{ x: '100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '100%' }}
-                transition={{ 
-                  type: 'spring', 
-                  damping: 30, 
+                transition={{
+                  type: 'spring',
+                  damping: 30,
                   stiffness: 300,
-                  duration: 0.3 
+                  duration: 0.3
                 }}
               >
                 <div className="h-full flex flex-col max-h-screen">
@@ -238,7 +238,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             ))}
                           </div>
                           {errors.accountingStandards && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -263,7 +263,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               disabled={isSubmitting}
                             />
                             {errors.firstName && (
-                              <motion.p 
+                              <motion.p
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="mt-2 text-xs text-red-600"
@@ -272,7 +272,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               </motion.p>
                             )}
                           </div>
-                          
+
                           <div>
                             <label htmlFor="lastName" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
                               Apellido *
@@ -286,7 +286,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               disabled={isSubmitting}
                             />
                             {errors.lastName && (
-                              <motion.p 
+                              <motion.p
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="mt-2 text-xs text-red-600"
@@ -311,7 +311,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             disabled={isSubmitting}
                           />
                           {errors.company && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -335,7 +335,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             disabled={isSubmitting}
                           />
                           {errors.quotationRecipient && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -365,7 +365,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             <option value="1000+">Más de 1000 empleados</option>
                           </select>
                           {errors.approximateEmployees && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -401,7 +401,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             ))}
                           </div>
                           {errors.benefits && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -457,7 +457,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             <option value="Zacatecas">Zacatecas</option>
                           </select>
                           {errors.state && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
@@ -482,7 +482,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               disabled={isSubmitting}
                             />
                             {errors.email && (
-                              <motion.p 
+                              <motion.p
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="mt-2 text-xs text-red-600"
@@ -491,7 +491,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               </motion.p>
                             )}
                           </div>
-                          
+
                           <div>
                             <label htmlFor="phone" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
                               Teléfono *
@@ -505,7 +505,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                               disabled={isSubmitting}
                             />
                             {errors.phone && (
-                              <motion.p 
+                              <motion.p
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: 'auto' }}
                                 className="mt-2 text-xs text-red-600"
@@ -530,7 +530,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                             </span>
                           </label>
                           {errors.privacyAccepted && (
-                            <motion.p 
+                            <motion.p
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"

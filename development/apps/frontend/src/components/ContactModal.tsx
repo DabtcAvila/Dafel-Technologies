@@ -26,14 +26,32 @@ type ValidationMessages = {
 };
 
 const createContactSchema = (messages: ValidationMessages) => z.object({
-  fullName: z.string().min(1, messages.contactModal.validation.nameRequired),
+  // Campos de normas contables
+  accountingStandards: z.array(z.string()).min(1, "Seleccione al menos una norma contable"),
+  
+  // Información personal
+  firstName: z.string().min(1, "Nombre es requerido"),
+  lastName: z.string().min(1, "Apellido es requerido"),
+  company: z.string().min(1, "Empresa es requerida"),
+  quotationRecipient: z.string().min(1, "Destinatario de la cotización es requerido"),
+  
+  // Información de la empresa
+  approximateEmployees: z.string().min(1, "Número de empleados es requerido"),
+  state: z.string().min(1, "Estado es requerido"),
+  
+  // Contacto
   email: z.string()
-    .min(1, messages.contactModal.validation.emailRequired)
-    .email(messages.contactModal.validation.emailInvalid),
-  company: z.string().min(1, messages.contactModal.validation.companyRequired),
-  phone: z.string().optional(),
-  message: z.string().optional(),
-  preferredTime: z.enum(['morning', 'afternoon', 'flexible']).optional(),
+    .min(1, "Email es requerido")
+    .email("Email inválido"),
+  phone: z.string().min(1, "Teléfono es requerido"),
+  
+  // Beneficios a evaluar
+  benefits: z.array(z.string()).min(1, "Seleccione al menos un beneficio"),
+  
+  // Privacidad
+  privacyAccepted: z.boolean().refine(val => val === true, {
+    message: "Debe aceptar el aviso de privacidad"
+  })
 });
 
 type ContactFormData = z.infer<ReturnType<typeof createContactSchema>>;
@@ -53,7 +71,17 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
-      preferredTime: 'flexible'
+      accountingStandards: [],
+      firstName: '',
+      lastName: '',
+      company: '',
+      quotationRecipient: '',
+      approximateEmployees: '',
+      state: '',
+      email: '',
+      phone: '',
+      benefits: [],
+      privacyAccepted: false
     }
   });
 
@@ -96,7 +124,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
     }, 2500);
   };
 
-  const breadcrumbText = locale === 'es' ? 'CONTACTO > PROGRAMAR CONSULTA' : 'CONTACT > SCHEDULE CONSULTATION';
+  const breadcrumbText = 'COTIZACIÓN > VALUACIÓN ACTUARIAL';
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
@@ -157,10 +185,10 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                       {/* Title and Subtitle */}
                       <div>
                         <Dialog.Title className="text-3xl font-bold text-gray-900 mb-2">
-                          {messages.contactModal.title}
+                          Cotiza tu valuación bajo NIF D-3, IFRS-19 y/o USGAAP
                         </Dialog.Title>
                         <Dialog.Description className="text-base text-gray-500">
-                          {messages.contactModal.subtitle}
+                          Completa los datos para recibir tu cotización
                         </Dialog.Description>
                       </div>
                     </div>
@@ -181,7 +209,7 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                           >
                             <div className="p-4 bg-green-50 border border-green-200 rounded-md">
                               <p className="text-green-800 text-sm font-medium">
-                                {messages.contactModal.successMessage}
+                                ¡Solicitud enviada exitosamente! Recibirá su cotización en las próximas 24 horas.
                               </p>
                             </div>
                           </motion.div>
@@ -190,74 +218,96 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
 
                       {/* Form */}
                       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-                        {/* Full Name */}
+                        {/* Normas Contables */}
                         <div>
-                          <label 
-                            htmlFor="fullName" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.fullName} *
+                          <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-3">
+                            Bajo qué pasivo(s) laborales desea cotizar: *
                           </label>
-                          <input
-                            {...register('fullName')}
-                            type="text"
-                            id="fullName"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                            placeholder={messages.contactModal.form.fullNamePlaceholder}
-                            disabled={isSubmitting}
-                          />
-                          {errors.fullName && (
+                          <div className="space-y-2">
+                            {['NIF D-3', 'IFRS-19', 'USGAAP'].map((standard) => (
+                              <label key={standard} className="flex items-center">
+                                <input
+                                  {...register('accountingStandards')}
+                                  type="checkbox"
+                                  value={standard}
+                                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
+                                  disabled={isSubmitting}
+                                />
+                                <span className="ml-2 text-gray-900">{standard}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {errors.accountingStandards && (
                             <motion.p 
                               initial={{ opacity: 0, height: 0 }}
                               animate={{ opacity: 1, height: 'auto' }}
                               className="mt-2 text-xs text-red-600"
                             >
-                              {errors.fullName.message}
+                              {errors.accountingStandards.message}
                             </motion.p>
                           )}
                         </div>
 
-                        {/* Email */}
-                        <div>
-                          <label 
-                            htmlFor="email" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.email} *
-                          </label>
-                          <input
-                            {...register('email')}
-                            type="email"
-                            id="email"
-                            className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                            placeholder={messages.contactModal.form.emailPlaceholder}
-                            disabled={isSubmitting}
-                          />
-                          {errors.email && (
-                            <motion.p 
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              className="mt-2 text-xs text-red-600"
-                            >
-                              {errors.email.message}
-                            </motion.p>
-                          )}
+                        {/* Nombre y Apellido */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="firstName" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                              Nombre *
+                            </label>
+                            <input
+                              {...register('firstName')}
+                              type="text"
+                              id="firstName"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                              placeholder="Juan"
+                              disabled={isSubmitting}
+                            />
+                            {errors.firstName && (
+                              <motion.p 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-2 text-xs text-red-600"
+                              >
+                                {errors.firstName.message}
+                              </motion.p>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <label htmlFor="lastName" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                              Apellido *
+                            </label>
+                            <input
+                              {...register('lastName')}
+                              type="text"
+                              id="lastName"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                              placeholder="Pérez"
+                              disabled={isSubmitting}
+                            />
+                            {errors.lastName && (
+                              <motion.p 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-2 text-xs text-red-600"
+                              >
+                                {errors.lastName.message}
+                              </motion.p>
+                            )}
+                          </div>
                         </div>
 
-                        {/* Company */}
+                        {/* Empresa */}
                         <div>
-                          <label 
-                            htmlFor="company" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.company} *
+                          <label htmlFor="company" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                            Empresa o institución *
                           </label>
                           <input
                             {...register('company')}
                             type="text"
                             id="company"
                             className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                            placeholder={messages.contactModal.form.companyPlaceholder}
+                            placeholder="Empresa S.A. de C.V."
                             disabled={isSubmitting}
                           />
                           {errors.company && (
@@ -271,60 +321,223 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                           )}
                         </div>
 
-                        {/* Phone */}
+                        {/* Destinatario de la cotización */}
                         <div>
-                          <label 
-                            htmlFor="phone" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.phone}
+                          <label htmlFor="quotationRecipient" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                            ¿A quién va dirigida la cotización? *
                           </label>
                           <input
-                            {...register('phone')}
-                            type="tel"
-                            id="phone"
+                            {...register('quotationRecipient')}
+                            type="text"
+                            id="quotationRecipient"
                             className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
-                            placeholder={messages.contactModal.form.phonePlaceholder}
+                            placeholder="Director de Finanzas, CFO, etc."
                             disabled={isSubmitting}
                           />
+                          {errors.quotationRecipient && (
+                            <motion.p 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-2 text-xs text-red-600"
+                            >
+                              {errors.quotationRecipient.message}
+                            </motion.p>
+                          )}
                         </div>
 
-                        {/* Preferred Time */}
+                        {/* Número de empleados */}
                         <div>
-                          <label 
-                            htmlFor="preferredTime" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.preferredTime}
+                          <label htmlFor="approximateEmployees" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                            No. de empleados aproximados *
                           </label>
                           <select
-                            {...register('preferredTime')}
-                            id="preferredTime"
+                            {...register('approximateEmployees')}
+                            id="approximateEmployees"
                             className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all appearance-none bg-white text-gray-900"
                             disabled={isSubmitting}
                           >
-                            <option value="flexible">{messages.contactModal.form.timeOptions.flexible}</option>
-                            <option value="morning">{messages.contactModal.form.timeOptions.morning}</option>
-                            <option value="afternoon">{messages.contactModal.form.timeOptions.afternoon}</option>
+                            <option value="">Seleccione...</option>
+                            <option value="1-10">1-10 empleados</option>
+                            <option value="11-50">11-50 empleados</option>
+                            <option value="51-100">51-100 empleados</option>
+                            <option value="101-500">101-500 empleados</option>
+                            <option value="501-1000">501-1000 empleados</option>
+                            <option value="1000+">Más de 1000 empleados</option>
                           </select>
+                          {errors.approximateEmployees && (
+                            <motion.p 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-2 text-xs text-red-600"
+                            >
+                              {errors.approximateEmployees.message}
+                            </motion.p>
+                          )}
                         </div>
 
-                        {/* Message */}
+                        {/* Beneficios a evaluar */}
                         <div>
-                          <label 
-                            htmlFor="message" 
-                            className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2"
-                          >
-                            {messages.contactModal.form.message}
+                          <label className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-3">
+                            ¿Qué beneficios desea evaluar? *
                           </label>
-                          <textarea
-                            {...register('message')}
-                            id="message"
-                            rows={5}
-                            className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all resize-none text-gray-900 placeholder-gray-400"
-                            placeholder={messages.contactModal.form.messagePlaceholder}
+                          <div className="space-y-2">
+                            {[
+                              'Prima de antigüedad',
+                              'Indemnización por despido',
+                              'Plan de pensiones existente',
+                              'Otros beneficios superiores a la LFT',
+                              'Diseño de un nuevo Plan de Pensiones'
+                            ].map((benefit) => (
+                              <label key={benefit} className="flex items-center">
+                                <input
+                                  {...register('benefits')}
+                                  type="checkbox"
+                                  value={benefit}
+                                  className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded"
+                                  disabled={isSubmitting}
+                                />
+                                <span className="ml-2 text-gray-900">{benefit}</span>
+                              </label>
+                            ))}
+                          </div>
+                          {errors.benefits && (
+                            <motion.p 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-2 text-xs text-red-600"
+                            >
+                              {errors.benefits.message}
+                            </motion.p>
+                          )}
+                        </div>
+
+                        {/* Estado */}
+                        <div>
+                          <label htmlFor="state" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                            Estado *
+                          </label>
+                          <select
+                            {...register('state')}
+                            id="state"
+                            className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all appearance-none bg-white text-gray-900"
                             disabled={isSubmitting}
-                          />
+                          >
+                            <option value="">Seleccione su estado...</option>
+                            <option value="Aguascalientes">Aguascalientes</option>
+                            <option value="Baja California">Baja California</option>
+                            <option value="Baja California Sur">Baja California Sur</option>
+                            <option value="Campeche">Campeche</option>
+                            <option value="Chiapas">Chiapas</option>
+                            <option value="Chihuahua">Chihuahua</option>
+                            <option value="Ciudad de México">Ciudad de México</option>
+                            <option value="Coahuila">Coahuila</option>
+                            <option value="Colima">Colima</option>
+                            <option value="Durango">Durango</option>
+                            <option value="Estado de México">Estado de México</option>
+                            <option value="Guanajuato">Guanajuato</option>
+                            <option value="Guerrero">Guerrero</option>
+                            <option value="Hidalgo">Hidalgo</option>
+                            <option value="Jalisco">Jalisco</option>
+                            <option value="Michoacán">Michoacán</option>
+                            <option value="Morelos">Morelos</option>
+                            <option value="Nayarit">Nayarit</option>
+                            <option value="Nuevo León">Nuevo León</option>
+                            <option value="Oaxaca">Oaxaca</option>
+                            <option value="Puebla">Puebla</option>
+                            <option value="Querétaro">Querétaro</option>
+                            <option value="Quintana Roo">Quintana Roo</option>
+                            <option value="San Luis Potosí">San Luis Potosí</option>
+                            <option value="Sinaloa">Sinaloa</option>
+                            <option value="Sonora">Sonora</option>
+                            <option value="Tabasco">Tabasco</option>
+                            <option value="Tamaulipas">Tamaulipas</option>
+                            <option value="Tlaxcala">Tlaxcala</option>
+                            <option value="Veracruz">Veracruz</option>
+                            <option value="Yucatán">Yucatán</option>
+                            <option value="Zacatecas">Zacatecas</option>
+                          </select>
+                          {errors.state && (
+                            <motion.p 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-2 text-xs text-red-600"
+                            >
+                              {errors.state.message}
+                            </motion.p>
+                          )}
+                        </div>
+
+                        {/* Email y Teléfono */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="email" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                              E-mail *
+                            </label>
+                            <input
+                              {...register('email')}
+                              type="email"
+                              id="email"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                              placeholder="correo@empresa.com"
+                              disabled={isSubmitting}
+                            />
+                            {errors.email && (
+                              <motion.p 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-2 text-xs text-red-600"
+                              >
+                                {errors.email.message}
+                              </motion.p>
+                            )}
+                          </div>
+                          
+                          <div>
+                            <label htmlFor="phone" className="block text-xs font-medium text-gray-700 uppercase tracking-wider mb-2">
+                              Teléfono *
+                            </label>
+                            <input
+                              {...register('phone')}
+                              type="tel"
+                              id="phone"
+                              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all text-gray-900 placeholder-gray-400"
+                              placeholder="55 1234 5678"
+                              disabled={isSubmitting}
+                            />
+                            {errors.phone && (
+                              <motion.p 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                className="mt-2 text-xs text-red-600"
+                              >
+                                {errors.phone.message}
+                              </motion.p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Aviso de Privacidad */}
+                        <div>
+                          <label className="flex items-start">
+                            <input
+                              {...register('privacyAccepted')}
+                              type="checkbox"
+                              className="h-4 w-4 text-gray-900 focus:ring-gray-900 border-gray-300 rounded mt-1"
+                              disabled={isSubmitting}
+                            />
+                            <span className="ml-2 text-sm text-gray-700">
+                              He leído y estoy de acuerdo con el <a href="#" className="text-gray-900 underline hover:text-gray-600">Aviso de privacidad</a> *
+                            </span>
+                          </label>
+                          {errors.privacyAccepted && (
+                            <motion.p 
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: 'auto' }}
+                              className="mt-2 text-xs text-red-600"
+                            >
+                              {errors.privacyAccepted.message}
+                            </motion.p>
+                          )}
                         </div>
 
                         {/* Submit Button */}
@@ -341,10 +554,10 @@ export default function ContactModal({ open, onOpenChange }: ContactModalProps) 
                                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                {messages.contactModal.form.submitting}
+                                Enviando solicitud...
                               </span>
                             ) : (
-                              messages.contactModal.form.submit
+                              'Solicitar Cotización'
                             )}
                           </button>
                         </div>

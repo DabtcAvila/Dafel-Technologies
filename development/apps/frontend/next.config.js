@@ -15,15 +15,18 @@ const nextConfig = {
   },
   
   images: {
-    domains: ['localhost', 'dafel-technologies.com', 'dafel.com.mx'],
+    domains: ['localhost', 'dafel-technologies.com', 'dafel.com.mx', 'dev.dafel.com.mx'],
     formats: ['image/avif', 'image/webp'],
   },
   
   // Configure allowed dev origins to prevent cross-origin warnings
   allowedDevOrigins: [
     'localhost:3000',
+    'localhost:3001',
     'dafel.com.mx',
+    'dev.dafel.com.mx',
     'https://dafel.com.mx',
+    'https://dev.dafel.com.mx',
   ],
   
   // Allow cross-origin requests from dafel.com.mx

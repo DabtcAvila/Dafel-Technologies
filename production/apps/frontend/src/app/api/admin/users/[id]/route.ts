@@ -92,7 +92,6 @@ export async function PUT(
         year2023: true,
         year2024: true,
         year2025: true,
-        layoutDownloads: true,
         createdAt: true
       }
     });

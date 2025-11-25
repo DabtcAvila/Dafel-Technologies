@@ -32,7 +32,6 @@ export async function GET(request: NextRequest) {
         year2023: true,
         year2024: true,
         year2025: true,
-        layoutDownloads: true,
         createdAt: true
       },
       orderBy: [
@@ -93,7 +92,6 @@ export async function POST(request: NextRequest) {
         role,
         password: hashedPassword,
         isActive: true,
-        layoutDownloads: 0,
         year2016: years?.includes('2016') || false,
         year2017: years?.includes('2017') || false,
         year2018: years?.includes('2018') || false,
@@ -103,8 +101,7 @@ export async function POST(request: NextRequest) {
         year2022: years?.includes('2022') || false,
         year2023: years?.includes('2023') || false,
         year2024: years?.includes('2024') || false,
-        year2025: years?.includes('2025') || false,
-        emailVerified: new Date()
+        year2025: years?.includes('2025') || false
       },
       select: {
         id: true,
@@ -124,7 +121,6 @@ export async function POST(request: NextRequest) {
         year2023: true,
         year2024: true,
         year2025: true,
-        layoutDownloads: true,
         createdAt: true
       }
     });

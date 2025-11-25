@@ -38,7 +38,7 @@ export default function HubPage() {
   useEffect(() => {
     // Redirect to login if not authenticated
     if (status === 'unauthenticated') {
-      router.push('/hub/login');
+      router.push('/login');
     }
   }, [status, router]);
 

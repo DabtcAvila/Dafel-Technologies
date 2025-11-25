@@ -8,7 +8,7 @@ import { getToken } from 'next-auth/jwt';
 // const securityManager = SecurityManager.getInstance();
 
 // Routes that require authentication
-const protectedRoutes = ['/studio', '/studio/admin'];
+const protectedRoutes = ['/studio', '/studio/admin', '/admin', '/client', '/hub'];
 // Routes that are public
 const publicRoutes = ['/', '/login'];
 // API routes that require authentication
@@ -62,10 +62,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Redirect to studio if accessing login page while authenticated
-  if (pathname === '/login' && token) {
-    return NextResponse.redirect(new URL('/studio', request.url));
-  }
+  // Allow access to login page even when authenticated (to handle redirections properly)
+  // This allows our custom login logic to work for specific email redirections
 
   // Check role-based access for admin routes
   if (pathname.startsWith('/studio/admin') && token) {

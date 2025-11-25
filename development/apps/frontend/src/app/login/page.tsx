@@ -62,11 +62,16 @@ export default function LoginPage() {
           },
         });
         
-        // Redirección específica según el email
-        if (email === 'system@admin.com') {
+        // Get updated session to access role
+        const session = await getSession();
+        
+        // Redirección basada en el rol del usuario
+        if (session?.user?.role === 'ADMIN') {
           router.push('/admin');
-        } else if (email === 'system@client.com') {
+        } else if (session?.user?.role === 'CLIENT' || session?.user?.role === 'GROUP') {
           router.push('/client');
+        } else if (session?.user?.role === 'VIEWER' || session?.user?.role === 'EDITOR') {
+          router.push('/hub');
         } else {
           router.push(callbackUrl);
         }

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { toast, Toaster } from 'react-hot-toast';
+import { useAutoLogout } from '@/hooks/useAutoLogout';
 import { 
   UserIcon,
   DocumentTextIcon,
@@ -22,6 +23,9 @@ export default function ClientPage() {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState('dashboard');
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Enable auto logout functionality
+  useAutoLogout();
 
   useEffect(() => {
     // Allow some time for NextAuth to establish session after login

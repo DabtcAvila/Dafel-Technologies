@@ -15,6 +15,8 @@ enum Role {
   ADMIN
   EDITOR
   VIEWER
+  CLIENT
+  GROUP
 }
 
 // Audit log event types
@@ -35,9 +37,25 @@ enum AuditEventType {
 model User {
   id               String    @id @default(cuid())
   email            String    @unique
-  name             String?
   password         String
   role             Role      @default(VIEWER)
+  
+  // Client/Company information
+  companyName      String?
+  groupName        String?
+  layoutDownloads  Int       @default(0)
+  
+  // Individual year columns for file management
+  year2016         Boolean   @default(false)
+  year2017         Boolean   @default(false)
+  year2018         Boolean   @default(false)
+  year2019         Boolean   @default(false)
+  year2020         Boolean   @default(false)
+  year2021         Boolean   @default(false)
+  year2022         Boolean   @default(false)
+  year2023         Boolean   @default(false)
+  year2024         Boolean   @default(false)
+  year2025         Boolean   @default(false)
   
   // Security features
   loginAttempts    Int       @default(0)
@@ -69,6 +87,8 @@ model User {
   createdBy        User?      @relation("UserCreator", fields: [createdById], references: [id])
   createdById      String?
   dataSources      DataSource[]
+  userFiles        UserFile[] @relation("UserFiles")
+  uploadedFiles    UserFile[] @relation("UploadedFiles")
   
   @@index([email])
   @@index([role])
@@ -238,4 +258,34 @@ model DataSourceSyncLog {
   
   @@index([dataSourceId])
   @@index([createdAt])
+}
+
+// File upload model for user documents per year
+model UserFile {
+  id           String   @id @default(cuid())
+  user         User     @relation("UserFiles", fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  
+  // File information
+  filename     String
+  originalName String
+  mimetype     String
+  size         Int      // in bytes
+  year         Int      // 2016-2025
+  
+  // File path and storage
+  filePath     String   // relative path from uploads folder
+  isActive     Boolean  @default(true)
+  
+  // Upload metadata
+  uploadedBy   User     @relation("UploadedFiles", fields: [uploadedById], references: [id])
+  uploadedById String
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([year])
+  @@index([isActive])
+  @@index([uploadedById])
 }

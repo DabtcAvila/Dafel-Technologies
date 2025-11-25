@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { toast, Toaster } from 'react-hot-toast';
+import { useAutoLogout } from '@/hooks/useAutoLogout';
 import { 
   CubeIcon,
   CircleStackIcon,
@@ -34,6 +35,9 @@ export default function HubPage() {
   const [activeView, setActiveView] = useState('estudios');
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [loadingTimeout, setLoadingTimeout] = useState(false);
+  
+  // Enable auto logout functionality
+  useAutoLogout();
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -41,6 +45,7 @@ export default function HubPage() {
       router.push('/login');
     }
   }, [status, router]);
+
 
   // Add timeout for loading state to prevent infinite spinner
   useEffect(() => {
@@ -56,7 +61,7 @@ export default function HubPage() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     
-    const loadingToast = toast.loading('Signing out...', {
+    const loadingToast = toast.loading('Cerrando sesión...', {
       style: {
         background: '#111827',
         color: '#fff',
@@ -64,15 +69,29 @@ export default function HubPage() {
     });
 
     try {
-      // Use callbackUrl to redirect directly to home
+      // Clear any local storage or session data
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Use redirect: false to handle redirect manually
       await signOut({ 
-        callbackUrl: '/',
-        redirect: true 
+        redirect: false 
       });
-      // The rest of the code won't execute due to redirect: true
+      
+      toast.dismiss(loadingToast);
+      toast.success('Sesión cerrada correctamente', {
+        duration: 2000,
+        style: {
+          background: '#10b981',
+          color: '#fff',
+        },
+      });
+      
+      // Manual redirect to home page
+      window.location.href = '/';
     } catch (error) {
       toast.dismiss(loadingToast);
-      toast.error('Failed to logout', {
+      toast.error('Error al cerrar sesión', {
         duration: 3000,
         style: {
           background: '#ef4444',

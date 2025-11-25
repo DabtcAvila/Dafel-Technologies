@@ -7,20 +7,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@100;200;300;400;500;600;700;800&family=Geist:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 :root {
-  /* === ENTERPRISE COLOR PALETTE === */
+  /* === DAFEL CONSULTING BRAND COLOR PALETTE === */
   
-  /* Primary - Deep Technology Blue */
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-200: #bfdbfe;
-  --color-primary-300: #93c5fd;
-  --color-primary-400: #60a5fa;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
-  --color-primary-800: #1e40af;
-  --color-primary-900: #1e3a8a;
-  --color-primary-950: #172554;
+  /* Primary - DAFEL Sky Blue (from logo #a7c9ea) */
+  --color-primary-50: #f1f8fe;
+  --color-primary-100: #e2f0fc;
+  --color-primary-200: #bee2f8;
+  --color-primary-300: #85ccf1;
+  --color-primary-400: #43b3e7;
+  --color-primary-500: #a7c9ea;
+  --color-primary-600: #8bb5dc;
+  --color-primary-700: #6e9cc8;
+  --color-primary-800: #5983b3;
+  --color-primary-900: #486a9d;
+  --color-primary-950: #304461;
 
   /* Secondary - Sophisticated Slate */
   --color-secondary-50: #f8fafc;
@@ -87,26 +87,32 @@
   --color-neutral-900: #18181b;
   --color-neutral-950: #09090b;
 
+  /* === DAFEL BRAND COLORS === */
+  --dafel-sky-blue: #a7c9ea;       /* Primary brand color from logo */
+  --dafel-light-gray: #eaeaea;     /* Background elements from logo */
+  --dafel-dark-text: #241f1f;      /* Main text color from logo */
+  --dafel-medium-gray: #666666;    /* Secondary text color from logo */
+
   /* === SEMANTIC COLOR SYSTEM === */
   --background: var(--color-neutral-50);
-  --foreground: var(--color-neutral-950);
+  --foreground: var(--dafel-dark-text);
   --muted: var(--color-neutral-100);
-  --muted-foreground: var(--color-neutral-500);
+  --muted-foreground: var(--dafel-medium-gray);
   --popover: var(--color-neutral-50);
-  --popover-foreground: var(--color-neutral-950);
+  --popover-foreground: var(--dafel-dark-text);
   --card: var(--color-neutral-50);
-  --card-foreground: var(--color-neutral-950);
+  --card-foreground: var(--dafel-dark-text);
   --border: var(--color-neutral-200);
   --input: var(--color-neutral-200);
-  --primary: var(--color-primary-600);
+  --primary: var(--dafel-sky-blue);
   --primary-foreground: var(--color-neutral-50);
   --secondary: var(--color-secondary-100);
-  --secondary-foreground: var(--color-secondary-900);
-  --accent: var(--color-accent-500);
+  --secondary-foreground: var(--dafel-dark-text);
+  --accent: var(--dafel-sky-blue);
   --accent-foreground: var(--color-neutral-50);
   --destructive: var(--color-error-600);
   --destructive-foreground: var(--color-neutral-50);
-  --ring: var(--color-primary-600);
+  --ring: var(--dafel-sky-blue);
 
   /* === TYPOGRAPHY SYSTEM === */
   --font-sans: 'Geist', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;

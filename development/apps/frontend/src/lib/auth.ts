@@ -43,6 +43,20 @@ export async function createAuditLog(
 export async function checkAccountLock(email: string): Promise<{ isLocked: boolean; user: any }> {
   const user = await prisma.user.findUnique({
     where: { email },
+    select: {
+      id: true,
+      email: true,
+      password: true,
+      role: true,
+      loginAttempts: true,
+      lockedUntil: true,
+      lastLogin: true,
+      lastLoginIp: true,
+      emailVerified: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   if (!user) {
@@ -73,6 +87,10 @@ export async function checkAccountLock(email: string): Promise<{ isLocked: boole
 export async function handleFailedLogin(userId: string): Promise<boolean> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
+    select: {
+      id: true,
+      loginAttempts: true,
+    },
   });
 
   if (!user) return false;
@@ -113,6 +131,9 @@ export async function handleSuccessfulLogin(
       lockedUntil: null,
       lastLogin: new Date(),
       lastLoginIp: ip,
+    },
+    select: {
+      id: true,
     },
   });
 }

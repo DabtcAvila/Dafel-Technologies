@@ -18,7 +18,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { messages } = useLanguage();
   
-  const callbackUrl = searchParams.get('callbackUrl') || '/hub';
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
 
   useEffect(() => {
     // Check if user is already logged in
@@ -54,6 +54,23 @@ export default function LoginPage() {
           },
         });
       } else {
+        // Get user session to check role
+        const session = await getSession();
+        const userRole = session?.user?.role;
+        
+        let redirectUrl = callbackUrl;
+        
+        // If no specific callback URL, redirect based on role
+        if (callbackUrl === '/') {
+          if (userRole === 'ADMIN') {
+            redirectUrl = '/admin';
+          } else if (userRole === 'CLIENT' || userRole === 'GROUP') {
+            redirectUrl = '/client';
+          } else {
+            redirectUrl = '/';
+          }
+        }
+        
         toast.success('Inicio de sesión exitoso', {
           duration: 2000,
           style: {
@@ -61,7 +78,7 @@ export default function LoginPage() {
             color: '#fff',
           },
         });
-        router.push(callbackUrl);
+        router.push(redirectUrl);
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -227,11 +244,10 @@ export default function LoginPage() {
               transition={{ delay: 1 }}
               className="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200"
             >
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Credenciales de Dafel Hub:</h3>
+              <h3 className="text-sm font-medium text-gray-700 mb-2">Credenciales de acceso:</h3>
               <div className="text-xs text-gray-600 space-y-1">
-                <div><strong>Admin:</strong> hub-admin@dafel.com / hub123</div>
-                <div><strong>Editor:</strong> hub-editor@dafel.com / hub123</div>
-                <div><strong>Viewer:</strong> hub-viewer@dafel.com / hub123</div>
+                <div><strong>Admin:</strong> admin@dafel.com / DafelAdmin2025!</div>
+                <div><strong>Cliente:</strong> cliente@dafel.com / password</div>
               </div>
             </motion.div>
           </motion.div>

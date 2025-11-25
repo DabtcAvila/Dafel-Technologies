@@ -41,8 +41,8 @@ model User {
   role             Role      @default(VIEWER)
   
   // Client/Company information
-  companyName      String?
-  groupName        String?
+  companyName      String
+  groupName        String
   layoutDownloads  Int       @default(0)
   
   // Individual year columns for file management

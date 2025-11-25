@@ -105,7 +105,7 @@ export const authOptions: NextAuthOptions = {
           return {
             id: user.id,
             email: user.email,
-            name: user.name,
+            name: user.companyName || user.email.split('@')[0],
             role: user.role,
           };
         } catch (error: any) {
@@ -134,7 +134,7 @@ export const authOptions: NextAuthOptions = {
         token.id = user.id;
         token.email = user.email;
         token.role = (user as any).role;
-        token.name = user.name;
+        token.name = user.name || user.email.split('@')[0];
       }
 
       if (trigger === 'update' && session) {
